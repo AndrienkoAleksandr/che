@@ -10,6 +10,7 @@
  */
 package org.eclipse.che.workspace.infrastructure.openshift.project;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.lang.String.format;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -65,7 +66,7 @@ public class OpenShiftProjectCleaner {
       return;
     }
     // removes OpenShift project when no project configured for all che workspaces
-    if (projectName == null) {
+    if (isNullOrEmpty(projectName)) {
       eventService.subscribe(new DeleteOpenShiftProjectOnWorkspaceRemove());
       return;
     }
