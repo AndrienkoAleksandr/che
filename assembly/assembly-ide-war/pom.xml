@@ -28,6 +28,10 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>com.codenvy.redhat.plugin</groupId>
+            <artifactId>redhat-plugin-quick-start-docs-ide</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.che.core</groupId>
             <artifactId>che-ide-core</artifactId>
         </dependency>

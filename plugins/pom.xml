@@ -62,5 +62,6 @@
         <module>plugin-pullrequest-parent</module>
         <module>plugin-traefik</module>
         <module>plugin-yaml</module>
+        <module>plugin-quick-start-docs</module>
     </modules>
 </project>

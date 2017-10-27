@@ -23,6 +23,10 @@
     <name>Che Workspace Agent War Packaging</name>
     <dependencies>
         <dependency>
+            <groupId>com.codenvy.redhat.plugin</groupId>
+            <artifactId>redhat-plugin-quick-start-docs-server</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.che.core</groupId>
             <artifactId>che-wsagent-core</artifactId>
             <type>war</type>
