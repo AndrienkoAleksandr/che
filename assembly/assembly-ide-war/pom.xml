@@ -216,6 +216,10 @@
             <artifactId>che-plugin-zend-debugger-ide</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.eclipse.che.plugin</groupId>
+            <artifactId>redhat-plugin-quick-start-docs-ide</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-dev</artifactId>
             <scope>provided</scope>
