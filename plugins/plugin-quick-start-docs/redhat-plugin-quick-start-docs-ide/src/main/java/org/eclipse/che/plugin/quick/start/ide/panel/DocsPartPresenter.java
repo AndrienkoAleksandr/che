@@ -20,7 +20,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.che.ide.api.action.ActionManager;
 import org.eclipse.che.ide.api.parts.PartStack;
-import org.eclipse.che.ide.api.parts.PartStackType;
 import org.eclipse.che.ide.api.parts.WorkspaceAgent;
 import org.eclipse.che.ide.api.parts.base.BasePresenter;
 import org.eclipse.che.ide.api.resources.Project;
@@ -29,7 +28,6 @@ import org.eclipse.che.ide.api.selection.Selection;
 import org.eclipse.che.ide.api.selection.SelectionChangedEvent;
 import org.eclipse.che.ide.api.selection.SelectionChangedHandler;
 import org.eclipse.che.ide.api.workspace.event.WorkspaceStoppedEvent;
-import org.eclipse.che.ide.bootstrap.BasicIDEInitializedEvent;
 import org.eclipse.che.ide.ui.smartTree.data.HasDataObject;
 import org.eclipse.che.ide.util.loging.Log;
 import org.eclipse.che.plugin.quick.start.ide.GuideResources;
@@ -131,7 +129,7 @@ public class DocsPartPresenter extends BasePresenter
 
     Project currentProject = currentResource != null ? currentResource.getProject() : null;
 
-    if (currentProject != null) { //&& !currentProject.equals(lastSelected)) {
+    if (currentProject != null) { // && !currentProject.equals(lastSelected)) {
       Log.info(getClass(), currentProject.getPath());
       lastSelected = currentProject;
       displayGuide(currentProject);
