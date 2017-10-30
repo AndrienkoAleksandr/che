@@ -12,9 +12,13 @@ package org.eclipse.che.plugin.quick.start.ide;
 
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import org.vectomatic.dom.svg.ui.SVGResource;
 
 /** @author Alexander Andrienko */
 public interface GuideResources extends ClientBundle {
+
+  @Source("guide.svg")
+  SVGResource getGuideSvg();
 
   @Source({"guide.css"})
   GuideStyles getGuideStyle();

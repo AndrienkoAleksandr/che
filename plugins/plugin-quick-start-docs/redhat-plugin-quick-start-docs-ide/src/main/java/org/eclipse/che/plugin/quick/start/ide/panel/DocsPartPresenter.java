@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.che.ide.api.action.ActionManager;
 import org.eclipse.che.ide.api.parts.PartStack;
+import org.eclipse.che.ide.api.parts.PartStackType;
 import org.eclipse.che.ide.api.parts.WorkspaceAgent;
 import org.eclipse.che.ide.api.parts.base.BasePresenter;
 import org.eclipse.che.ide.api.resources.Project;
@@ -31,8 +32,10 @@ import org.eclipse.che.ide.api.workspace.event.WorkspaceStoppedEvent;
 import org.eclipse.che.ide.bootstrap.BasicIDEInitializedEvent;
 import org.eclipse.che.ide.ui.smartTree.data.HasDataObject;
 import org.eclipse.che.ide.util.loging.Log;
+import org.eclipse.che.plugin.quick.start.ide.GuideResources;
 import org.eclipse.che.plugin.quick.start.ide.QuickStartLocalizationConstant;
 import org.eclipse.che.plugin.quick.start.ide.QuickStartServiceClient;
+import org.vectomatic.dom.svg.ui.SVGResource;
 
 /**
  * Presenter to manage {@link DocsViewPart}
@@ -48,6 +51,7 @@ public class DocsPartPresenter extends BasePresenter
   private final WorkspaceAgent workspaceAgent;
   private final QuickStartServiceClient client;
   private final ActionManager actionManager;
+  private final GuideResources guideResources;
 
   private Project lastSelected;
 
@@ -58,23 +62,30 @@ public class DocsPartPresenter extends BasePresenter
       EventBus eventBus,
       final WorkspaceAgent workspaceAgent,
       QuickStartServiceClient client,
-      ActionManager actionManager) {
+      ActionManager actionManager,
+      GuideResources guideResources) {
     this.view = view;
     this.constants = constants;
     this.workspaceAgent = workspaceAgent;
     this.client = client;
     this.actionManager = actionManager;
+    this.guideResources = guideResources;
 
     view.setDelegate(this);
 
-    eventBus.addHandler(BasicIDEInitializedEvent.TYPE, event -> addPart());
     eventBus.addHandler(WorkspaceStoppedEvent.TYPE, event -> hidePart());
     eventBus.addHandler(SelectionChangedEvent.TYPE, this);
+    addPart();
   }
 
   @Override
   public String getTitle() {
     return constants.guidePanelTitle();
+  }
+
+  @Override
+  public SVGResource getTitleImage() {
+    return guideResources.getGuideSvg();
   }
 
   @Override
@@ -123,7 +134,6 @@ public class DocsPartPresenter extends BasePresenter
     if (currentProject != null) { //&& !currentProject.equals(lastSelected)) {
       Log.info(getClass(), currentProject.getPath());
       lastSelected = currentProject;
-      addPart();
       displayGuide(currentProject);
     }
   }
