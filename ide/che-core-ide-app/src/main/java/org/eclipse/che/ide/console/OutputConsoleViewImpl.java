@@ -84,7 +84,7 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @UiField ScrollPanel scrollPanel;
 
-  @UiField FlowPanel consoleLines;
+  @UiField protected FlowPanel consoleLines;
 
   @UiField Anchor previewUrlLabel;
 

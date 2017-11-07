@@ -20,7 +20,8 @@ import org.eclipse.che.api.promises.client.Operation;
  * @author Evgen Vidolob
  * @author Alexander Andrienko
  */
-class TerminalJso extends JavaScriptObject {
+//todo replace on the jsInterPr
+public class TerminalJso extends JavaScriptObject {
   protected TerminalJso() {}
 
   public static native TerminalJso create(
