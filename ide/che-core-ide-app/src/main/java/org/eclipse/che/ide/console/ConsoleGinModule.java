@@ -19,7 +19,12 @@ import org.eclipse.che.ide.api.outputconsole.OutputConsole;
 public class ConsoleGinModule extends AbstractGinModule {
   @Override
   protected void configure() {
-    bind(OutputConsoleView.class).to(OutputConsoleViewImpl.class);
+//    bind(OutputConsoleView.class).to(OutputConsoleViewImpl.class);
+
+    install(new GinFactoryModuleBuilder()
+            .implement(OutputConsoleView.class, OutputConsoleViewImpl.class)
+            .build(OutputConsoleViewFactory.class));
+
     install(
         new GinFactoryModuleBuilder()
             .implement(

@@ -43,12 +43,12 @@ public class DefaultOutputConsole implements OutputConsole, OutputConsoleView.Ac
 
   @Inject
   public DefaultOutputConsole(
-      OutputConsoleView view,
       MachineResources resources,
       AppContext appContext,
       EditorAgent editorAgent,
-      @Assisted String title) {
-    this.view = view;
+      @Assisted String title,
+      OutputConsoleViewFactory outputConsoleViewFactory) {
+    this.view = outputConsoleViewFactory.createConsole();
     this.title = title;
     this.resources = resources;
     this.view.enableAutoScroll(true);

@@ -70,7 +70,7 @@ public class CommandOutputConsolePresenter
 
   @Inject
   public CommandOutputConsolePresenter(
-      final OutputConsoleView view,
+      OutputConsoleViewFactory outputConsoleViewFactory,
       MachineResources resources,
       CommandExecutor commandExecutor,
       MacroProcessor macroProcessor,
@@ -80,7 +80,7 @@ public class CommandOutputConsolePresenter
       @Assisted String machineName,
       AppContext appContext,
       EditorAgent editorAgent) {
-    this.view = view;
+    this.view = outputConsoleViewFactory.createConsole();
     this.resources = resources;
     this.execAgentCommandManager = execAgentCommandManager;
     this.command = command;
