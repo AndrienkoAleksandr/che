@@ -11,114 +11,142 @@
 package org.eclipse.che.ide.console.xterm;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.Timer;
 import com.google.inject.Inject;
 
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.console.OutputConsoleViewImpl;
 import org.eclipse.che.ide.machine.MachineResources;
+import org.eclipse.che.ide.terminal.TerminalGeometryJso;
+import org.eclipse.che.ide.terminal.TerminalInitializePromiseHolder;
 import org.eclipse.che.ide.terminal.TerminalJso;
 import org.eclipse.che.ide.terminal.TerminalOptionsJso;
+import org.eclipse.che.ide.util.loging.Log;
 import org.eclipse.che.requirejs.ModuleHolder;
 
-/**
- * @author Alexander Andrienko
- */
+/** @author Alexander Andrienko */
 public class XtermOutPutConsoleViewImpl extends OutputConsoleViewImpl {
 
-    private final TerminalJso terminalJso;
+  private TerminalJso terminalJso; // todo final
 
-    @Inject
-    public XtermOutPutConsoleViewImpl(final ModuleHolder moduleHolder,
-                                      MachineResources resources,
-                                      CoreLocalizationConstant localization) {
-        super(resources, localization);
-        JavaScriptObject terminalSource = moduleHolder.getModule("Xterm");
+  @Inject
+  public XtermOutPutConsoleViewImpl(
+      final ModuleHolder moduleHolder,
+      MachineResources resources,
+      CoreLocalizationConstant localization,
+      TerminalInitializePromiseHolder promiseHolder) {
+    super(resources, localization);
 
-        //todo: don't use default options !!!
-        this.terminalJso = TerminalJso.create(terminalSource, TerminalOptionsJso.createDefault());
+    promiseHolder
+        .getInitializerPromise()
+        .then(
+            arg -> {
+              JavaScriptObject terminalSource = moduleHolder.getModule("Xterm");
 
-        //todo caluculate size
-        terminalJso.open(consoleLines.asWidget().getElement());
-    }
+              // todo: don't use default options !!!
+              this.terminalJso =
+                  TerminalJso.create(
+                      terminalSource, TerminalOptionsJso.createDefault().withFocusOnOpen(false));
 
-//    @Override
-//    public void showCommandLine(String commandLine) {
-//
-//    }
-//
-//    @Override
-//    public void showPreviewUrl(String previewUrl) {
-//
-//    }
+              // todo calculate size;
+              terminalJso.open(consoleLines.asWidget().getElement());
+              TerminalGeometryJso geometryJso = terminalJso.proposeGeometry();
+              terminalJso.resize(geometryJso.getCols(), geometryJso.getRows());
+              Log.info(getClass(), geometryJso.getCols() + " " + geometryJso.getRows());
+            });
 
-    @Override
-    public void print(String text, boolean carriageReturn) {
-        terminalJso.write(text);
-    }
+    consoleLines.addResizeHandler(event -> resizeTimer.schedule(500));
+  }
 
-    @Override
-    public void print(String text, boolean carriageReturn, String color) {
-        terminalJso.write(text);
-    }
+  private Timer resizeTimer =
+      new Timer() {
+        @Override
+        public void run() {
+          resizeTerminal();
+        }
+      };
 
-    @Override
-    public String getText() {
-        return "Nope"; // todo
-    }
+  private void resizeTerminal() {
+    TerminalGeometryJso geometryJso = terminalJso.proposeGeometry();
+    terminalJso.resize(geometryJso.getCols(), geometryJso.getRows());
+    Log.info(getClass(), "resize!!!!");
+  }
 
-//    @Override
-//    public void hideCommand() {
-//
-//    }
+  //    @Override
+  //    public void showCommandLine(String commandLine) {
+  //
+  //    }
+  //
+  //    @Override
+  //    public void showPreviewUrl(String previewUrl) {
+  //
+  //    }
 
-//    @Override
-//    public void hidePreview() {
-//
-//    }
+  @Override
+  public void print(String text, boolean carriageReturn) {
+    terminalJso.write(text); // todo "\n" ?
+  }
 
-//    @Override
-//    public void wrapText(boolean wrap) {
-//
-//    }
-//
-//    @Override
-//    public void enableAutoScroll(boolean enable) {
-//
-//    }
+  @Override
+  public void print(String text, boolean carriageReturn, String color) {
+    terminalJso.write(text);
+  }
 
-    @Override
-    public void clearConsole() {
+  @Override
+  public String getText() {
+    return "Nope"; // todo
+  }
 
-    }
+  //    @Override
+  //    public void hideCommand() {
+  //
+  //    }
 
-//    @Override
-//    public void toggleWrapTextButton(boolean toggle) {
-//
-//    }
-//
-//    @Override
-//    public void toggleScrollToEndButton(boolean toggle) {
-//
-//    }
-//
-//    @Override
-//    public void setReRunButtonVisible(boolean visible) {
-//
-//    }
-//
-//    @Override
-//    public void setStopButtonVisible(boolean visible) {
-//
-//    }
-//
-//    @Override
-//    public void enableStopButton(boolean enable) {
-//
-//    }
-//
-//    @Override
-//    public void setDelegate(ActionDelegate delegate) {
-//
-//    }
+  //    @Override
+  //    public void hidePreview() {
+  //
+  //    }
+
+  //    @Override
+  //    public void wrapText(boolean wrap) {
+  //
+  //    }
+  //
+  //    @Override
+  //    public void enableAutoScroll(boolean enable) {
+  //
+  //    }
+
+  @Override
+  public void clearConsole() {}
+
+  //    @Override
+  //    public void toggleWrapTextButton(boolean toggle) {
+  //
+  //    }
+  //
+  //    @Override
+  //    public void toggleScrollToEndButton(boolean toggle) {
+  //
+  //    }
+  //
+  //    @Override
+  //    public void setReRunButtonVisible(boolean visible) {
+  //
+  //    }
+  //
+  //    @Override
+  //    public void setStopButtonVisible(boolean visible) {
+  //
+  //    }
+  //
+  //    @Override
+  //    public void enableStopButton(boolean enable) {
+  //
+  //    }
+  //
+  //    @Override
+  //    public void setDelegate(ActionDelegate delegate) {
+  //
+  //    }
 }
-

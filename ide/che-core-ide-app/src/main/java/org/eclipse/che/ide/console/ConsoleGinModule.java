@@ -14,15 +14,24 @@ import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.inject.client.assistedinject.GinFactoryModuleBuilder;
 import com.google.inject.name.Names;
 import org.eclipse.che.ide.api.outputconsole.OutputConsole;
+import org.eclipse.che.ide.console.annotations.ConsoleCommandOutPutView;
+import org.eclipse.che.ide.console.annotations.XtermCommandOutPutView;
+import org.eclipse.che.ide.console.xterm.XtermOutPutConsoleViewImpl;
 
 /** GIN module for configuring command consoles. */
 public class ConsoleGinModule extends AbstractGinModule {
   @Override
   protected void configure() {
-//    bind(OutputConsoleView.class).to(OutputConsoleViewImpl.class);
-
-    install(new GinFactoryModuleBuilder()
-            .implement(OutputConsoleView.class, OutputConsoleViewImpl.class)
+    install(
+        new GinFactoryModuleBuilder()
+            .implement(
+                OutputConsoleView.class,
+                ConsoleCommandOutPutView.class,
+                OutputConsoleViewImpl.class)
+            .implement(
+                OutputConsoleView.class,
+                XtermCommandOutPutView.class,
+                XtermOutPutConsoleViewImpl.class)
             .build(OutputConsoleViewFactory.class));
 
     install(

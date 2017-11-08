@@ -10,12 +10,16 @@
  */
 package org.eclipse.che.ide.console;
 
-/**
- * @author Alexander Andrienko
- */
+import org.eclipse.che.ide.console.annotations.ConsoleCommandOutPutView;
+import org.eclipse.che.ide.console.annotations.XtermCommandOutPutView;
+
+/** @author Alexander Andrienko */
 public interface OutputConsoleViewFactory {
 
-    // todo use worker ?.
-    OutputConsoleView createConsole();
+  // todo use worker ?.
+  @ConsoleCommandOutPutView
+  OutputConsoleView createConsole();
 
+  @XtermCommandOutPutView
+  OutputConsoleView createXtermConsole();
 }
