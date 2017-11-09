@@ -13,7 +13,6 @@ package org.eclipse.che.ide.console.xterm;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Timer;
 import com.google.inject.Inject;
-
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.console.OutputConsoleViewImpl;
 import org.eclipse.che.ide.machine.MachineResources;
@@ -84,7 +83,7 @@ public class XtermOutPutConsoleViewImpl extends OutputConsoleViewImpl {
 
   @Override
   public void print(String text, boolean carriageReturn) {
-    terminalJso.write(text); // todo "\n" ?
+    terminalJso.write(text + "\n\r");
   }
 
   @Override

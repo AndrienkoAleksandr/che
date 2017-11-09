@@ -37,6 +37,7 @@ import org.eclipse.che.ide.api.command.exec.dto.event.ProcessStdOutEventDto;
 import org.eclipse.che.ide.api.editor.EditorAgent;
 import org.eclipse.che.ide.api.macro.MacroProcessor;
 import org.eclipse.che.ide.machine.MachineResources;
+import org.eclipse.che.ide.util.loging.Log;
 import org.vectomatic.dom.svg.ui.SVGResource;
 
 /**
@@ -161,6 +162,7 @@ public class CommandOutputConsolePresenter
   public Consumer<ProcessStdOutEventDto> getStdOutConsumer() {
     return event -> {
       String stdOutMessage = event.getText();
+      Log.info(getClass(), "Line contains '\n'? " + stdOutMessage.contains("\n"));
       boolean carriageReturn = stdOutMessage.endsWith("\r");
       view.print(stdOutMessage, carriageReturn);
 
