@@ -84,7 +84,7 @@ public class CommandOutputConsolePresenter
       @Assisted String machineName,
       AppContext appContext,
       EditorAgent editorAgent) {
-    this.view = outputConsoleViewFactory.createConsole();
+    this.view = outputConsoleViewFactory.createXtermConsole();
     this.resources = resources;
     this.execAgentCommandManager = execAgentCommandManager;
     this.command = command;
@@ -102,15 +102,7 @@ public class CommandOutputConsolePresenter
 
     final String previewUrl = command.getAttributes().get(COMMAND_PREVIEW_URL_ATTRIBUTE_NAME);
     if (!isNullOrEmpty(previewUrl)) {
-      macroProcessor
-          .expandMacros(previewUrl)
-          .then(
-              new Operation<String>() {
-                @Override
-                public void apply(String arg) throws OperationException {
-                  view.showPreviewUrl(arg);
-                }
-              });
+      macroProcessor.expandMacros(previewUrl).then(view::showPreviewUrl);
     } else {
       view.hidePreview();
     }

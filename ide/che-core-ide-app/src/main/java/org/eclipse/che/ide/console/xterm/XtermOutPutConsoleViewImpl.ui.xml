@@ -209,6 +209,7 @@
         <g:north size="14">
             <g:FlowPanel ui:field="previewPanel" styleName="{style.header}">
                 <g:Label text="preview:" addStyleNames="{style.label} {style.commandTitle}"/>
+                <g:Button ui:field="checkButton" text="check"/>
                 <g:Anchor ui:field="previewUrlLabel" target="_blank"
                           addStyleNames="{style.link} {style.value} {style.commandTitle}"/>
             </g:FlowPanel>

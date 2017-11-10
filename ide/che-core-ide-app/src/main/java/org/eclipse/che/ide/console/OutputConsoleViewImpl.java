@@ -18,6 +18,7 @@ import static org.eclipse.che.ide.ui.menu.PositionController.VerticalAlign.BOTTO
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -44,6 +45,7 @@ import java.util.List;
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.FontAwesome;
 import org.eclipse.che.ide.machine.MachineResources;
+import org.eclipse.che.ide.processes.ProcessTreeNodeSelectedEvent;
 import org.eclipse.che.ide.ui.Tooltip;
 import org.eclipse.che.ide.util.Pair;
 import org.vectomatic.dom.svg.ui.SVGImage;
@@ -398,9 +400,20 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   /** Scrolls to the bottom if following the output is enabled. */
   private void followOutput() {
     /** Scroll bottom immediately if view is visible */
-    if (followOutput && scrollPanel.getElement().getOffsetParent() != null) {
+
+    if (isVisible() && followOutput && scrollPanel.getElement().getOffsetParent() != null) {
       scrollPanel.scrollToBottom();
       scrollPanel.scrollToLeft();
+    } else {
+      Scheduler.get()
+               .scheduleFixedDelay(() -> {
+               if (followOutput && scrollPanel.getElement().getOffsetParent() != null) {
+                 scrollPanel.scrollToBottom();
+                 scrollPanel.scrollToLeft();
+               }
+
+              return true;
+              }, 500);
     }
   }
 }
