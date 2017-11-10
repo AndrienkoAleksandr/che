@@ -17,7 +17,6 @@ import static org.eclipse.che.ide.ui.menu.PositionController.VerticalAlign.BOTTO
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -38,8 +37,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ResizeLayoutPanel;
-//import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import java.util.List;
@@ -83,9 +81,9 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @UiField Label commandLabel;
 
-//  @UiField ScrollPanel scrollPanel;
+  @UiField ScrollPanel scrollPanel;
 
-  @UiField protected ResizeLayoutPanel consoleLines;
+  @UiField protected FlowPanel consoleLines;
 
   @UiField Anchor previewUrlLabel;
 
@@ -122,7 +120,7 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
     wrapTextButton.add(new SVGImage(resources.lineWrapIcon()));
     scrollToBottomButton.add(new SVGImage(resources.scrollToBottomIcon()));
 
-//    scrollPanel.addDomHandler(this, ScrollEvent.getType());
+    scrollPanel.addDomHandler(this, ScrollEvent.getType());
 
     reRunProcessButton.addDomHandler(
         new ClickHandler() {
@@ -395,65 +393,65 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   @Override
   public void onScroll(ScrollEvent event) {
     // Do nothing if content height less scroll area height
-//    if (scrollPanel.getElement().getScrollHeight() < scrollPanel.getElement().getOffsetHeight()) {
-//      followOutput = true;
-//      if (delegate != null) {
-//        delegate.onOutputScrolled(followOutput);
-//      }
-//      return;
-//    }
-//
-//    // Follow output if scroll area is scrolled to the end
-//    if (scrollPanel.getElement().getScrollTop() + scrollPanel.getElement().getOffsetHeight()
-//        >= scrollPanel.getElement().getScrollHeight()) {
-//      followOutput = true;
-//    } else {
-//      followOutput = false;
-//    }
-//
-//    if (delegate != null) {
-//      delegate.onOutputScrolled(followOutput);
-//    }
+    if (scrollPanel.getElement().getScrollHeight() < scrollPanel.getElement().getOffsetHeight()) {
+      followOutput = true;
+      if (delegate != null) {
+        delegate.onOutputScrolled(followOutput);
+      }
+      return;
+    }
+
+    // Follow output if scroll area is scrolled to the end
+    if (scrollPanel.getElement().getScrollTop() + scrollPanel.getElement().getOffsetHeight()
+        >= scrollPanel.getElement().getScrollHeight()) {
+      followOutput = true;
+    } else {
+      followOutput = false;
+    }
+
+    if (delegate != null) {
+      delegate.onOutputScrolled(followOutput);
+    }
   }
 
   /** Scrolls to the bottom if following the output is enabled. */
   private void followOutput() {
-//    if (!followOutput) {
-//      return;
-//    }
-//
-//    /** Scroll bottom immediately if view is visible */
-//    if (scrollPanel.getElement().getOffsetParent() != null) {
-//      scrollPanel.scrollToBottom();
-//      scrollPanel.scrollToLeft();
-//      return;
-//    }
-//
-//    /** Otherwise, check the visibility periodically and scroll the view when it's visible */
-//    if (!followScheduled) {
-//      followScheduled = true;
-//
-//      Scheduler.get()
-//          .scheduleFixedPeriod(
-//              new Scheduler.RepeatingCommand() {
-//                @Override
-//                public boolean execute() {
-//                  if (!followOutput) {
-//                    followScheduled = false;
-//                    return false;
-//                  }
-//
-//                  if (scrollPanel.getElement().getOffsetParent() != null) {
-//                    scrollPanel.scrollToBottom();
-//                    scrollPanel.scrollToLeft();
-//                    followScheduled = false;
-//                    return false;
-//                  }
-//
-//                  return true;
-//                }
-//              },
-//              500);
-//    }
+    if (!followOutput) {
+      return;
+    }
+
+    /** Scroll bottom immediately if view is visible */
+    //    if (scrollPanel.getElement().getOffsetParent() != null) {
+    //      scrollPanel.scrollToBottom();
+    //      scrollPanel.scrollToLeft();
+    //      return;
+    //    }
+
+    /** Otherwise, check the visibility periodically and scroll the view when it's visible */
+    if (!followScheduled) {
+      //      followScheduled = true;
+      //
+      //      Scheduler.get()
+      //          .scheduleFixedPeriod(
+      //              new Scheduler.RepeatingCommand() {
+      //                @Override
+      //                public boolean execute() {
+      //                  if (!followOutput) {
+      //                    followScheduled = false;
+      //                    return false;
+      //                  }
+      //
+      //                  if (scrollPanel.getElement().getOffsetParent() != null) {
+      //                    scrollPanel.scrollToBottom();
+      //                    scrollPanel.scrollToLeft();
+      //                    followScheduled = false;
+      //                    return false;
+      //                  }
+      //
+      //                  return true;
+      //                }
+      //              },
+      //              500);
+    }
   }
 }
