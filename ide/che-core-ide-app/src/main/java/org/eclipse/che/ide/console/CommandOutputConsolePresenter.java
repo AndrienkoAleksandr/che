@@ -12,12 +12,14 @@ package org.eclipse.che.ide.console;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.eclipse.che.api.workspace.shared.Constants.COMMAND_PREVIEW_URL_ATTRIBUTE_NAME;
+import static org.eclipse.che.ide.console.Constants.SCROLL_BACK;
 
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.web.bindery.event.shared.EventBus;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
 import org.eclipse.che.api.promises.client.Operation;
@@ -37,6 +39,7 @@ import org.eclipse.che.ide.api.command.exec.dto.event.ProcessStdOutEventDto;
 import org.eclipse.che.ide.api.editor.EditorAgent;
 import org.eclipse.che.ide.api.macro.MacroProcessor;
 import org.eclipse.che.ide.machine.MachineResources;
+import org.eclipse.che.ide.util.loging.Log;
 import org.vectomatic.dom.svg.ui.SVGResource;
 
 /**
@@ -67,6 +70,7 @@ public class CommandOutputConsolePresenter
   private final List<ActionDelegate> actionDelegates = new ArrayList<>();
 
   private OutputCustomizer outputCustomizer = null;
+  private Date startDate;
 
   @Inject
   public CommandOutputConsolePresenter(
@@ -80,7 +84,7 @@ public class CommandOutputConsolePresenter
       @Assisted String machineName,
       AppContext appContext,
       EditorAgent editorAgent) {
-    this.view = outputConsoleViewFactory.createXtermConsole();
+    this.view = outputConsoleViewFactory.createConsole();
     this.resources = resources;
     this.execAgentCommandManager = execAgentCommandManager;
     this.command = command;
@@ -157,13 +161,24 @@ public class CommandOutputConsolePresenter
     };
   }
 
+  private int counter;
+
   @Override
   public Consumer<ProcessStdOutEventDto> getStdOutConsumer() {
+    Log.info(getClass(), "Woo");
+    startDate = new Date();
     return event -> {
       String stdOutMessage = event.getText();
 
       boolean carriageReturn = stdOutMessage.endsWith("\r");
+      counter++;
+
       view.print(stdOutMessage, carriageReturn);
+      if (counter == SCROLL_BACK) {
+        Log.info(
+            getClass(),
+            "Render time diff " + ((System.currentTimeMillis() - startDate.getTime()) / 1000));
+      }
 
       for (ActionDelegate actionDelegate : actionDelegates) {
         actionDelegate.onConsoleOutput(CommandOutputConsolePresenter.this);

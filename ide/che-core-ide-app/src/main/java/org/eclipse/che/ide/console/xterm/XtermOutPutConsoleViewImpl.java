@@ -10,22 +10,14 @@
  */
 package org.eclipse.che.ide.console.xterm;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.gwt.regexp.shared.RegExp.compile;
+import static org.eclipse.che.ide.console.Constants.SCROLL_BACK;
 import static org.eclipse.che.ide.ui.menu.PositionController.HorizontalAlign.MIDDLE;
 import static org.eclipse.che.ide.ui.menu.PositionController.VerticalAlign.BOTTOM;
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.ScrollEvent;
-import com.google.gwt.event.dom.client.ScrollHandler;
-import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
@@ -35,28 +27,23 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeLayoutPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import java.util.List;
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.FontAwesome;
 import org.eclipse.che.ide.console.OutputConsoleView;
-import org.eclipse.che.ide.console.OutputConsoleViewImpl;
 import org.eclipse.che.ide.machine.MachineResources;
 import org.eclipse.che.ide.terminal.TerminalGeometryJso;
 import org.eclipse.che.ide.terminal.TerminalInitializePromiseHolder;
 import org.eclipse.che.ide.terminal.TerminalJso;
 import org.eclipse.che.ide.terminal.TerminalOptionsJso;
 import org.eclipse.che.ide.ui.Tooltip;
-import org.eclipse.che.ide.util.Pair;
 import org.eclipse.che.ide.util.loging.Log;
 import org.eclipse.che.requirejs.ModuleHolder;
 import org.vectomatic.dom.svg.ui.SVGImage;
 
 /** @author Alexander Andrienko */
-public class XtermOutPutConsoleViewImpl extends Composite
-    implements OutputConsoleView {
+public class XtermOutPutConsoleViewImpl extends Composite implements OutputConsoleView {
 
   private TerminalJso terminalJso; // todo final
 
@@ -118,109 +105,91 @@ public class XtermOutPutConsoleViewImpl extends Composite
       TerminalInitializePromiseHolder promiseHolder) {
     initWidget(UI_BINDER.createAndBindUi(this));
 
-      reRunProcessButton.add(new SVGImage(resources.reRunIcon()));
-      stopProcessButton.add(new SVGImage(resources.stopIcon()));
-      clearOutputsButton.add(new SVGImage(resources.clearOutputsIcon()));
-      downloadOutputsButton.getElement().setInnerHTML(FontAwesome.DOWNLOAD);
+    reRunProcessButton.add(new SVGImage(resources.reRunIcon()));
+    stopProcessButton.add(new SVGImage(resources.stopIcon()));
+    clearOutputsButton.add(new SVGImage(resources.clearOutputsIcon()));
+    downloadOutputsButton.getElement().setInnerHTML(FontAwesome.DOWNLOAD);
 
-      wrapTextButton.add(new SVGImage(resources.lineWrapIcon()));
-      scrollToBottomButton.add(new SVGImage(resources.scrollToBottomIcon()));
+    wrapTextButton.add(new SVGImage(resources.lineWrapIcon()));
+    scrollToBottomButton.add(new SVGImage(resources.scrollToBottomIcon()));
 
-      reRunProcessButton.addDomHandler(
-              new ClickHandler() {
-                  @Override
-                  public void onClick(ClickEvent event) {
-                      if (!reRunProcessButton.getElement().hasAttribute("disabled") && delegate != null) {
-                          delegate.reRunProcessButtonClicked();
-                      }
-                  }
-              },
-              ClickEvent.getType());
+    reRunProcessButton.addDomHandler(
+        event -> {
+          if (!reRunProcessButton.getElement().hasAttribute("disabled") && delegate != null) {
+            delegate.reRunProcessButtonClicked();
+          }
+        },
+        ClickEvent.getType());
 
-      stopProcessButton.addDomHandler(
-              new ClickHandler() {
-                  @Override
-                  public void onClick(ClickEvent event) {
-                      if (!stopProcessButton.getElement().hasAttribute("disabled") && delegate != null) {
-                          delegate.stopProcessButtonClicked();
-                      }
-                  }
-              },
-              ClickEvent.getType());
+    stopProcessButton.addDomHandler(
+        event -> {
+          if (!stopProcessButton.getElement().hasAttribute("disabled") && delegate != null) {
+            delegate.stopProcessButtonClicked();
+          }
+        },
+        ClickEvent.getType());
 
-      clearOutputsButton.addDomHandler(
-              new ClickHandler() {
-                  @Override
-                  public void onClick(ClickEvent event) {
-                      if (!clearOutputsButton.getElement().hasAttribute("disabled") && delegate != null) {
-                          delegate.clearOutputsButtonClicked();
-                      }
-                  }
-              },
-              ClickEvent.getType());
+    clearOutputsButton.addDomHandler(
+        event -> {
+          if (!clearOutputsButton.getElement().hasAttribute("disabled") && delegate != null) {
+            delegate.clearOutputsButtonClicked();
+          }
+        },
+        ClickEvent.getType());
 
-      downloadOutputsButton.addDomHandler(
-              new ClickHandler() {
-                  @Override
-                  public void onClick(ClickEvent event) {
-                      if (delegate != null) {
-                          delegate.downloadOutputsButtonClicked();
-                      }
-                  }
-              },
-              ClickEvent.getType());
+    downloadOutputsButton.addDomHandler(
+        event -> {
+          if (delegate != null) {
+            delegate.downloadOutputsButtonClicked();
+          }
+        },
+        ClickEvent.getType());
 
-      wrapTextButton.addDomHandler(
-              new ClickHandler() {
-                  @Override
-                  public void onClick(ClickEvent clickEvent) {
-                      if (!wrapTextButton.getElement().hasAttribute("disabled") && delegate != null) {
-                          delegate.wrapTextButtonClicked();
-                      }
-                  }
-              },
-              ClickEvent.getType());
+    wrapTextButton.addDomHandler(
+        clickEvent -> {
+          if (!wrapTextButton.getElement().hasAttribute("disabled") && delegate != null) {
+            delegate.wrapTextButtonClicked();
+          }
+        },
+        ClickEvent.getType());
 
-      scrollToBottomButton.addDomHandler(
-              new ClickHandler() {
-                  @Override
-                  public void onClick(ClickEvent event) {
-                      if (!scrollToBottomButton.getElement().hasAttribute("disabled") && delegate != null) {
-                          delegate.scrollToBottomButtonClicked();
-                      }
-                  }
-              },
-              ClickEvent.getType());
+    scrollToBottomButton.addDomHandler(
+        event -> {
+          if (!scrollToBottomButton.getElement().hasAttribute("disabled") && delegate != null) {
+            delegate.scrollToBottomButtonClicked();
+          }
+        },
+        ClickEvent.getType());
 
-      Tooltip.create(
-              (elemental.dom.Element) reRunProcessButton.getElement(),
-              BOTTOM,
-              MIDDLE,
-              localization.consolesReRunButtonTooltip());
+    Tooltip.create(
+        (elemental.dom.Element) reRunProcessButton.getElement(),
+        BOTTOM,
+        MIDDLE,
+        localization.consolesReRunButtonTooltip());
 
-      Tooltip.create(
-              (elemental.dom.Element) stopProcessButton.getElement(),
-              BOTTOM,
-              MIDDLE,
-              localization.consolesStopButtonTooltip());
+    Tooltip.create(
+        (elemental.dom.Element) stopProcessButton.getElement(),
+        BOTTOM,
+        MIDDLE,
+        localization.consolesStopButtonTooltip());
 
-      Tooltip.create(
-              (elemental.dom.Element) clearOutputsButton.getElement(),
-              BOTTOM,
-              MIDDLE,
-              localization.consolesClearOutputsButtonTooltip());
+    Tooltip.create(
+        (elemental.dom.Element) clearOutputsButton.getElement(),
+        BOTTOM,
+        MIDDLE,
+        localization.consolesClearOutputsButtonTooltip());
 
-      Tooltip.create(
-              (elemental.dom.Element) wrapTextButton.getElement(),
-              BOTTOM,
-              MIDDLE,
-              localization.consolesWrapTextButtonTooltip());
+    Tooltip.create(
+        (elemental.dom.Element) wrapTextButton.getElement(),
+        BOTTOM,
+        MIDDLE,
+        localization.consolesWrapTextButtonTooltip());
 
-      Tooltip.create(
-              (elemental.dom.Element) scrollToBottomButton.getElement(),
-              BOTTOM,
-              MIDDLE,
-              localization.consolesAutoScrollButtonTooltip());
+    Tooltip.create(
+        (elemental.dom.Element) scrollToBottomButton.getElement(),
+        BOTTOM,
+        MIDDLE,
+        localization.consolesAutoScrollButtonTooltip());
 
     promiseHolder
         .getInitializerPromise()
@@ -231,7 +200,10 @@ public class XtermOutPutConsoleViewImpl extends Composite
               // todo: don't use default options !!!
               this.terminalJso =
                   TerminalJso.create(
-                      terminalSource, TerminalOptionsJso.createDefault().withFocusOnOpen(false));
+                      terminalSource,
+                      TerminalOptionsJso.createDefault()
+                          .withFocusOnOpen(false)
+                          .withScrollBack(SCROLL_BACK));
 
               // todo calculate size;
               terminalJso.open(consoleLines.asWidget().getElement());
@@ -257,26 +229,16 @@ public class XtermOutPutConsoleViewImpl extends Composite
     Log.info(getClass(), "resize!!!!");
   }
 
-  //    @Override
-  //    public void showCommandLine(String commandLine) {
-  //
-  //    }
-  //
-  //    @Override
-  //    public void showPreviewUrl(String previewUrl) {
-  //
-  //    }
-
   @Override
   public void print(String text, boolean carriageReturn) {
     Log.info(getClass(), "print1");
-    terminalJso.write(text + "\n\r");
+    terminalJso.writeln(text);
   }
 
   @Override
   public void print(String text, boolean carriageReturn, String color) {
     Log.info(getClass(), "print2");
-    terminalJso.write(text);
+    terminalJso.writeln(text);
   }
 
   @Override
@@ -305,8 +267,7 @@ public class XtermOutPutConsoleViewImpl extends Composite
 
   @Override
   public void enableAutoScroll(boolean enable) {
-    followOutput = enable;
-    followOutput();
+    // todo
   }
 
   @Override
@@ -369,126 +330,9 @@ public class XtermOutPutConsoleViewImpl extends Composite
     }
   }
 
-  // @Override
-  // public void print(String text, boolean carriageReturn) {
-  //    print(text, carriageReturn, null);
-  // }
-  //
-  // @Override
-  // public void print(final String text, boolean carriageReturn, String color) {
-  //
-  //    if (consoleLines.getElement().getChildCount() > 5000) {
-  //        consoleLines.getElement().getFirstChild().removeFromParent();
-  //    }
-  //
-  //    if (this.carriageReturn) {
-  //        Node lastChild = consoleLines.getElement().getLastChild();
-  //        if (lastChild != null) {
-  //            lastChild.removeFromParent();
-  //        }
-  //    }
-  //
-  //    this.carriageReturn = carriageReturn;
-  //
-  //    final SafeHtml colorOutput =
-  //            new SafeHtml() {
-  //                @Override
-  //                public String asString() {
-  //
-  //                    if (Strings.isNullOrEmpty(text)) {
-  //                        return " ";
-  //                    }
-  //
-  //                    String encoded = SafeHtmlUtils.htmlEscape(text);
-  //                    if (delegate != null) {
-  //                        if (delegate.getCustomizer() != null) {
-  //                            if (delegate.getCustomizer().canCustomize(encoded)) {
-  //                                encoded = delegate.getCustomizer().customize(encoded);
-  //                            }
-  //                        }
-  //                    }
-  //
-  //                    for (final Pair<RegExp, String> pair : output2Color) {
-  //                        final MatchResult matcher = pair.first.exec(encoded);
-  //
-  //                        if (matcher != null) {
-  //                            return encoded.replaceAll(
-  //                                    matcher.getGroup(1),
-  //                                    "<span style=\"color: "
-  //                                    + pair.second
-  //                                    + "\">"
-  //                                    + matcher.getGroup(1)
-  //                                    + "</span>");
-  //                        }
-  //                    }
-  //
-  //                    return encoded;
-  //                }
-  //            };
-  //
-  //    PreElement pre = DOM.createElement("pre").cast();
-  //    pre.setInnerSafeHtml(colorOutput);
-  //    if (color != null) {
-  //        pre.getStyle().setColor(color);
-  //    }
-  //    consoleLines.getElement().appendChild(pre);
-  //
-  //    followOutput();
-  // }
-
   @Override
   public String getText() {
-    //    String text = "";
-    //    NodeList<Node> nodes = consoleLines.getElement().getChildNodes();
-    //
-    //    for (int i = 0; i < nodes.getLength(); i++) {
-    //      Node node = nodes.getItem(i);
-    //      Element element = node.cast();
-    //      text += element.getInnerText() + "\r\n";
-    //    }
-    //
-    //    return text;
+    // todo complete this method.
     return "";
-  }
-
-  /** Scrolls to the bottom if following the output is enabled. */
-  private void followOutput() {
-    if (!followOutput) {
-      return;
-    }
-
-    /** Scroll bottom immediately if view is visible */
-    //    if (scrollPanel.getElement().getOffsetParent() != null) {
-    //      scrollPanel.scrollToBottom();
-    //      scrollPanel.scrollToLeft();
-    //      return;
-    //    }
-
-    /** Otherwise, check the visibility periodically and scroll the view when it's visible */
-    if (!followScheduled) {
-      //      followScheduled = true;
-      //
-      //      Scheduler.get()
-      //          .scheduleFixedPeriod(
-      //              new Scheduler.RepeatingCommand() {
-      //                @Override
-      //                public boolean execute() {
-      //                  if (!followOutput) {
-      //                    followScheduled = false;
-      //                    return false;
-      //                  }
-      //
-      //                  if (scrollPanel.getElement().getOffsetParent() != null) {
-      //                    scrollPanel.scrollToBottom();
-      //                    scrollPanel.scrollToLeft();
-      //                    followScheduled = false;
-      //                    return false;
-      //                  }
-      //
-      //                  return true;
-      //                }
-      //              },
-      //              500);
-    }
   }
 }

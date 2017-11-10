@@ -59,6 +59,10 @@ public class TerminalJso extends JavaScriptObject {
         this.write(data);
     }-*/;
 
+  public final native void writeln(String data) /*-{
+        this.writeln(data);
+    }-*/;
+
   public final native void focus() /*-{
         this.focus();
     }-*/;

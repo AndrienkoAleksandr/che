@@ -12,6 +12,7 @@ package org.eclipse.che.ide.console;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.gwt.regexp.shared.RegExp.compile;
+import static org.eclipse.che.ide.console.Constants.SCROLL_BACK;
 import static org.eclipse.che.ide.ui.menu.PositionController.HorizontalAlign.MIDDLE;
 import static org.eclipse.che.ide.ui.menu.PositionController.VerticalAlign.BOTTOM;
 
@@ -22,7 +23,6 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.PreElement;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.regexp.shared.MatchResult;
@@ -123,67 +123,49 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
     scrollPanel.addDomHandler(this, ScrollEvent.getType());
 
     reRunProcessButton.addDomHandler(
-        new ClickHandler() {
-          @Override
-          public void onClick(ClickEvent event) {
-            if (!reRunProcessButton.getElement().hasAttribute("disabled") && delegate != null) {
-              delegate.reRunProcessButtonClicked();
-            }
+        event -> {
+          if (!reRunProcessButton.getElement().hasAttribute("disabled") && delegate != null) {
+            delegate.reRunProcessButtonClicked();
           }
         },
         ClickEvent.getType());
 
     stopProcessButton.addDomHandler(
-        new ClickHandler() {
-          @Override
-          public void onClick(ClickEvent event) {
-            if (!stopProcessButton.getElement().hasAttribute("disabled") && delegate != null) {
-              delegate.stopProcessButtonClicked();
-            }
+        event -> {
+          if (!stopProcessButton.getElement().hasAttribute("disabled") && delegate != null) {
+            delegate.stopProcessButtonClicked();
           }
         },
         ClickEvent.getType());
 
     clearOutputsButton.addDomHandler(
-        new ClickHandler() {
-          @Override
-          public void onClick(ClickEvent event) {
-            if (!clearOutputsButton.getElement().hasAttribute("disabled") && delegate != null) {
-              delegate.clearOutputsButtonClicked();
-            }
+        event -> {
+          if (!clearOutputsButton.getElement().hasAttribute("disabled") && delegate != null) {
+            delegate.clearOutputsButtonClicked();
           }
         },
         ClickEvent.getType());
 
     downloadOutputsButton.addDomHandler(
-        new ClickHandler() {
-          @Override
-          public void onClick(ClickEvent event) {
-            if (delegate != null) {
-              delegate.downloadOutputsButtonClicked();
-            }
+        event -> {
+          if (delegate != null) {
+            delegate.downloadOutputsButtonClicked();
           }
         },
         ClickEvent.getType());
 
     wrapTextButton.addDomHandler(
-        new ClickHandler() {
-          @Override
-          public void onClick(ClickEvent clickEvent) {
-            if (!wrapTextButton.getElement().hasAttribute("disabled") && delegate != null) {
-              delegate.wrapTextButtonClicked();
-            }
+        clickEvent -> {
+          if (!wrapTextButton.getElement().hasAttribute("disabled") && delegate != null) {
+            delegate.wrapTextButtonClicked();
           }
         },
         ClickEvent.getType());
 
     scrollToBottomButton.addDomHandler(
-        new ClickHandler() {
-          @Override
-          public void onClick(ClickEvent event) {
-            if (!scrollToBottomButton.getElement().hasAttribute("disabled") && delegate != null) {
-              delegate.scrollToBottomButtonClicked();
-            }
+        event -> {
+          if (!scrollToBottomButton.getElement().hasAttribute("disabled") && delegate != null) {
+            delegate.scrollToBottomButtonClicked();
           }
         },
         ClickEvent.getType());
@@ -316,8 +298,7 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @Override
   public void print(final String text, boolean carriageReturn, String color) {
-
-    if (consoleLines.getElement().getChildCount() > 5000) {
+    if (consoleLines.getElement().getChildCount() > SCROLL_BACK) {
       consoleLines.getElement().getFirstChild().removeFromParent();
     }
 
@@ -416,42 +397,10 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   /** Scrolls to the bottom if following the output is enabled. */
   private void followOutput() {
-    if (!followOutput) {
-      return;
-    }
-
     /** Scroll bottom immediately if view is visible */
-    //    if (scrollPanel.getElement().getOffsetParent() != null) {
-    //      scrollPanel.scrollToBottom();
-    //      scrollPanel.scrollToLeft();
-    //      return;
-    //    }
-
-    /** Otherwise, check the visibility periodically and scroll the view when it's visible */
-    if (!followScheduled) {
-      //      followScheduled = true;
-      //
-      //      Scheduler.get()
-      //          .scheduleFixedPeriod(
-      //              new Scheduler.RepeatingCommand() {
-      //                @Override
-      //                public boolean execute() {
-      //                  if (!followOutput) {
-      //                    followScheduled = false;
-      //                    return false;
-      //                  }
-      //
-      //                  if (scrollPanel.getElement().getOffsetParent() != null) {
-      //                    scrollPanel.scrollToBottom();
-      //                    scrollPanel.scrollToLeft();
-      //                    followScheduled = false;
-      //                    return false;
-      //                  }
-      //
-      //                  return true;
-      //                }
-      //              },
-      //              500);
+    if (followOutput && scrollPanel.getElement().getOffsetParent() != null) {
+      scrollPanel.scrollToBottom();
+      scrollPanel.scrollToLeft();
     }
   }
 }
