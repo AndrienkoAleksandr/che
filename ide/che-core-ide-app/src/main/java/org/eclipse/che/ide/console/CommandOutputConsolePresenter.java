@@ -84,7 +84,7 @@ public class CommandOutputConsolePresenter
       @Assisted String machineName,
       AppContext appContext,
       EditorAgent editorAgent) {
-    this.view = outputConsoleViewFactory.createXtermConsole();
+    this.view = outputConsoleViewFactory.createConsole();
     this.resources = resources;
     this.execAgentCommandManager = execAgentCommandManager;
     this.command = command;
