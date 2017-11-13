@@ -19,7 +19,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -31,7 +30,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 import org.eclipse.che.api.promises.client.Function;
-import org.eclipse.che.api.promises.client.FunctionException;
 import org.eclipse.che.api.promises.client.Promise;
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.FontAwesome;
@@ -41,9 +39,7 @@ import org.eclipse.che.ide.editor.orion.client.inject.OrionCodeEditWidgetProvide
 import org.eclipse.che.ide.editor.orion.client.jso.OrionCodeEditWidgetOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionEditorViewOverlay;
 import org.eclipse.che.ide.machine.MachineResources;
-import org.eclipse.che.ide.status.message.StatusMessageReporter;
 import org.eclipse.che.ide.ui.Tooltip;
-import org.eclipse.che.ide.util.loging.Log;
 import org.vectomatic.dom.svg.ui.SVGImage;
 
 /** @author Alexander Andrienko */

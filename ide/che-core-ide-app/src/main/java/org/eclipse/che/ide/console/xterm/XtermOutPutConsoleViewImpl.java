@@ -34,7 +34,6 @@ import org.eclipse.che.api.promises.client.Promise;
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.FontAwesome;
 import org.eclipse.che.ide.console.OutputConsoleView;
-import org.eclipse.che.ide.console.annotations.XtermCommandOutPutView;
 import org.eclipse.che.ide.machine.MachineResources;
 import org.eclipse.che.ide.terminal.TerminalGeometryJso;
 import org.eclipse.che.ide.terminal.TerminalInitializePromiseHolder;
@@ -45,7 +44,6 @@ import org.eclipse.che.requirejs.ModuleHolder;
 import org.vectomatic.dom.svg.ui.SVGImage;
 
 /** @author Alexander Andrienko */
-@XtermCommandOutPutView
 public class XtermOutPutConsoleViewImpl extends Composite implements OutputConsoleView {
 
   private TerminalJso terminalJso; // todo final

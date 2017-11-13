@@ -47,7 +47,6 @@ import org.eclipse.che.api.promises.client.Promise;
 import org.eclipse.che.api.promises.client.PromiseProvider;
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.FontAwesome;
-import org.eclipse.che.ide.console.annotations.ConsoleCommandOutPutView;
 import org.eclipse.che.ide.machine.MachineResources;
 import org.eclipse.che.ide.ui.Tooltip;
 import org.eclipse.che.ide.util.Pair;
@@ -60,7 +59,6 @@ import org.vectomatic.dom.svg.ui.SVGImage;
  * @author Artem Zatsarynnyi
  * @author Vitaliy Guliy
  */
-@ConsoleCommandOutPutView
 public class OutputConsoleViewImpl extends Composite implements OutputConsoleView, ScrollHandler {
 
   private final List<Pair<RegExp, String>> output2Color =
