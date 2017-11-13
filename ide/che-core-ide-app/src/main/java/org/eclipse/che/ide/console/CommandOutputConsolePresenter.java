@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
-import org.eclipse.che.api.promises.client.Operation;
-import org.eclipse.che.api.promises.client.OperationException;
 import org.eclipse.che.commons.annotation.Nullable;
 import org.eclipse.che.ide.api.app.AppContext;
 import org.eclipse.che.ide.api.command.CommandExecutor;
@@ -84,7 +82,7 @@ public class CommandOutputConsolePresenter
       @Assisted String machineName,
       AppContext appContext,
       EditorAgent editorAgent) {
-    this.view = outputConsoleViewFactory.createConsole();
+    this.view = outputConsoleViewFactory.createXtermConsole();
     this.resources = resources;
     this.execAgentCommandManager = execAgentCommandManager;
     this.command = command;
@@ -153,24 +151,14 @@ public class CommandOutputConsolePresenter
     };
   }
 
-  private int counter;
-
   @Override
   public Consumer<ProcessStdOutEventDto> getStdOutConsumer() {
-    Log.info(getClass(), "Woo");
     startDate = new Date();
     return event -> {
       String stdOutMessage = event.getText();
 
       boolean carriageReturn = stdOutMessage.endsWith("\r");
-      counter++;
-
       view.print(stdOutMessage, carriageReturn);
-      if (counter == SCROLL_BACK) {
-        Log.info(
-            getClass(),
-            "Render time diff " + ((System.currentTimeMillis() - startDate.getTime()) / 1000));
-      }
 
       for (ActionDelegate actionDelegate : actionDelegates) {
         actionDelegate.onConsoleOutput(CommandOutputConsolePresenter.this);

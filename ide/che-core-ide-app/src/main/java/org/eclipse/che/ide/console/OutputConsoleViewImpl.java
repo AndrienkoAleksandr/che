@@ -10,8 +10,6 @@
  */
 package org.eclipse.che.ide.console;
 
-import elemental.util.Timer;
-
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.gwt.regexp.shared.RegExp.compile;
 import static org.eclipse.che.ide.console.Constants.SCROLL_BACK;
@@ -20,7 +18,6 @@ import static org.eclipse.che.ide.ui.menu.PositionController.VerticalAlign.BOTTO
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -43,11 +40,11 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import elemental.util.Timer;
 import java.util.List;
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.FontAwesome;
 import org.eclipse.che.ide.machine.MachineResources;
-import org.eclipse.che.ide.processes.ProcessTreeNodeSelectedEvent;
 import org.eclipse.che.ide.ui.Tooltip;
 import org.eclipse.che.ide.util.Pair;
 import org.eclipse.che.ide.util.loging.Log;
@@ -400,36 +397,37 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
     }
   }
 
-  private Timer visibilityTimer = new Timer() {
-    @Override
-    public void run() {
-      if (isVisible() && followOutput) {
-        scrollPanel.scrollToBottom();
-        scrollPanel.scrollToLeft();
-      }
-    }
-  };
+  private Timer visibilityTimer =
+      new Timer() {
+        @Override
+        public void run() {
+          if (isVisible() && followOutput) {
+            scrollPanel.scrollToBottom();
+            scrollPanel.scrollToLeft();
+          }
+        }
+      };
 
   /** Scrolls to the bottom if following the output is enabled. */
   private void followOutput() {
     /** Scroll bottom immediately if view is visible */
-    Log.info(getClass(), isVisible() + " " + scrollPanel.isVisible() + " " + scrollPanel.isAttached());
+    Log.info(
+        getClass(), isVisible() + " " + scrollPanel.isVisible() + " " + scrollPanel.isAttached());
 
-    if (isVisible() && followOutput) {//don't use scrollPanel.isVisible()
+    if (isVisible() && followOutput) { // don't use scrollPanel.isVisible()
       scrollPanel.scrollToBottom();
       scrollPanel.scrollToLeft();
-    }
-     else {
+    } else {
       visibilityTimer.schedule(500);
-//      Scheduler.get()
-//               .scheduleFixedDelay(() -> {
-//               if (followOutput && scrollPanel.getElement().getOffsetParent() != null) {
-//                 scrollPanel.scrollToBottom();
-//                 scrollPanel.scrollToLeft();
-//               }
-//
-//              return true;
-//              }, 500);
+      //      Scheduler.get()
+      //               .scheduleFixedDelay(() -> {
+      //               if (followOutput && scrollPanel.getElement().getOffsetParent() != null) {
+      //                 scrollPanel.scrollToBottom();
+      //                 scrollPanel.scrollToLeft();
+      //               }
+      //
+      //              return true;
+      //              }, 500);
     }
   }
 }

@@ -32,7 +32,6 @@ import com.google.gwt.user.client.ui.ResizeLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.HandlerRegistration;
-
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.FontAwesome;
 import org.eclipse.che.ide.console.OutputConsoleView;
@@ -75,21 +74,20 @@ public class XtermOutPutConsoleViewImpl extends Composite implements OutputConso
 
   @UiField protected FlowPanel downloadOutputsButton;
 
-  @UiField
-  Button checkButton;
+  @UiField Button checkButton;
 
   @UiField FlowPanel wrapTextButton;
 
   @UiField FlowPanel scrollToBottomButton;
 
-//  /** If true - next printed line should replace the previous one. */
-//  private boolean carriageReturn;
+  //  /** If true - next printed line should replace the previous one. */
+  //  private boolean carriageReturn;
 
-//  /** Follow the output. Scroll to the bottom automatically when <b>true</b>. */
-//  private boolean followOutput = true;
+  //  /** Follow the output. Scroll to the bottom automatically when <b>true</b>. */
+  //  private boolean followOutput = true;
 
-//  /** Scroll to the bottom immediately when view become visible. */
-//  private boolean followScheduled = false;
+  //  /** Scroll to the bottom immediately when view become visible. */
+  //  private boolean followScheduled = false;
 
   //  private final List<Pair<RegExp, String>> output2Color =
   //      newArrayList(
@@ -110,7 +108,7 @@ public class XtermOutPutConsoleViewImpl extends Composite implements OutputConso
       MachineResources resources,
       CoreLocalizationConstant localization,
       TerminalInitializePromiseHolder promiseHolder) {
-      initWidget(UI_BINDER.createAndBindUi(this));
+    initWidget(UI_BINDER.createAndBindUi(this));
 
     reRunProcessButton.add(new SVGImage(resources.reRunIcon()));
     stopProcessButton.add(new SVGImage(resources.stopIcon()));
@@ -220,17 +218,20 @@ public class XtermOutPutConsoleViewImpl extends Composite implements OutputConso
             });
 
     consoleLines.addAttachHandler(event -> Log.info(getClass(), "attach!!!"));
-    HandlerRegistration reg = consoleLines.addResizeHandler(event -> {
-        Log.info(getClass(), "resize!!!!");
-        resizeTimer.schedule(500);
-    });
+    HandlerRegistration reg =
+        consoleLines.addResizeHandler(
+            event -> {
+              Log.info(getClass(), "resize!!!!");
+              resizeTimer.schedule(500);
+            });
 
-    checkButton.addClickHandler(new ClickHandler() {
-        @Override
-        public void onClick(ClickEvent event) {
+    checkButton.addClickHandler(
+        new ClickHandler() {
+          @Override
+          public void onClick(ClickEvent event) {
             Log.info(getClass(), "check" + resizeTimer.isRunning());
-        }
-    });
+          }
+        });
   }
 
   private Timer resizeTimer =
@@ -242,24 +243,23 @@ public class XtermOutPutConsoleViewImpl extends Composite implements OutputConso
       };
 
   private void resizeTerminal() {
-
-//    Log.info(getClass(), "calculate geometry");
+    //    Log.info(getClass(), "calculate geometry");
     TerminalGeometryJso geometryJso = terminalJso.proposeGeometry();
-//    Log.info(getClass(), "calculate geometry completed" + geometryJso);
-//
-//    terminalJso.resize(geometryJso.getCols(), geometryJso.getRows());
-//    Log.info(getClass(), "resize!!!!");
+    //    Log.info(getClass(), "calculate geometry completed" + geometryJso);
+    //
+    terminalJso.resize(geometryJso.getCols(), geometryJso.getRows());
+    //    Log.info(getClass(), "resize!!!!");
   }
 
   @Override
   public void print(String text, boolean carriageReturn) {
-    Log.info(getClass(), "print1");
+//    Log.info(getClass(), "print1");
     terminalJso.writeln(text);
   }
 
   @Override
   public void print(String text, boolean carriageReturn, String color) {
-    Log.info(getClass(), "print2");
+//    Log.info(getClass(), "print2");
     terminalJso.writeln(text);
   }
 
