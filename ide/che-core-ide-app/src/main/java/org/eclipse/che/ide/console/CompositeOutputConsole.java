@@ -14,6 +14,9 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+
+import org.eclipse.che.api.promises.client.Promise;
+import org.eclipse.che.api.promises.client.PromiseProvider;
 import org.eclipse.che.ide.api.outputconsole.OutputConsole;
 import org.vectomatic.dom.svg.ui.SVGResource;
 
@@ -28,13 +31,23 @@ public class CompositeOutputConsole implements OutputConsole {
   private final Widget widget;
   private final String title;
   private final SVGResource icon;
+  private final PromiseProvider promiseProvider;
 
   @Inject
   public CompositeOutputConsole(
-      @Assisted Widget widget, @Assisted String title, @Assisted SVGResource icon) {
+          @Assisted Widget widget,
+          @Assisted String title,
+          @Assisted SVGResource icon,
+          PromiseProvider promiseProvider) {
     this.widget = widget;
     this.title = title;
     this.icon = icon;
+    this.promiseProvider = promiseProvider;
+  }
+
+  @Override
+  public Promise<Void> initialize() {
+    return promiseProvider.resolve(null);
   }
 
   @Override

@@ -234,7 +234,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
       final DocumentStorage documentStorage,
       final EditorMultiPartStackPresenter editorMultiPartStackPresenter,
       final EditorLocalizationConstants constant,
-      final EditorWidgetFactory<OrionEditorWidget> editorWigetFactory,
+      final EditorWidgetFactory<OrionEditorWidget> editorWidgetFactory,
       final EditorInitializePromiseHolder editorModule,
       final TextEditorPartView editorView,
       final EventBus eventBus,
@@ -260,7 +260,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
     this.documentStorage = documentStorage;
     this.editorMultiPartStackPresenter = editorMultiPartStackPresenter;
     this.constant = constant;
-    this.editorWidgetFactory = editorWigetFactory;
+    this.editorWidgetFactory = editorWidgetFactory;
     this.editorModule = editorModule;
     this.editorView = editorView;
     this.generalEventBus = eventBus;

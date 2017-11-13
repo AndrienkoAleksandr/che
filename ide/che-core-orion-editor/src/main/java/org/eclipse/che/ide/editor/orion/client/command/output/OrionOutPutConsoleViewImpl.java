@@ -8,73 +8,46 @@
  * Contributors:
  *   Red Hat, Inc. - initial API and implementation
  */
-package org.eclipse.che.ide.console;
+package org.eclipse.che.ide.editor.orion.client.command.output;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.gwt.regexp.shared.RegExp.compile;
-import static org.eclipse.che.ide.console.Constants.SCROLL_BACK;
 import static org.eclipse.che.ide.ui.menu.PositionController.HorizontalAlign.MIDDLE;
 import static org.eclipse.che.ide.ui.menu.PositionController.VerticalAlign.BOTTOM;
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.dom.client.PreElement;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ScrollEvent;
-import com.google.gwt.event.dom.client.ScrollHandler;
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.ResizeLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import elemental.util.Timer;
-import java.util.List;
 
+import org.eclipse.che.api.promises.client.Function;
+import org.eclipse.che.api.promises.client.FunctionException;
 import org.eclipse.che.api.promises.client.Promise;
-import org.eclipse.che.api.promises.client.PromiseProvider;
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.FontAwesome;
-import org.eclipse.che.ide.console.annotations.ConsoleCommandOutPutView;
+import org.eclipse.che.ide.console.OutputConsoleView;
+import org.eclipse.che.ide.editor.orion.client.EditorInitializePromiseHolder;
+import org.eclipse.che.ide.editor.orion.client.inject.OrionCodeEditWidgetProvider;
+import org.eclipse.che.ide.editor.orion.client.jso.OrionCodeEditWidgetOverlay;
+import org.eclipse.che.ide.editor.orion.client.jso.OrionEditorViewOverlay;
 import org.eclipse.che.ide.machine.MachineResources;
+import org.eclipse.che.ide.status.message.StatusMessageReporter;
 import org.eclipse.che.ide.ui.Tooltip;
-import org.eclipse.che.ide.util.Pair;
 import org.eclipse.che.ide.util.loging.Log;
 import org.vectomatic.dom.svg.ui.SVGImage;
 
-/**
- * View representation of output console.
- *
- * @author Artem Zatsarynnyi
- * @author Vitaliy Guliy
- */
-@ConsoleCommandOutPutView
-public class OutputConsoleViewImpl extends Composite implements OutputConsoleView, ScrollHandler {
-
-  private final List<Pair<RegExp, String>> output2Color =
-      newArrayList(
-          new Pair<>(compile("\\[\\s*(DOCKER)\\s*\\]"), "#4EABFF"),
-          new Pair<>(compile("\\[\\s*(ERROR)\\s*\\]"), "#FF2727"),
-          new Pair<>(compile("\\[\\s*(WARN)\\s*\\]"), "#F5A623"),
-          new Pair<>(compile("\\[\\s*(STDOUT)\\s*\\]"), "#8ED72B"),
-          new Pair<>(compile("\\[\\s*(STDERR)\\s*\\]"), "#FF4343"));
-
-  interface OutputConsoleViewUiBinder extends UiBinder<Widget, OutputConsoleViewImpl> {}
-
-  private static final OutputConsoleViewUiBinder UI_BINDER =
-      GWT.create(OutputConsoleViewUiBinder.class);
+/** @author Alexander Andrienko */
+public class OrionOutPutConsoleViewImpl extends Composite implements OutputConsoleView {
 
   private ActionDelegate delegate;
 
@@ -88,9 +61,7 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @UiField Label commandLabel;
 
-  @UiField ScrollPanel scrollPanel;
-
-  @UiField protected FlowPanel consoleLines;
+  @UiField protected ResizeLayoutPanel consoleLines;
 
   @UiField Anchor previewUrlLabel;
 
@@ -102,25 +73,47 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @UiField protected FlowPanel downloadOutputsButton;
 
+  @UiField Button checkButton;
+
   @UiField FlowPanel wrapTextButton;
 
   @UiField FlowPanel scrollToBottomButton;
 
-  /** If true - next printed line should replace the previous one. */
-  private boolean carriageReturn;
-  private final PromiseProvider promiseProvider;
+  private OrionEditorViewOverlay orionView;
 
-  /** Follow the output. Scroll to the bottom automatically when <b>true</b>. */
-  private boolean followOutput = true;
+  private final OrionCodeEditWidgetProvider orionCodeEditWidgetProvider;
+  private final EditorInitializePromiseHolder editorModule;
 
-  /** Scroll to the bottom immediately when view become visible. */
-  private boolean followScheduled = false;
+  //  /** If true - next printed line should replace the previous one. */
+  //  private boolean carriageReturn;
+
+  //  /** Follow the output. Scroll to the bottom automatically when <b>true</b>. */
+  //  private boolean followOutput = true;
+
+  //  /** Scroll to the bottom immediately when view become visible. */
+  //  private boolean followScheduled = false;
+
+  //  private final List<Pair<RegExp, String>> output2Color =
+  //      newArrayList(
+  //          new Pair<>(compile("\\[\\s*(DOCKER)\\s*\\]"), "#4EABFF"),
+  //          new Pair<>(compile("\\[\\s*(ERROR)\\s*\\]"), "#FF2727"),
+  //          new Pair<>(compile("\\[\\s*(WARN)\\s*\\]"), "#F5A623"),
+  //          new Pair<>(compile("\\[\\s*(STDOUT)\\s*\\]"), "#8ED72B"),
+  //          new Pair<>(compile("\\[\\s*(STDERR)\\s*\\]"), "#FF4343"));
+
+  interface OrionOutPutConsoleViewUiBinder extends UiBinder<Widget, OrionOutPutConsoleViewImpl> {}
+
+  private static final OrionOutPutConsoleViewUiBinder UI_BINDER =
+      GWT.create(OrionOutPutConsoleViewUiBinder.class);
 
   @Inject
-  public OutputConsoleViewImpl(MachineResources resources,
-                               CoreLocalizationConstant localization,
-                               PromiseProvider promiseProvider) {
-    this.promiseProvider = promiseProvider;
+  public OrionOutPutConsoleViewImpl(
+      MachineResources resources,
+      CoreLocalizationConstant localization,
+      OrionCodeEditWidgetProvider orionCodeEditWidgetProvider,
+      EditorInitializePromiseHolder editorModule) {
+    this.orionCodeEditWidgetProvider = orionCodeEditWidgetProvider;
+    this.editorModule = editorModule;
 
     initWidget(UI_BINDER.createAndBindUi(this));
 
@@ -131,8 +124,6 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
     wrapTextButton.add(new SVGImage(resources.lineWrapIcon()));
     scrollToBottomButton.add(new SVGImage(resources.scrollToBottomIcon()));
-
-    scrollPanel.addDomHandler(this, ScrollEvent.getType());
 
     reRunProcessButton.addDomHandler(
         event -> {
@@ -214,11 +205,17 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   }
 
   @Override
-  public Promise<Void> initialize() {
-      return promiseProvider.resolve(null);
+  public void print(String text, boolean carriageReturn) {
+    // todo
+    orionView.getEditor().getModel().setText(text + "\n\r");
   }
 
-    @Override
+  @Override
+  public void print(String text, boolean carriageReturn, String color) {
+    orionView.getEditor().getModel().setText(text);
+  }
+
+  @Override
   public void setDelegate(ActionDelegate delegate) {
     this.delegate = delegate;
   }
@@ -244,8 +241,7 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @Override
   public void enableAutoScroll(boolean enable) {
-    followOutput = enable;
-    followOutput();
+    // todo
   }
 
   @Override
@@ -291,6 +287,22 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   }
 
   @Override
+  public Promise<Void> initialize() {
+    return editorModule
+        .getInitializerPromise()
+        .then((Function<Void, OrionCodeEditWidgetOverlay>) arg -> orionCodeEditWidgetProvider.get())
+        .thenPromise(
+            editorView ->
+                editorView.createEditorView(
+                    consoleLines.getElement(), JavaScriptObject.createObject()))
+        .thenPromise(
+            editor -> {
+              orionView = editor;
+              return null;
+            });
+  }
+
+  @Override
   public void showCommandLine(String commandLine) {
     commandLabel.setText(commandLine);
     Tooltip.create((elemental.dom.Element) commandLabel.getElement(), BOTTOM, MIDDLE, commandLine);
@@ -309,131 +321,8 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   }
 
   @Override
-  public void print(String text, boolean carriageReturn) {
-    print(text, carriageReturn, null);
-  }
-
-  @Override
-  public void print(final String text, boolean carriageReturn, String color) {
-    if (consoleLines.getElement().getChildCount() > SCROLL_BACK) {
-      consoleLines.getElement().getFirstChild().removeFromParent();
-    }
-
-    if (this.carriageReturn) {
-      Node lastChild = consoleLines.getElement().getLastChild();
-      if (lastChild != null) {
-        lastChild.removeFromParent();
-      }
-    }
-
-    this.carriageReturn = carriageReturn;
-
-    final SafeHtml colorOutput =
-        new SafeHtml() {
-          @Override
-          public String asString() {
-
-            if (Strings.isNullOrEmpty(text)) {
-              return " ";
-            }
-
-            String encoded = SafeHtmlUtils.htmlEscape(text);
-            if (delegate != null) {
-              if (delegate.getCustomizer() != null) {
-                if (delegate.getCustomizer().canCustomize(encoded)) {
-                  encoded = delegate.getCustomizer().customize(encoded);
-                }
-              }
-            }
-
-            for (final Pair<RegExp, String> pair : output2Color) {
-              final MatchResult matcher = pair.first.exec(encoded);
-
-              if (matcher != null) {
-                return encoded.replaceAll(
-                    matcher.getGroup(1),
-                    "<span style=\"color: "
-                        + pair.second
-                        + "\">"
-                        + matcher.getGroup(1)
-                        + "</span>");
-              }
-            }
-
-            return encoded;
-          }
-        };
-
-    PreElement pre = DOM.createElement("pre").cast();
-    pre.setInnerSafeHtml(colorOutput);
-    if (color != null) {
-      pre.getStyle().setColor(color);
-    }
-    consoleLines.getElement().appendChild(pre);
-
-    followOutput();
-  }
-
-  @Override
   public String getText() {
-    String text = "";
-    NodeList<Node> nodes = consoleLines.getElement().getChildNodes();
-
-    for (int i = 0; i < nodes.getLength(); i++) {
-      Node node = nodes.getItem(i);
-      Element element = node.cast();
-      text += element.getInnerText() + "\r\n";
-    }
-
-    return text;
-  }
-
-  @Override
-  public void onScroll(ScrollEvent event) {
-    // Do nothing if content height less scroll area height
-    if (scrollPanel.getElement().getScrollHeight() < scrollPanel.getElement().getOffsetHeight()) {
-      followOutput = true;
-      if (delegate != null) {
-        delegate.onOutputScrolled(followOutput);
-      }
-      return;
-    }
-
-    // Follow output if scroll area is scrolled to the end
-    if (scrollPanel.getElement().getScrollTop() + scrollPanel.getElement().getOffsetHeight()
-        >= scrollPanel.getElement().getScrollHeight()) {
-      followOutput = true;
-    } else {
-      followOutput = false;
-    }
-
-    if (delegate != null) {
-      delegate.onOutputScrolled(followOutput);
-    }
-  }
-
-  private Timer visibilityTimer =
-      new Timer() {
-        @Override
-        public void run() {
-          if (isVisible() && followOutput) {
-            scrollPanel.scrollToBottom();
-            scrollPanel.scrollToLeft();
-          }
-        }
-      };
-
-  /** Scrolls to the bottom if following the output is enabled. */
-  private void followOutput() {
-    /** Scroll bottom immediately if view is visible */
-    Log.info(
-        getClass(), isVisible() + " " + scrollPanel.isVisible() + " " + scrollPanel.isAttached());
-
-    if (isVisible() && followOutput) { // don't use scrollPanel.isVisible()
-      scrollPanel.scrollToBottom();
-      scrollPanel.scrollToLeft();
-    } else {
-      visibilityTimer.schedule(500);
-    }
+    // todo complete this method.
+    return "";
   }
 }

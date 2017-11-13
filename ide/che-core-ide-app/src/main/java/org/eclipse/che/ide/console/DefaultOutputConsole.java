@@ -15,6 +15,8 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.eclipse.che.api.promises.client.Promise;
 import org.eclipse.che.ide.api.app.AppContext;
 import org.eclipse.che.ide.api.editor.EditorAgent;
 import org.eclipse.che.ide.api.outputconsole.OutputConsole;
@@ -47,8 +49,8 @@ public class DefaultOutputConsole implements OutputConsole, OutputConsoleView.Ac
       AppContext appContext,
       EditorAgent editorAgent,
       @Assisted String title,
-      OutputConsoleViewFactory outputConsoleViewFactory) {
-    this.view = outputConsoleViewFactory.createConsole();
+      OutputConsoleView view) {
+    this.view = view;
     this.title = title;
     this.resources = resources;
     this.view.enableAutoScroll(true);
@@ -65,6 +67,11 @@ public class DefaultOutputConsole implements OutputConsole, OutputConsoleView.Ac
     view.hidePreview();
     view.setReRunButtonVisible(false);
     view.setStopButtonVisible(false);
+  }
+
+  @Override
+  public Promise<Void> initialize() {
+    return view.initialize();
   }
 
   /** Enables auto scroll when output. */

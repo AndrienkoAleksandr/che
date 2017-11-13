@@ -15,6 +15,9 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.eclipse.che.api.promises.client.Promise;
+import org.eclipse.che.api.promises.client.PromiseProvider;
 import org.eclipse.che.ide.api.app.AppContext;
 import org.eclipse.che.ide.api.resources.Project;
 import org.eclipse.che.ide.api.theme.Style;
@@ -33,18 +36,21 @@ public class GitOutputConsolePresenter
   private final GitOutputPartView view;
   private final GitResources resources;
   private final String title;
+  private final PromiseProvider promiseProvider;
 
   private final List<ActionDelegate> actionDelegates = new ArrayList<>();
 
   /** Construct empty Part */
   @Inject
   public GitOutputConsolePresenter(
-      GitOutputPartView view,
-      GitResources resources,
-      AppContext appContext,
-      GitLocalizationConstant locale,
-      @Assisted String title) {
+          GitOutputPartView view,
+          GitResources resources,
+          AppContext appContext,
+          GitLocalizationConstant locale,
+          @Assisted String title,
+          PromiseProvider promiseProvider) {
     this.view = view;
+    this.promiseProvider = promiseProvider;
     this.view.setDelegate(this);
 
     this.title = title;
@@ -55,6 +61,11 @@ public class GitOutputConsolePresenter
     if (project != null) {
       view.print(locale.consoleProjectName(project.getName()) + "\n");
     }
+  }
+
+  @Override
+  public Promise<Void> initialize() {
+    return promiseProvider.resolve(null);
   }
 
   /** {@inheritDoc} */

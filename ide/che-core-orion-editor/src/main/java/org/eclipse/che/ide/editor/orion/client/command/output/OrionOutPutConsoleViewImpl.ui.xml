@@ -18,171 +18,171 @@
     <ui:style  src="org/eclipse/che/ide/api/ui/style.css">
 
         /**
-         * Toolbar on the left with buttons.
-         */
+        * Toolbar on the left with buttons.
+        */
         .toolbar {
-            overflow: hidden;
-            background-color: consolesToolbarBackground;
-            border-right: 1px solid colsolesToolbarBorderColor;
-            position: absolute;
-            overflow: hidden;
+        overflow: hidden;
+        background-color: consolesToolbarBackground;
+        border-right: 1px solid colsolesToolbarBorderColor;
+        position: absolute;
+        overflow: hidden;
         }
 
         .toolbarButton {
-            width: 14px;
-            height: 14px;
-            margin-left: 2px;
-            margin-top: 4px;
-            cursor: pointer;
-            font-size: 9px;
-            line-height: 17px;
-            font-family: "Droid Sans Mono", monospace;
-            text-align: center;
-            font-weight: normal;
-            overflow: hidden;
-            color: consolesToolbarButtonColor;
-            opacity: 0.8;
+        width: 14px;
+        height: 14px;
+        margin-left: 2px;
+        margin-top: 4px;
+        cursor: pointer;
+        font-size: 9px;
+        line-height: 17px;
+        font-family: "Droid Sans Mono", monospace;
+        text-align: center;
+        font-weight: normal;
+        overflow: hidden;
+        color: consolesToolbarButtonColor;
+        opacity: 0.8;
 
-            position: relative;
+        position: relative;
         }
 
         .wrapTextButton {
-            position: absolute;
-            left: 0px;
-            bottom: 22px;
+        position: absolute;
+        left: 0px;
+        bottom: 22px;
         }
 
         .scrollToEndButton {
-            position: absolute;
-            left: 0px;
-            bottom: 4px;
+        position: absolute;
+        left: 0px;
+        bottom: 4px;
         }
 
         .toolbarButton > svg {
-            position: absolute;
-            left: 3px;
-            top: 3px;
+        position: absolute;
+        left: 3px;
+        top: 3px;
         }
 
         .toolbarButton:HOVER {
-            color: consolesToolbarHoveredButtonColor;
-            opacity: 1;
+        color: consolesToolbarHoveredButtonColor;
+        opacity: 1;
         }
 
         .toolbarButton:ACTIVE {
-            color: white;
+        color: white;
         }
 
         .toolbarButton[toggled] {
-            opacity: 1;
-            background: consolesToolbarToggledButtonColor;
-            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+        opacity: 1;
+        background: consolesToolbarToggledButtonColor;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
         }
 
         .toolbarButton[disabled],
         .toolbarButton[disabled]:HOVER,
         .toolbarButton[disabled]:ACTIVE {
-            opacity: 0.4;
-            color: consolesToolbarDisabledButtonColor;
-            background-color: transparent;
-            cursor: default;
+        opacity: 0.4;
+        color: consolesToolbarDisabledButtonColor;
+        background-color: transparent;
+        cursor: default;
         }
 
         /**
-         * Header with command line and preview URL.
-         */
+        * Header with command line and preview URL.
+        */
         .header {
-            background-color: editorPanelBackgroundColor;
-            -webkit-user-select: none;
-            user-select: none;
-            -moz-user-select: none;
-            line-height: 14px;
-            padding-left: 1px;
+        background-color: editorPanelBackgroundColor;
+        -webkit-user-select: none;
+        user-select: none;
+        -moz-user-select: none;
+        line-height: 14px;
+        padding-left: 1px;
         }
 
         .label {
-            width: 60px;
+        width: 60px;
         }
 
         a.link {
-            font-size: fontSize;
-            font-family: outputFontFamily;
-            color: outputLinkColor;
+        font-size: fontSize;
+        font-family: outputFontFamily;
+        color: outputLinkColor;
         }
 
         .link:hover {
-            text-decoration: underline;
+        text-decoration: underline;
         }
 
         a.value,
         div.value {
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            -webkit-user-select: text;
-            user-select: text;
-            -moz-user-select: text;
-            max-width: literal("calc(100% - 70px)");
-            overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        -webkit-user-select: text;
+        user-select: text;
+        -moz-user-select: text;
+        max-width: literal("calc(100% - 70px)");
+        overflow: hidden;
         }
 
         div.value {
-            color: successColor;
+        color: successColor;
         }
 
         .commandTitle {
-            font-family: outputFontFamily;
-            display: inline-block;
-            color: mainFontColor;
-            font-size: fontSize;
-            float: left;
-            margin: 0;
+        font-family: outputFontFamily;
+        display: inline-block;
+        color: mainFontColor;
+        font-size: fontSize;
+        float: left;
+        margin: 0;
         }
 
         /**
-         * Console output area.
-         */
+        * Console output area.
+        */
         .consolePanel {
-            background-color: outputBackgroundColor;
-            position: absolute;
-            overflow: hidden;
+        background-color: outputBackgroundColor;
+        position: absolute;
+        overflow: hidden;
         }
 
         .console {
-            color: outputFontColor;
-            padding: 1px;
-            overflow: auto;
-            position: absolute!important;
-            left: 0px;
-            top: 0px;
-            right: 0px;
-            bottom: 0px;
+        color: outputFontColor;
+        padding: 1px;
+        overflow: auto;
+        position: absolute!important;
+        left: 0px;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
 
-            /* enable text selection*/
-            -moz-user-select: text;
-            -webkit-user-select: text;
-            user-select: text;
+        /* enable text selection*/
+        -moz-user-select: text;
+        -webkit-user-select: text;
+        user-select: text;
         }
 
         .console pre {
-            font-family: outputFontFamily;
-            font-size: consoleFontSize;
-            line-height: consoleLineHeight;
+        font-family: outputFontFamily;
+        font-size: consoleFontSize;
+        line-height: consoleLineHeight;
         }
 
         .consoleLines {
-            width: 100%;
+        width: 100%;
         }
 
         .consoleLines > pre {
-            width: inherit;
-            padding: 0;
-            margin: 0;
+        width: inherit;
+        padding: 0;
+        margin: 0;
         }
 
         .consoleLines[wrap] > pre {
-            white-space: pre-wrap;
-            word-break: break-all;
-            word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: break-all;
+        word-wrap: break-word;
         }
 
     </ui:style>
@@ -209,13 +209,14 @@
         <g:north size="14">
             <g:FlowPanel ui:field="previewPanel" styleName="{style.header}">
                 <g:Label text="preview:" addStyleNames="{style.label} {style.commandTitle}"/>
+                <g:Button ui:field="checkButton" text="check"/>
                 <g:Anchor ui:field="previewUrlLabel" target="_blank"
                           addStyleNames="{style.link} {style.value} {style.commandTitle}"/>
             </g:FlowPanel>
         </g:north>
         <g:center>
             <!--<g:FlowPanel styleName="{style.consolePanel}">-->
-                    <g:ResizeLayoutPanel width="100%" height="100%" ui:field="consoleLines" debugId="commandConsoleLines" />
+            <g:ResizeLayoutPanel width="100%" height="100%" ui:field="consoleLines" debugId="commandConsoleLines" />
             <!--</g:FlowPanel>-->
         </g:center>
     </g:DockLayoutPanel>

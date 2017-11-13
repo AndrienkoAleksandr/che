@@ -52,6 +52,7 @@ public class TerminalInitializer {
 
           @Override
           public void onSuccess(JavaScriptObject[] result) {
+            // todo simplify creation flow ...
             callback.onSuccess(null);
           }
         },

@@ -18,12 +18,10 @@ import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -31,26 +29,31 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import com.google.web.bindery.event.shared.HandlerRegistration;
+
+import org.eclipse.che.api.promises.client.Promise;
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.FontAwesome;
 import org.eclipse.che.ide.console.OutputConsoleView;
+import org.eclipse.che.ide.console.annotations.XtermCommandOutPutView;
 import org.eclipse.che.ide.machine.MachineResources;
 import org.eclipse.che.ide.terminal.TerminalGeometryJso;
 import org.eclipse.che.ide.terminal.TerminalInitializePromiseHolder;
 import org.eclipse.che.ide.terminal.TerminalJso;
 import org.eclipse.che.ide.terminal.TerminalOptionsJso;
 import org.eclipse.che.ide.ui.Tooltip;
-import org.eclipse.che.ide.util.loging.Log;
 import org.eclipse.che.requirejs.ModuleHolder;
 import org.vectomatic.dom.svg.ui.SVGImage;
 
 /** @author Alexander Andrienko */
+@XtermCommandOutPutView
 public class XtermOutPutConsoleViewImpl extends Composite implements OutputConsoleView {
 
   private TerminalJso terminalJso; // todo final
 
   private ActionDelegate delegate;
+
+  private final TerminalInitializePromiseHolder promiseHolder;
+  private final ModuleHolder moduleHolder;
 
   @UiField protected DockLayoutPanel consolePanel;
 
@@ -73,8 +76,6 @@ public class XtermOutPutConsoleViewImpl extends Composite implements OutputConso
   @UiField protected FlowPanel clearOutputsButton;
 
   @UiField protected FlowPanel downloadOutputsButton;
-
-  @UiField Button checkButton;
 
   @UiField FlowPanel wrapTextButton;
 
@@ -108,6 +109,9 @@ public class XtermOutPutConsoleViewImpl extends Composite implements OutputConso
       MachineResources resources,
       CoreLocalizationConstant localization,
       TerminalInitializePromiseHolder promiseHolder) {
+    this.promiseHolder = promiseHolder;
+    this.moduleHolder = moduleHolder;
+
     initWidget(UI_BINDER.createAndBindUi(this));
 
     reRunProcessButton.add(new SVGImage(resources.reRunIcon()));
@@ -196,42 +200,26 @@ public class XtermOutPutConsoleViewImpl extends Composite implements OutputConso
         MIDDLE,
         localization.consolesAutoScrollButtonTooltip());
 
-    promiseHolder
+    consoleLines.addResizeHandler(event -> resizeTimer.schedule(500));
+  }
+
+  @Override
+  public Promise<Void> initialize() {
+    return promiseHolder
         .getInitializerPromise()
         .then(
             arg -> {
               JavaScriptObject terminalSource = moduleHolder.getModule("Xterm");
+              TerminalOptionsJso termOps =
+                  TerminalOptionsJso.createDefault()
+                      .withFocusOnOpen(false)
+                      .withScrollBack(SCROLL_BACK);
 
-              // todo: don't use default options !!!
-              this.terminalJso =
-                  TerminalJso.create(
-                      terminalSource,
-                      TerminalOptionsJso.createDefault()
-                          .withFocusOnOpen(false)
-                          .withScrollBack(SCROLL_BACK));
-
-              // todo calculate size;
+              this.terminalJso = TerminalJso.create(terminalSource, termOps);
               terminalJso.open(consoleLines.asWidget().getElement());
               TerminalGeometryJso geometryJso = terminalJso.proposeGeometry();
               terminalJso.resize(geometryJso.getCols(), geometryJso.getRows());
-              Log.info(getClass(), "Script loaded" + consoleLines.asWidget().getOffsetHeight());
             });
-
-    consoleLines.addAttachHandler(event -> Log.info(getClass(), "attach!!!"));
-    HandlerRegistration reg =
-        consoleLines.addResizeHandler(
-            event -> {
-              Log.info(getClass(), "resize!!!!");
-              resizeTimer.schedule(500);
-            });
-
-    checkButton.addClickHandler(
-        new ClickHandler() {
-          @Override
-          public void onClick(ClickEvent event) {
-            Log.info(getClass(), "check" + resizeTimer.isRunning());
-          }
-        });
   }
 
   private Timer resizeTimer =
@@ -243,23 +231,17 @@ public class XtermOutPutConsoleViewImpl extends Composite implements OutputConso
       };
 
   private void resizeTerminal() {
-    //    Log.info(getClass(), "calculate geometry");
     TerminalGeometryJso geometryJso = terminalJso.proposeGeometry();
-    //    Log.info(getClass(), "calculate geometry completed" + geometryJso);
-    //
     terminalJso.resize(geometryJso.getCols(), geometryJso.getRows());
-    //    Log.info(getClass(), "resize!!!!");
   }
 
   @Override
   public void print(String text, boolean carriageReturn) {
-//    Log.info(getClass(), "print1");
     terminalJso.writeln(text);
   }
 
   @Override
   public void print(String text, boolean carriageReturn, String color) {
-//    Log.info(getClass(), "print2");
     terminalJso.writeln(text);
   }
 

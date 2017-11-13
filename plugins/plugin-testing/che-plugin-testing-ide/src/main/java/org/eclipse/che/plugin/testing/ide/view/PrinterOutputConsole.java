@@ -11,6 +11,8 @@
 package org.eclipse.che.plugin.testing.ide.view;
 
 import javax.inject.Inject;
+
+import org.eclipse.che.api.promises.client.PromiseProvider;
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.console.OutputConsoleViewImpl;
 import org.eclipse.che.ide.machine.MachineResources;
@@ -23,8 +25,10 @@ public class PrinterOutputConsole extends OutputConsoleViewImpl implements Print
   private TestState currentTest;
 
   @Inject
-  public PrinterOutputConsole(MachineResources resources, CoreLocalizationConstant localization) {
-    super(resources, localization);
+  public PrinterOutputConsole(MachineResources resources,
+                              CoreLocalizationConstant localization,
+                              PromiseProvider provider) {
+    super(resources, localization, provider);
 
     reRunProcessButton.removeFromParent();
     stopProcessButton.removeFromParent();

@@ -10,6 +10,7 @@
  */
 package org.eclipse.che.ide.api.outputconsole;
 
+import org.eclipse.che.api.promises.client.Promise;
 import org.eclipse.che.ide.api.mvp.Presenter;
 import org.vectomatic.dom.svg.ui.SVGResource;
 
@@ -19,6 +20,8 @@ import org.vectomatic.dom.svg.ui.SVGResource;
  * @author Roman Nikitenko
  */
 public interface OutputConsole extends Presenter {
+
+  Promise<Void> initialize();
 
   /** Return title for the console. */
   String getTitle();

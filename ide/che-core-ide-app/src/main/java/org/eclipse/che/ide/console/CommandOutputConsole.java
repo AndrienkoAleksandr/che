@@ -11,6 +11,8 @@
 package org.eclipse.che.ide.console;
 
 import java.util.function.Consumer;
+
+import org.eclipse.che.api.promises.client.Promise;
 import org.eclipse.che.ide.api.command.CommandImpl;
 import org.eclipse.che.ide.api.command.exec.dto.ProcessSubscribeResponseDto;
 import org.eclipse.che.ide.api.command.exec.dto.event.ProcessDiedEventDto;
@@ -21,6 +23,8 @@ import org.eclipse.che.ide.api.outputconsole.OutputConsole;
 
 /** Describes requirements for the console for command output. */
 public interface CommandOutputConsole extends OutputConsole {
+
+  Promise<Void> initialize();
 
   /**
    * Get command that this output console is associated with

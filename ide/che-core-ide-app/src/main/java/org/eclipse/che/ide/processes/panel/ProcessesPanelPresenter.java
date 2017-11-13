@@ -878,6 +878,7 @@ public class ProcessesPanelPresenter extends BasePresenter
    */
   @Nullable
   private ProcessTreeNode provideMachineNode(String machineName, boolean replace) {
+    Log.info(getClass(), "Machine node");
     final ProcessTreeNode existedMachineNode = findTreeNodeById(machineName);
     if (!replace && existedMachineNode != null) {
       return existedMachineNode;
@@ -924,7 +925,9 @@ public class ProcessesPanelPresenter extends BasePresenter
     // add output for the machine if it is not exist
     if (!consoles.containsKey(machineName)) {
       OutputConsole outputConsole = commandConsoleFactory.create(machineName);
-      addOutputConsole(machineName, newMachineNode, outputConsole, true);
+      outputConsole.initialize().then(arg -> {
+        addOutputConsole(machineName, newMachineNode, outputConsole, true);
+      });
     }
 
     return newMachineNode;
@@ -1105,36 +1108,41 @@ public class ProcessesPanelPresenter extends BasePresenter
                       final CommandImpl command = new CommandImpl(processName, commandLine, type);
                       final CommandOutputConsole console =
                           commandConsoleFactory.create(command, machineName);
+                      console
+                          .initialize()
+                          .then(
+                              arg -> {
+                                getAndPrintProcessLogs(console, pid);
+                                subscribeToProcess(console, pid);
 
-                      getAndPrintProcessLogs(console, pid);
-                      subscribeToProcess(console, pid);
-
-                      addCommandOutput(machineName, console);
+                                addCommandOutput(machineName, console);
+                              });
                     } else {
                       final CommandImpl commandByName = commandOptional.get();
                       macroProcessorProvider
                           .get()
                           .expandMacros(commandByName.getCommandLine())
                           .then(
-                              new Operation<String>() {
-                                @Override
-                                public void apply(String expandedCommandLine)
-                                    throws OperationException {
-                                  final CommandImpl command =
-                                      new CommandImpl(
-                                          commandByName.getName(),
-                                          expandedCommandLine,
-                                          commandByName.getType(),
-                                          commandByName.getAttributes());
+                              expandedCommandLine -> {
+                                final CommandImpl command =
+                                    new CommandImpl(
+                                        commandByName.getName(),
+                                        expandedCommandLine,
+                                        commandByName.getType(),
+                                        commandByName.getAttributes());
 
-                                  final CommandOutputConsole console =
-                                      commandConsoleFactory.create(command, machineName);
+                                final CommandOutputConsole console =
+                                    commandConsoleFactory.create(command, machineName);
 
-                                  getAndPrintProcessLogs(console, pid);
-                                  subscribeToProcess(console, pid);
+                                console
+                                    .initialize()
+                                    .then(
+                                        arg -> {
+                                          getAndPrintProcessLogs(console, pid);
+                                          subscribeToProcess(console, pid);
 
-                                  addCommandOutput(machineName, console);
-                                }
+                                          addCommandOutput(machineName, console);
+                                        });
                               });
                     }
                   }
