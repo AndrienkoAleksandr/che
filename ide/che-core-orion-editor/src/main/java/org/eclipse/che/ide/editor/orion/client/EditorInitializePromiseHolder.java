@@ -29,6 +29,7 @@ import org.eclipse.che.api.promises.client.callback.AsyncPromiseHelper;
 import org.eclipse.che.ide.api.editor.EditorLocalizationConstants;
 import org.eclipse.che.ide.api.notification.NotificationManager;
 import org.eclipse.che.ide.api.notification.StatusNotification;
+import org.eclipse.che.ide.editor.init.EditorInitializerHolder;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionTextThemeOverlay;
 import org.eclipse.che.ide.editor.orion.client.signature.SignatureHelpResources;
 import org.eclipse.che.ide.ui.loaders.request.LoaderFactory;
@@ -39,7 +40,7 @@ import org.eclipse.che.requirejs.RequirejsErrorHandler.RequireError;
 
 /** Holds promise that resolve when all editor js scripts are loaded ad initialized */
 @Singleton
-public class EditorInitializePromiseHolder {
+public class EditorInitializePromiseHolder implements EditorInitializerHolder {
 
   /** The logger. */
   private static final Logger LOG =
@@ -71,13 +72,7 @@ public class EditorInitializePromiseHolder {
   }
 
   public Promise<Void> getInitializerPromise() {
-    return AsyncPromiseHelper.createFromAsyncRequest(
-        new AsyncPromiseHelper.RequestCall<Void>() {
-          @Override
-          public void makeCall(AsyncCallback<Void> callback) {
-            injectOrion(callback);
-          }
-        });
+    return AsyncPromiseHelper.createFromAsyncRequest(this::injectOrion);
   }
 
   private void injectOrion(final AsyncCallback<Void> callback) {
@@ -168,6 +163,7 @@ public class EditorInitializePromiseHolder {
   }
 
   private void endConfiguration(final AsyncCallback<Void> callback) {
+    Log.info(getClass(), "editor initialized");
     defineDefaultTheme();
     loader.hide();
     callback.onSuccess(null);

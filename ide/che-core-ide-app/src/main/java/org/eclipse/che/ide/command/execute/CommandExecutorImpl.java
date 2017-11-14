@@ -67,19 +67,15 @@ public class CommandExecutorImpl implements CommandExecutor {
                   new CommandImpl(name, expandedCommandLine, type, attributes);
               final CommandOutputConsole console =
                   commandConsoleFactory.create(expandedCommand, machineName);
-              console
-                  .initialize()
-                  .then(
-                      arg -> {
-                        processesPanelPresenter.addCommandOutput(machineName, console);
 
-                        execAgentClient
-                            .startProcess(machineName, expandedCommand)
-                            .thenIfProcessStartedEvent(console.getProcessStartedConsumer())
-                            .thenIfProcessDiedEvent(console.getProcessDiedConsumer())
-                            .thenIfProcessStdOutEvent(console.getStdOutConsumer())
-                            .thenIfProcessStdErrEvent(console.getStdErrConsumer());
-                      });
+              processesPanelPresenter.addCommandOutput(machineName, console);
+
+              execAgentClient
+                  .startProcess(machineName, expandedCommand)
+                  .thenIfProcessStartedEvent(console.getProcessStartedConsumer())
+                  .thenIfProcessDiedEvent(console.getProcessDiedConsumer())
+                  .thenIfProcessStdOutEvent(console.getStdOutConsumer())
+                  .thenIfProcessStdErrEvent(console.getStdErrConsumer());
             });
   }
 

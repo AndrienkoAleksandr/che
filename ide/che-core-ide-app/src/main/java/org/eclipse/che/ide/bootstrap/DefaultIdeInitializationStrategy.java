@@ -33,6 +33,7 @@ import org.eclipse.che.ide.api.workspace.model.WorkspaceImpl;
 import org.eclipse.che.ide.context.AppContextImpl;
 import org.eclipse.che.ide.context.BrowserAddress;
 import org.eclipse.che.ide.core.StandardComponentInitializer;
+import org.eclipse.che.ide.editor.init.EditorInitializerHolder;
 import org.eclipse.che.ide.preferences.StyleInjector;
 import org.eclipse.che.ide.statepersistance.AppStateManager;
 import org.eclipse.che.ide.theme.ThemeAgentImpl;
@@ -64,6 +65,7 @@ class DefaultIdeInitializationStrategy implements IdeInitializationStrategy {
   protected final Provider<WorkspacePresenter> workspacePresenterProvider;
   protected final EventBus eventBus;
   protected final DialogFactory dialogFactory;
+  protected final EditorInitializerHolder editorInitializerHolder;
 
   @Inject
   DefaultIdeInitializationStrategy(
@@ -74,12 +76,14 @@ class DefaultIdeInitializationStrategy implements IdeInitializationStrategy {
       ThemeAgent themeAgent,
       StyleInjector styleInjector,
       Provider<StandardComponentInitializer> standardComponentsInitializerProvider,
+      EditorInitializerHolder editorInitializerHolder,
       AppStateManager appStateManager,
       Provider<WorkspacePresenter> workspacePresenterProvider,
       EventBus eventBus,
       DialogFactory dialogFactory) {
     this.workspaceServiceClient = workspaceServiceClient;
     this.appContext = appContext;
+    this.editorInitializerHolder = editorInitializerHolder;
     this.browserAddress = browserAddress;
     this.userInitializer = userInitializer;
     this.themeAgent = themeAgent;
@@ -110,6 +114,7 @@ class DefaultIdeInitializationStrategy implements IdeInitializationStrategy {
                 })
         .then(initUI())
         .thenPromise(aVoid -> initAppContext())
+        .thenPromise(aVoid -> initEditor())
         .then(showUI())
         .then(
             arg -> {
@@ -118,6 +123,10 @@ class DefaultIdeInitializationStrategy implements IdeInitializationStrategy {
 
               eventBus.fireEvent(new BasicIDEInitializedEvent());
             });
+  }
+
+  private Promise<Void> initEditor() {
+    return editorInitializerHolder.getInitializerPromise();
   }
 
   @Override

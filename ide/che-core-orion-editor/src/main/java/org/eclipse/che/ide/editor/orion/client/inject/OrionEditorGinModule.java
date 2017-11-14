@@ -12,18 +12,16 @@ package org.eclipse.che.ide.editor.orion.client.inject;
 
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.inject.client.assistedinject.GinFactoryModuleBuilder;
-import com.google.gwt.inject.client.multibindings.GinMapBinder;
 import com.google.gwt.inject.client.multibindings.GinMultibinder;
 import com.google.inject.TypeLiteral;
 import org.eclipse.che.ide.api.editor.defaulteditor.EditorBuilder;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidgetFactory;
 import org.eclipse.che.ide.api.extension.ExtensionGinModule;
-import org.eclipse.che.ide.console.OutputConsoleView;
-import org.eclipse.che.ide.console.OutputConsoleViewImpl;
+import org.eclipse.che.ide.editor.init.EditorInitializerHolder;
 import org.eclipse.che.ide.editor.orion.client.ContentAssistWidgetFactory;
+import org.eclipse.che.ide.editor.orion.client.EditorInitializePromiseHolder;
 import org.eclipse.che.ide.editor.orion.client.OrionEditorBuilder;
 import org.eclipse.che.ide.editor.orion.client.OrionEditorWidget;
-import org.eclipse.che.ide.editor.orion.client.command.output.OrionOutPutConsoleViewImpl;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionCodeEditWidgetOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionEditorOptionsOverlay;
 
@@ -32,11 +30,7 @@ public class OrionEditorGinModule extends AbstractGinModule {
 
   @Override
   protected void configure() {
-
-//    GinMapBinder.newMapBinder(binder(), String.class, OutputConsoleView.class)
-//        .addBinding("orion-command-output-widget")
-//        .to(OrionOutPutConsoleViewImpl.class);
-
+    bind(EditorInitializerHolder.class).to(EditorInitializePromiseHolder.class);
     bind(EditorBuilder.class).to(OrionEditorBuilder.class);
 
     install(
@@ -52,7 +46,7 @@ public class OrionEditorGinModule extends AbstractGinModule {
         .addBinding()
         .to(JavaHighlightingOrionPlugin.class);
 
-    bind(OutputConsoleView.class).to(OrionOutPutConsoleViewImpl.class);
+    //bind(OutputConsoleView.class).to(OrionOutPutConsoleViewImpl.class);
 
     // GinMultibinder.newSetBinder(binder(),
     // OrionPlugin.class).addBinding().to(LanguageServerHighlightingOrionPlugin.class);

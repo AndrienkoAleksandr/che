@@ -42,9 +42,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import elemental.util.Timer;
 import java.util.List;
-
-import org.eclipse.che.api.promises.client.Promise;
-import org.eclipse.che.api.promises.client.PromiseProvider;
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.FontAwesome;
 import org.eclipse.che.ide.machine.MachineResources;
@@ -106,7 +103,6 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   /** If true - next printed line should replace the previous one. */
   private boolean carriageReturn;
-  private final PromiseProvider promiseProvider;
 
   /** Follow the output. Scroll to the bottom automatically when <b>true</b>. */
   private boolean followOutput = true;
@@ -115,10 +111,7 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   private boolean followScheduled = false;
 
   @Inject
-  public OutputConsoleViewImpl(MachineResources resources,
-                               CoreLocalizationConstant localization,
-                               PromiseProvider promiseProvider) {
-    this.promiseProvider = promiseProvider;
+  public OutputConsoleViewImpl(MachineResources resources, CoreLocalizationConstant localization) {
 
     initWidget(UI_BINDER.createAndBindUi(this));
 
@@ -212,11 +205,6 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   }
 
   @Override
-  public Promise<Void> initialize() {
-      return promiseProvider.resolve(null);
-  }
-
-    @Override
   public void setDelegate(ActionDelegate delegate) {
     this.delegate = delegate;
   }

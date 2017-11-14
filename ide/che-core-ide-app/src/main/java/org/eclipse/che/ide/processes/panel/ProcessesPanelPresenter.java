@@ -925,9 +925,8 @@ public class ProcessesPanelPresenter extends BasePresenter
     // add output for the machine if it is not exist
     if (!consoles.containsKey(machineName)) {
       OutputConsole outputConsole = commandConsoleFactory.create(machineName);
-      outputConsole.initialize().then(arg -> {
-        addOutputConsole(machineName, newMachineNode, outputConsole, true);
-      });
+
+      addOutputConsole(machineName, newMachineNode, outputConsole, true);
     }
 
     return newMachineNode;
@@ -1108,15 +1107,11 @@ public class ProcessesPanelPresenter extends BasePresenter
                       final CommandImpl command = new CommandImpl(processName, commandLine, type);
                       final CommandOutputConsole console =
                           commandConsoleFactory.create(command, machineName);
-                      console
-                          .initialize()
-                          .then(
-                              arg -> {
-                                getAndPrintProcessLogs(console, pid);
-                                subscribeToProcess(console, pid);
 
-                                addCommandOutput(machineName, console);
-                              });
+                      getAndPrintProcessLogs(console, pid);
+                      subscribeToProcess(console, pid);
+
+                      addCommandOutput(machineName, console);
                     } else {
                       final CommandImpl commandByName = commandOptional.get();
                       macroProcessorProvider
@@ -1134,15 +1129,10 @@ public class ProcessesPanelPresenter extends BasePresenter
                                 final CommandOutputConsole console =
                                     commandConsoleFactory.create(command, machineName);
 
-                                console
-                                    .initialize()
-                                    .then(
-                                        arg -> {
-                                          getAndPrintProcessLogs(console, pid);
-                                          subscribeToProcess(console, pid);
+                                getAndPrintProcessLogs(console, pid);
+                                subscribeToProcess(console, pid);
 
-                                          addCommandOutput(machineName, console);
-                                        });
+                                addCommandOutput(machineName, console);
                               });
                     }
                   }

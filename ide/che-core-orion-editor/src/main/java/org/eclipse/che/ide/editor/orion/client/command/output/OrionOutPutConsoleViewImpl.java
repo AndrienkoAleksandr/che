@@ -28,18 +28,16 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-
-import org.eclipse.che.api.promises.client.Function;
-import org.eclipse.che.api.promises.client.Promise;
+import org.eclipse.che.api.promises.client.PromiseProvider;
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.FontAwesome;
 import org.eclipse.che.ide.console.OutputConsoleView;
-import org.eclipse.che.ide.editor.orion.client.EditorInitializePromiseHolder;
 import org.eclipse.che.ide.editor.orion.client.inject.OrionCodeEditWidgetProvider;
-import org.eclipse.che.ide.editor.orion.client.jso.OrionCodeEditWidgetOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionEditorViewOverlay;
+import org.eclipse.che.ide.editor.orion.client.jso.OrionTextModelOverlay;
 import org.eclipse.che.ide.machine.MachineResources;
 import org.eclipse.che.ide.ui.Tooltip;
+import org.eclipse.che.ide.util.loging.Log;
 import org.vectomatic.dom.svg.ui.SVGImage;
 
 /** @author Alexander Andrienko */
@@ -77,8 +75,7 @@ public class OrionOutPutConsoleViewImpl extends Composite implements OutputConso
 
   private OrionEditorViewOverlay orionView;
 
-  private final OrionCodeEditWidgetProvider orionCodeEditWidgetProvider;
-  private final EditorInitializePromiseHolder editorModule;
+  private final PromiseProvider promiseProvider;
 
   //  /** If true - next printed line should replace the previous one. */
   //  private boolean carriageReturn;
@@ -106,11 +103,9 @@ public class OrionOutPutConsoleViewImpl extends Composite implements OutputConso
   public OrionOutPutConsoleViewImpl(
       MachineResources resources,
       CoreLocalizationConstant localization,
-      OrionCodeEditWidgetProvider orionCodeEditWidgetProvider,
-      EditorInitializePromiseHolder editorModule) {
-    this.orionCodeEditWidgetProvider = orionCodeEditWidgetProvider;
-    this.editorModule = editorModule;
-
+      OrionCodeEditWidgetProvider widgetProvider,
+      PromiseProvider promiseProvider) {
+    this.promiseProvider = promiseProvider;
     initWidget(UI_BINDER.createAndBindUi(this));
 
     reRunProcessButton.add(new SVGImage(resources.reRunIcon()));
@@ -198,17 +193,38 @@ public class OrionOutPutConsoleViewImpl extends Composite implements OutputConso
         BOTTOM,
         MIDDLE,
         localization.consolesAutoScrollButtonTooltip());
+
+    //    Log.info(getClass(), DateTimeFormat.getFormat("yyyy MM dd HH:mm:ss.SSS").format(new
+    // Date()));
+    widgetProvider
+        .get()
+        .createEditorView(consoleLines.getElement(), JavaScriptObject.createObject())
+        .then(
+            editor -> {
+              orionView = editor;
+              //              Log.info(getClass(), DateTimeFormat.getFormat("yyyy MM dd
+              // HH:mm:ss.SSS").format(new Date()));
+            })
+        .catchError(
+            err -> {
+              //              Log.error(getClass(), DateTimeFormat.getFormat("yyyy MM dd
+              // HH:mm:ss.SSS").format(new Date()));
+              Log.error(getClass(), err.getMessage());
+            });
   }
 
   @Override
   public void print(String text, boolean carriageReturn) {
-    // todo
-    orionView.getEditor().getModel().setText(text + "\n\r");
+    OrionTextModelOverlay modelOverlay = orionView.getEditor().getModel();
+    int startOffSet = modelOverlay.getCharCount() - 1;
+    modelOverlay.setText(text + "\n\r", startOffSet);
   }
 
   @Override
   public void print(String text, boolean carriageReturn, String color) {
-    orionView.getEditor().getModel().setText(text);
+    OrionTextModelOverlay modelOverlay = orionView.getEditor().getModel();
+    int startOffSet = modelOverlay.getCharCount() - 1;
+    modelOverlay.setText(text + "\n\r", startOffSet);
   }
 
   @Override
@@ -283,22 +299,6 @@ public class OrionOutPutConsoleViewImpl extends Composite implements OutputConso
   }
 
   @Override
-  public Promise<Void> initialize() {
-    return editorModule
-        .getInitializerPromise()
-        .then((Function<Void, OrionCodeEditWidgetOverlay>) arg -> orionCodeEditWidgetProvider.get())
-        .thenPromise(
-            editorView ->
-                editorView.createEditorView(
-                    consoleLines.getElement(), JavaScriptObject.createObject()))
-        .thenPromise(
-            editor -> {
-              orionView = editor;
-              return null;
-            });
-  }
-
-  @Override
   public void showCommandLine(String commandLine) {
     commandLabel.setText(commandLine);
     Tooltip.create((elemental.dom.Element) commandLabel.getElement(), BOTTOM, MIDDLE, commandLine);
@@ -318,7 +318,6 @@ public class OrionOutPutConsoleViewImpl extends Composite implements OutputConso
 
   @Override
   public String getText() {
-    // todo complete this method.
-    return "";
+    return orionView.getEditor().getText();
   }
 }

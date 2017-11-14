@@ -32,6 +32,7 @@ import org.eclipse.che.ide.context.AppContextImpl;
 import org.eclipse.che.ide.context.BrowserAddress;
 import org.eclipse.che.ide.context.QueryParameters;
 import org.eclipse.che.ide.core.StandardComponentInitializer;
+import org.eclipse.che.ide.editor.init.EditorInitializerHolder;
 import org.eclipse.che.ide.preferences.StyleInjector;
 import org.eclipse.che.ide.statepersistance.AppStateManager;
 import org.eclipse.che.ide.ui.dialogs.DialogFactory;
@@ -62,7 +63,8 @@ class FactoryIdeInitializationStrategy extends DefaultIdeInitializationStrategy 
       EventBus eventBus,
       QueryParameters queryParameters,
       DialogFactory dialogFactory,
-      FactoryServiceClient factoryServiceClient) {
+      FactoryServiceClient factoryServiceClient,
+      EditorInitializerHolder editorInitializerHolder) {
     super(
         workspaceServiceClient,
         appContext,
@@ -71,6 +73,7 @@ class FactoryIdeInitializationStrategy extends DefaultIdeInitializationStrategy 
         themeAgent,
         styleInjector,
         standardComponentsInitializerProvider,
+        editorInitializerHolder,
         appStateManager,
         workspacePresenterProvider,
         eventBus,

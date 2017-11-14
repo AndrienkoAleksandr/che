@@ -10,7 +10,6 @@
  */
 package org.eclipse.che.ide.console;
 
-import org.eclipse.che.api.promises.client.Promise;
 import org.eclipse.che.ide.api.mvp.View;
 
 /**
@@ -19,8 +18,6 @@ import org.eclipse.che.ide.api.mvp.View;
  * @author Artem Zatsarynnyi
  */
 public interface OutputConsoleView extends View<OutputConsoleView.ActionDelegate> {
-
-  Promise<Void> initialize();
 
   /**
    * Shows the command line to the console.

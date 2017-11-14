@@ -18,11 +18,8 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.web.bindery.event.shared.EventBus;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
-
-import org.eclipse.che.api.promises.client.Promise;
 import org.eclipse.che.commons.annotation.Nullable;
 import org.eclipse.che.ide.api.app.AppContext;
 import org.eclipse.che.ide.api.command.CommandExecutor;
@@ -71,16 +68,16 @@ public class CommandOutputConsolePresenter
 
   @Inject
   public CommandOutputConsolePresenter(
-          MachineResources resources,
-          CommandExecutor commandExecutor,
-          MacroProcessor macroProcessor,
-          EventBus eventBus,
-          ExecAgentCommandManager execAgentCommandManager,
-          @Assisted CommandImpl command,
-          @Assisted String machineName,
-          AppContext appContext,
-          EditorAgent editorAgent,
-          OutputConsoleView view) {
+      MachineResources resources,
+      CommandExecutor commandExecutor,
+      MacroProcessor macroProcessor,
+      EventBus eventBus,
+      ExecAgentCommandManager execAgentCommandManager,
+      @Assisted CommandImpl command,
+      @Assisted String machineName,
+      AppContext appContext,
+      EditorAgent editorAgent,
+      OutputConsoleView view) {
     this.view = view;
 
     this.resources = resources;
@@ -106,11 +103,6 @@ public class CommandOutputConsolePresenter
     }
 
     view.showCommandLine(command.getCommandLine());
-  }
-
-  @Override
-  public Promise<Void> initialize() {
-    return view.initialize();
   }
 
   @Override
