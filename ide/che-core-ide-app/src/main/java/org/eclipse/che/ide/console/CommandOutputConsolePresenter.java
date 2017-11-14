@@ -79,7 +79,6 @@ public class CommandOutputConsolePresenter
       AppContext appContext,
       EditorAgent editorAgent) {
     this.view = view;
-
     this.resources = resources;
     this.execAgentCommandManager = execAgentCommandManager;
     this.command = command;
@@ -152,7 +151,6 @@ public class CommandOutputConsolePresenter
   public Consumer<ProcessStdOutEventDto> getStdOutConsumer() {
     return event -> {
       String stdOutMessage = event.getText();
-
       boolean carriageReturn = stdOutMessage.endsWith("\r");
       view.print(stdOutMessage, carriageReturn);
 

@@ -46,7 +46,7 @@ public class OrionEditorGinModule extends AbstractGinModule {
         .addBinding()
         .to(JavaHighlightingOrionPlugin.class);
 
-    //bind(OutputConsoleView.class).to(OrionOutPutConsoleViewImpl.class);
+    // bind(OutputConsoleView.class).to(OrionOutPutConsoleViewImpl.class);
 
     // GinMultibinder.newSetBinder(binder(),
     // OrionPlugin.class).addBinding().to(LanguageServerHighlightingOrionPlugin.class);

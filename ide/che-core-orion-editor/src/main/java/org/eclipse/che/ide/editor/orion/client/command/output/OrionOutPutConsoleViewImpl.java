@@ -197,7 +197,7 @@ public class OrionOutPutConsoleViewImpl extends Composite implements OutputConso
     modelOverlay.setText(text + "\n\r", startOffSet);
   }
 
-  //todo implement coloring
+  // todo implement coloring
   @Override
   public void print(String text, boolean carriageReturn, String color) {
     OrionTextModelOverlay modelOverlay = orionView.getEditor().getModel();
