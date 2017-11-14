@@ -77,23 +77,6 @@ public class OrionOutPutConsoleViewImpl extends Composite implements OutputConso
 
   private final PromiseProvider promiseProvider;
 
-  //  /** If true - next printed line should replace the previous one. */
-  //  private boolean carriageReturn;
-
-  //  /** Follow the output. Scroll to the bottom automatically when <b>true</b>. */
-  //  private boolean followOutput = true;
-
-  //  /** Scroll to the bottom immediately when view become visible. */
-  //  private boolean followScheduled = false;
-
-  //  private final List<Pair<RegExp, String>> output2Color =
-  //      newArrayList(
-  //          new Pair<>(compile("\\[\\s*(DOCKER)\\s*\\]"), "#4EABFF"),
-  //          new Pair<>(compile("\\[\\s*(ERROR)\\s*\\]"), "#FF2727"),
-  //          new Pair<>(compile("\\[\\s*(WARN)\\s*\\]"), "#F5A623"),
-  //          new Pair<>(compile("\\[\\s*(STDOUT)\\s*\\]"), "#8ED72B"),
-  //          new Pair<>(compile("\\[\\s*(STDERR)\\s*\\]"), "#FF4343"));
-
   interface OrionOutPutConsoleViewUiBinder extends UiBinder<Widget, OrionOutPutConsoleViewImpl> {}
 
   private static final OrionOutPutConsoleViewUiBinder UI_BINDER =
@@ -194,21 +177,15 @@ public class OrionOutPutConsoleViewImpl extends Composite implements OutputConso
         MIDDLE,
         localization.consolesAutoScrollButtonTooltip());
 
-    //    Log.info(getClass(), DateTimeFormat.getFormat("yyyy MM dd HH:mm:ss.SSS").format(new
-    // Date()));
     widgetProvider
         .get()
         .createEditorView(consoleLines.getElement(), JavaScriptObject.createObject())
         .then(
             editor -> {
               orionView = editor;
-              //              Log.info(getClass(), DateTimeFormat.getFormat("yyyy MM dd
-              // HH:mm:ss.SSS").format(new Date()));
             })
         .catchError(
             err -> {
-              //              Log.error(getClass(), DateTimeFormat.getFormat("yyyy MM dd
-              // HH:mm:ss.SSS").format(new Date()));
               Log.error(getClass(), err.getMessage());
             });
   }
@@ -220,6 +197,7 @@ public class OrionOutPutConsoleViewImpl extends Composite implements OutputConso
     modelOverlay.setText(text + "\n\r", startOffSet);
   }
 
+  //todo implement coloring
   @Override
   public void print(String text, boolean carriageReturn, String color) {
     OrionTextModelOverlay modelOverlay = orionView.getEditor().getModel();

@@ -43,11 +43,11 @@ public class DefaultOutputConsole implements OutputConsole, OutputConsoleView.Ac
 
   @Inject
   public DefaultOutputConsole(
+      OutputConsoleView view,
       MachineResources resources,
       AppContext appContext,
       EditorAgent editorAgent,
-      @Assisted String title,
-      OutputConsoleView view) {
+      @Assisted String title) {
     this.view = view;
     this.title = title;
     this.resources = resources;

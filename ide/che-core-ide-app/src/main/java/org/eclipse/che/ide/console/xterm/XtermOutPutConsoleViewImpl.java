@@ -44,7 +44,7 @@ import org.vectomatic.dom.svg.ui.SVGImage;
 /** @author Alexander Andrienko */
 public class XtermOutPutConsoleViewImpl extends Composite implements OutputConsoleView {
 
-  private TerminalJso terminalJso; // todo final
+  private TerminalJso terminalJso;
 
   private ActionDelegate delegate;
 
@@ -76,23 +76,6 @@ public class XtermOutPutConsoleViewImpl extends Composite implements OutputConso
   @UiField FlowPanel wrapTextButton;
 
   @UiField FlowPanel scrollToBottomButton;
-
-  //  /** If true - next printed line should replace the previous one. */
-  //  private boolean carriageReturn;
-
-  //  /** Follow the output. Scroll to the bottom automatically when <b>true</b>. */
-  //  private boolean followOutput = true;
-
-  //  /** Scroll to the bottom immediately when view become visible. */
-  //  private boolean followScheduled = false;
-
-  //  private final List<Pair<RegExp, String>> output2Color =
-  //      newArrayList(
-  //          new Pair<>(compile("\\[\\s*(DOCKER)\\s*\\]"), "#4EABFF"),
-  //          new Pair<>(compile("\\[\\s*(ERROR)\\s*\\]"), "#FF2727"),
-  //          new Pair<>(compile("\\[\\s*(WARN)\\s*\\]"), "#F5A623"),
-  //          new Pair<>(compile("\\[\\s*(STDOUT)\\s*\\]"), "#8ED72B"),
-  //          new Pair<>(compile("\\[\\s*(STDERR)\\s*\\]"), "#FF4343"));
 
   interface XtermOutPutConsoleViewUiBinder extends UiBinder<Widget, XtermOutPutConsoleViewImpl> {}
 
@@ -233,6 +216,7 @@ public class XtermOutPutConsoleViewImpl extends Composite implements OutputConso
     terminalJso.writeln(text);
   }
 
+  // todo support coloring by control sequences...
   @Override
   public void print(String text, boolean carriageReturn, String color) {
     terminalJso.writeln(text);
@@ -329,7 +313,7 @@ public class XtermOutPutConsoleViewImpl extends Composite implements OutputConso
 
   @Override
   public String getText() {
-    // todo complete this method.
+    // todo complete this method. This method used for download output
     return "";
   }
 }

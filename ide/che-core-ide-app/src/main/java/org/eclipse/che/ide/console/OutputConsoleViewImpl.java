@@ -107,9 +107,6 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   /** Follow the output. Scroll to the bottom automatically when <b>true</b>. */
   private boolean followOutput = true;
 
-  /** Scroll to the bottom immediately when view become visible. */
-  private boolean followScheduled = false;
-
   @Inject
   public OutputConsoleViewImpl(MachineResources resources, CoreLocalizationConstant localization) {
 

@@ -68,6 +68,7 @@ public class CommandOutputConsolePresenter
 
   @Inject
   public CommandOutputConsolePresenter(
+      final OutputConsoleView view,
       MachineResources resources,
       CommandExecutor commandExecutor,
       MacroProcessor macroProcessor,
@@ -76,8 +77,7 @@ public class CommandOutputConsolePresenter
       @Assisted CommandImpl command,
       @Assisted String machineName,
       AppContext appContext,
-      EditorAgent editorAgent,
-      OutputConsoleView view) {
+      EditorAgent editorAgent) {
     this.view = view;
 
     this.resources = resources;

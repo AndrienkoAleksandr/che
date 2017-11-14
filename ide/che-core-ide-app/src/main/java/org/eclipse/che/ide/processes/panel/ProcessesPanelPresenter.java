@@ -878,7 +878,6 @@ public class ProcessesPanelPresenter extends BasePresenter
    */
   @Nullable
   private ProcessTreeNode provideMachineNode(String machineName, boolean replace) {
-    Log.info(getClass(), "Machine node");
     final ProcessTreeNode existedMachineNode = findTreeNodeById(machineName);
     if (!replace && existedMachineNode != null) {
       return existedMachineNode;
@@ -1118,21 +1117,25 @@ public class ProcessesPanelPresenter extends BasePresenter
                           .get()
                           .expandMacros(commandByName.getCommandLine())
                           .then(
-                              expandedCommandLine -> {
-                                final CommandImpl command =
-                                    new CommandImpl(
-                                        commandByName.getName(),
-                                        expandedCommandLine,
-                                        commandByName.getType(),
-                                        commandByName.getAttributes());
+                              new Operation<String>() {
+                                @Override
+                                public void apply(String expandedCommandLine)
+                                    throws OperationException {
+                                  final CommandImpl command =
+                                      new CommandImpl(
+                                          commandByName.getName(),
+                                          expandedCommandLine,
+                                          commandByName.getType(),
+                                          commandByName.getAttributes());
 
-                                final CommandOutputConsole console =
-                                    commandConsoleFactory.create(command, machineName);
+                                  final CommandOutputConsole console =
+                                      commandConsoleFactory.create(command, machineName);
 
-                                getAndPrintProcessLogs(console, pid);
-                                subscribeToProcess(console, pid);
+                                  getAndPrintProcessLogs(console, pid);
+                                  subscribeToProcess(console, pid);
 
-                                addCommandOutput(machineName, console);
+                                  addCommandOutput(machineName, console);
+                                }
                               });
                     }
                   }
