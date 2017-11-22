@@ -52,6 +52,14 @@ public interface OutputConsoleView extends View<OutputConsoleView.ActionDelegate
    */
   void print(String text, boolean carriageReturn, String color);
 
+  void clearText();
+
+  void displayPaginationPrevious();
+
+  void displayPaginationNext();
+
+  void scrollToBottom();
+
   /**
    * Returns the console text.
    *
@@ -136,6 +144,10 @@ public interface OutputConsoleView extends View<OutputConsoleView.ActionDelegate
 
     /** Handle scrolling the output. */
     void onOutputScrolled(boolean bottomReached);
+
+    void onPaginationNextClicked();
+
+    void onPaginationPreviousClicked();
 
     /** Returns the customizer for the console output */
     OutputCustomizer getCustomizer();

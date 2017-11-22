@@ -155,7 +155,7 @@ Json:
 _GET /process_
 
 - `all`(optional) - if `true` then all the processes including _dead_ ones will be returned(respecting paging ofc),
-otherwise only _alive_ processes will be returnedg
+otherwise only _alive_ processes will be returned
 
 #### Response
 

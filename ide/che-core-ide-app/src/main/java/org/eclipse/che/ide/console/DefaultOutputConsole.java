@@ -184,6 +184,18 @@ public class DefaultOutputConsole implements OutputConsole, OutputConsoleView.Ac
     view.toggleScrollToEndButton(bottomReached);
   }
 
+
+  //todo seems pagination should be separated interface. Maybe in the core.
+  @Override
+  public void onPaginationNextClicked() {
+    //todo
+  }
+
+  @Override
+  public void onPaginationPreviousClicked() {
+    //todo
+  }
+
   @Override
   public OutputCustomizer getCustomizer() {
     return customizer;

@@ -17,6 +17,12 @@
 
     <ui:style  src="org/eclipse/che/ide/api/ui/style.css">
 
+        @eval blueIconColor org.eclipse.che.ide.api.theme.Style.theme.getBlueIconColor();
+
+        .pagination {
+            color: blueIconColor;
+        }
+
         /**
          * Toolbar on the left with buttons.
          */
@@ -213,12 +219,19 @@
                           addStyleNames="{style.link} {style.value} {style.commandTitle}"/>
             </g:FlowPanel>
         </g:north>
+        <g:north size="14">
+            <g:Label ui:field="paginationConsolePrevious" styleName="{style.pagination}"/>
+        </g:north>
         <g:center>
             <g:FlowPanel styleName="{style.consolePanel}">
+
                 <g:ScrollPanel ui:field="scrollPanel" debugId="commandConsoleScrollPanel" styleName="{style.console}">
                     <g:FlowPanel width="100%" ui:field="consoleLines" debugId="commandConsoleLines" styleName="{style.consoleLines}"/>
                 </g:ScrollPanel>
             </g:FlowPanel>
         </g:center>
+        <g:south size="14">
+            <g:Label ui:field="paginationConsoleNext" styleName="{style.pagination}"/>
+        </g:south>
     </g:DockLayoutPanel>
 </ui:UiBinder>

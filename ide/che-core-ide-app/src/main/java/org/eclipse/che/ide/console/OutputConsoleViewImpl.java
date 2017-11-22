@@ -10,6 +10,8 @@
  */
 package org.eclipse.che.ide.console;
 
+import elemental.util.Timer;
+
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.gwt.regexp.shared.RegExp.compile;
 import static org.eclipse.che.ide.ui.menu.PositionController.HorizontalAlign.MIDDLE;
@@ -17,7 +19,6 @@ import static org.eclipse.che.ide.ui.menu.PositionController.VerticalAlign.BOTTO
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -87,6 +88,10 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   @UiField FlowPanel consoleLines;
 
   @UiField Anchor previewUrlLabel;
+
+  @UiField Label paginationConsolePrevious;
+
+  @UiField Label paginationConsoleNext;
 
   @UiField protected FlowPanel reRunProcessButton;
 
@@ -188,6 +193,9 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
           }
         },
         ClickEvent.getType());
+
+    paginationConsolePrevious.addClickHandler(event -> delegate.onPaginationPreviousClicked());
+    paginationConsoleNext.addClickHandler(event -> delegate.onPaginationNextClicked());
 
     Tooltip.create(
         (elemental.dom.Element) reRunProcessButton.getElement(),
@@ -310,6 +318,26 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
     }
   }
 
+  //todo
+  //long getRowsQuantity();
+
+  @Override
+  public void displayPaginationPrevious() {
+    //todo localization constant
+    paginationConsolePrevious.setText("Click to display previous output.");
+  }
+
+  @Override
+  public void displayPaginationNext() {
+    //todo localization constant
+    paginationConsoleNext.setText("Click to display next output.");
+  }
+
+  @Override
+  public void scrollToBottom() {
+    scrollPanel.scrollToBottom();
+  }
+
   @Override
   public void print(String text, boolean carriageReturn) {
     print(text, carriageReturn, null);
@@ -317,10 +345,6 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @Override
   public void print(final String text, boolean carriageReturn, String color) {
-
-    if (consoleLines.getElement().getChildCount() > 500) {
-      consoleLines.getElement().getFirstChild().removeFromParent();
-    }
 
     if (this.carriageReturn) {
       Node lastChild = consoleLines.getElement().getLastChild();
@@ -378,6 +402,11 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   }
 
   @Override
+  public void clearText() {
+    consoleLines.getElement().removeAllChildren();
+  }
+
+  @Override
   public String getText() {
     String text = "";
     NodeList<Node> nodes = consoleLines.getElement().getChildNodes();
@@ -415,6 +444,17 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
     }
   }
 
+  private Timer visibilityTimer =
+    new Timer() {
+      @Override
+      public void run() {
+        if (isVisible() && followOutput) {
+          scrollPanel.scrollToBottom();
+          scrollPanel.scrollToLeft();
+        }
+    }
+  };
+
   /** Scrolls to the bottom if following the output is enabled. */
   private void followOutput() {
     if (!followOutput) {
@@ -422,37 +462,13 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
     }
 
     /** Scroll bottom immediately if view is visible */
-    if (scrollPanel.getElement().getOffsetParent() != null) {
+    if (isVisible() && followOutput) {
       scrollPanel.scrollToBottom();
       scrollPanel.scrollToLeft();
       return;
-    }
-
-    /** Otherwise, check the visibility periodically and scroll the view when it's visible */
-    if (!followScheduled) {
-      followScheduled = true;
-
-      Scheduler.get()
-          .scheduleFixedPeriod(
-              new Scheduler.RepeatingCommand() {
-                @Override
-                public boolean execute() {
-                  if (!followOutput) {
-                    followScheduled = false;
-                    return false;
-                  }
-
-                  if (scrollPanel.getElement().getOffsetParent() != null) {
-                    scrollPanel.scrollToBottom();
-                    scrollPanel.scrollToLeft();
-                    followScheduled = false;
-                    return false;
-                  }
-
-                  return true;
-                }
-              },
-              500);
+    } else {
+      /** Otherwise, check the visibility periodically and scroll the view when it's visible */
+      visibilityTimer.schedule(500);
     }
   }
 }

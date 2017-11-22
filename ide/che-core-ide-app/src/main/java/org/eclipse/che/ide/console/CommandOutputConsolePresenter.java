@@ -37,6 +37,7 @@ import org.eclipse.che.ide.api.command.exec.dto.event.ProcessStdOutEventDto;
 import org.eclipse.che.ide.api.editor.EditorAgent;
 import org.eclipse.che.ide.api.macro.MacroProcessor;
 import org.eclipse.che.ide.machine.MachineResources;
+import org.eclipse.che.ide.util.loging.Log;
 import org.vectomatic.dom.svg.ui.SVGResource;
 
 /**
@@ -70,16 +71,16 @@ public class CommandOutputConsolePresenter
 
   @Inject
   public CommandOutputConsolePresenter(
-      final OutputConsoleView view,
-      MachineResources resources,
-      CommandExecutor commandExecutor,
-      MacroProcessor macroProcessor,
-      EventBus eventBus,
-      ExecAgentCommandManager execAgentCommandManager,
-      @Assisted CommandImpl command,
-      @Assisted String machineName,
-      AppContext appContext,
-      EditorAgent editorAgent) {
+          final OutputConsoleView view,
+          MachineResources resources,
+          CommandExecutor commandExecutor,
+          MacroProcessor macroProcessor,
+          EventBus eventBus,
+          ExecAgentCommandManager execAgentCommandManager,
+          @Assisted CommandImpl command,
+          @Assisted String machineName,
+          AppContext appContext,
+          EditorAgent editorAgent) {
     this.view = view;
     this.resources = resources;
     this.execAgentCommandManager = execAgentCommandManager;
@@ -147,6 +148,7 @@ public class CommandOutputConsolePresenter
   public Consumer<ProcessStdErrEventDto> getStdErrConsumer() {
     return event -> {
       String text = event.getText();
+      //todo handle error consumer too.
       boolean carriageReturn = text.endsWith("\r");
       String color = "red";
       view.print(text, carriageReturn, color);
@@ -157,17 +159,102 @@ public class CommandOutputConsolePresenter
     };
   }
 
+  private static class OutPutPaginator {
+
+  }
+
+  private static final int PAGE_SIZE = 500;
+  //todo use long...
+  private int totalLineNum;
+  private int lineNum;
+  private int amountPages = 1;
+  private int currentPageNum = 1;
+
+
+  @Override
+  public void onPaginationNextClicked() {
+    int skip = (amountPages - currentPageNum - 1) * PAGE_SIZE;
+
+    if (skip < 0) {
+      return;
+    }
+
+    Log.info(getClass(), "previous: line number " + lineNum +
+                         " total line number " + totalLineNum +
+                         " amount pages : " + amountPages +
+                         " current pages : " + currentPageNum);
+    Log.info(getClass(), "skip " + skip);
+
+    execAgentCommandManager.getProcessLogs(machineName,
+                                           pid,
+                                           null,
+                                           null,
+                                           PAGE_SIZE,
+                                           skip)
+                           .onSuccess(consumer -> {
+                             if (currentPageNum < amountPages) {
+                               currentPageNum++;
+                             }
+                             view.clearConsole();
+                             consumer.forEach(responseDto -> printLine(responseDto.getText()));
+                             //todo scroll to bottom
+                           });
+  }
+
+  @Override
+  public void onPaginationPreviousClicked() {
+    int skip = (amountPages - currentPageNum + 1) * PAGE_SIZE;
+
+    if (skip >= totalLineNum) {
+      return;
+    }
+
+    execAgentCommandManager.getProcessLogs(machineName,
+                                           pid,
+                                           null,
+                                           null,
+                                           PAGE_SIZE,
+                                           skip)
+                          .onSuccess(consumer -> {
+                            currentPageNum = currentPageNum == 0 ? 0 : currentPageNum - 1;
+                            view.clearConsole();
+                            consumer.forEach(responseDto -> printLine(responseDto.getText()));
+                            view.scrollToBottom();
+                            if (currentPageNum != amountPages) {
+                              view.displayPaginationNext();
+                            }
+                          });
+  }
+
   @Override
   public Consumer<ProcessStdOutEventDto> getStdOutConsumer() {
     return event -> {
-      String stdOutMessage = event.getText();
-      boolean carriageReturn = stdOutMessage.endsWith("\r");
-      view.print(stdOutMessage, carriageReturn);
+      if (totalLineNum > PAGE_SIZE - 1) {
+        view.displayPaginationPrevious();
+      }
+
+      if (lineNum > PAGE_SIZE - 1) {
+        view.clearConsole();
+        lineNum = 0;
+        amountPages++;
+        currentPageNum++;
+      }
+
+      totalLineNum++;
+      lineNum++;
+
+      printLine(event.getText());
+
 
       for (ActionDelegate actionDelegate : actionDelegates) {
         actionDelegate.onConsoleOutput(CommandOutputConsolePresenter.this);
       }
     };
+  }
+
+  private void printLine(String line) {
+    boolean carriageReturn = line.endsWith("\r");
+    view.print(line, carriageReturn);
   }
 
   @Override
@@ -242,6 +329,7 @@ public class CommandOutputConsolePresenter
 
   @Override
   public void clearOutputsButtonClicked() {
+    //todo console and buffer.
     view.clearConsole();
   }
 
