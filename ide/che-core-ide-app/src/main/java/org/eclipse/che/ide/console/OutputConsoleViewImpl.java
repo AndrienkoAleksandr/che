@@ -11,7 +11,6 @@
 package org.eclipse.che.ide.console;
 
 import elemental.util.Timer;
-
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.gwt.regexp.shared.RegExp.compile;
 import static org.eclipse.che.ide.ui.menu.PositionController.HorizontalAlign.MIDDLE;
@@ -42,12 +41,15 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+
 import java.util.List;
+
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.FontAwesome;
 import org.eclipse.che.ide.machine.MachineResources;
 import org.eclipse.che.ide.ui.Tooltip;
 import org.eclipse.che.ide.util.Pair;
+import org.eclipse.che.ide.util.loging.Log;
 import org.vectomatic.dom.svg.ui.SVGImage;
 
 /**
@@ -196,6 +198,39 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
     paginationConsolePrevious.addClickHandler(event -> delegate.onPaginationPreviousClicked());
     paginationConsoleNext.addClickHandler(event -> delegate.onPaginationNextClicked());
+
+    scrollPanel.addScrollHandler(new ScrollHandler() {
+        
+        @Override
+        public void onScroll(ScrollEvent event) {
+//            Log.info(getClass(), "--------------------------------------------------------------------------");
+//            Log.info(getClass(), " scrollPanel.getOffsetHeight(): " + scrollPanel.getOffsetHeight());
+//            Log.info(getClass(), " scrollPanel.getVerticalScrollPosition(): " + scrollPanel.getVerticalScrollPosition());
+//            Log.info(getClass(), " scrollPanel.getMaximumVerticalScrollPosition(): " + scrollPanel.getMaximumVerticalScrollPosition());
+//            Log.info(getClass(), " consoleLines.getOffsetHeight(): " + consoleLines.getOffsetHeight());
+//            Log.info(getClass(), " top " + scrollPanel.getElement().getStyle().getPaddingTop());
+//            Log.info(getClass(), " bottom  " + scrollPanel.getElement().getStyle().getPaddingBottom());
+//            Log.info(getClass(), " " + scrollPanel.getElement().getClientHeight());
+//            Log.info(getClass(), scrollPanel.getElement().getStyle().getPadding());
+
+           if (scrollPanel.getVerticalScrollPosition() == 0) {
+               Log.info(getClass(), "previous");
+               delegate.onPaginationPreviousClicked();  
+           }
+
+           int bottomPosition = scrollPanel.getVerticalScrollPosition() + scrollPanel.getElement().getClientHeight() - 2; // 2px it's a padding.
+           Log.info(getClass(), bottomPosition + " " + consoleLines.getOffsetHeight());
+           if (bottomPosition == consoleLines.getOffsetHeight()) {
+               Log.info(getClass(), "next");
+               delegate.onPaginationNextClicked();                
+           }
+
+//            scrollPanel.getElement().get
+//            scrollPanel.getElement().gePropertyInt("");
+//            Log.info(getClass())
+            Log.info(getClass(), "--------------------------------------------------------------------------");
+        }
+    });
 
     Tooltip.create(
         (elemental.dom.Element) reRunProcessButton.getElement(),
@@ -404,6 +439,15 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   @Override
   public void clearText() {
     consoleLines.getElement().removeAllChildren();
+  }
+  
+  @Override
+  public void clearBottomLines(int amountLines) {
+      consoleLines.get   for (int i = 0; i < i < amountLines; i++) {
+          
+      }
+          
+      removeChild(getElement())      consoleLines.getElement().re
   }
 
   @Override

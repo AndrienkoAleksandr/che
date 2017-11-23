@@ -53,6 +53,8 @@ public interface OutputConsoleView extends View<OutputConsoleView.ActionDelegate
   void print(String text, boolean carriageReturn, String color);
 
   void clearText();
+  
+  void clearBottomLines(int amountLines);
 
   void displayPaginationPrevious();
 

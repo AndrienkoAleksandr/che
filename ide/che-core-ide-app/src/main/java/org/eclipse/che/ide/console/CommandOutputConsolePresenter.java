@@ -163,7 +163,7 @@ public class CommandOutputConsolePresenter
 
   }
 
-  private static final int PAGE_SIZE = 500;
+  private static final int PAGE_SIZE = 20;
   //todo use long...
   private int totalLineNum;
   private int lineNum;
@@ -219,7 +219,7 @@ public class CommandOutputConsolePresenter
                             currentPageNum = currentPageNum == 0 ? 0 : currentPageNum - 1;
                             view.clearConsole();
                             consumer.forEach(responseDto -> printLine(responseDto.getText()));
-                            view.scrollToBottom();
+                            //view.scrollToBottom();
                             if (currentPageNum != amountPages) {
                               view.displayPaginationNext();
                             }
