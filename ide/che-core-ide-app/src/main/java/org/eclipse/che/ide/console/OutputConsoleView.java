@@ -61,9 +61,9 @@ public interface OutputConsoleView extends View<OutputConsoleView.ActionDelegate
 
   void clearLines(int amountLines, int offset);
 
-  void displayPaginationPrevious();
+  void displayPreviousOutPutPart();
 
-  void displayPaginationNext();
+  void displayNextOutPutPart();
 
   void scrollToBottom();
 

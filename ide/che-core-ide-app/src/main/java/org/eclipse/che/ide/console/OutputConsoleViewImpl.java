@@ -359,13 +359,13 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   }
 
   @Override
-  public void displayPaginationPrevious() {
+  public void displayPreviousOutPutPart() {
     // todo localization constant
     paginationConsolePrevious.setText("Click to display previous output.");
   }
 
   @Override
-  public void displayPaginationNext() {
+  public void displayNextOutPutPart() {
     // todo localization constant
     paginationConsoleNext.setText("Click to display next output.");
   }
