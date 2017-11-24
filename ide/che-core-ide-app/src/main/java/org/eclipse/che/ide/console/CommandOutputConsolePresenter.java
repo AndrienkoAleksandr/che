@@ -13,6 +13,7 @@ package org.eclipse.che.ide.console;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.eclipse.che.api.workspace.shared.Constants.COMMAND_PREVIEW_URL_ATTRIBUTE_NAME;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
@@ -71,16 +72,16 @@ public class CommandOutputConsolePresenter
 
   @Inject
   public CommandOutputConsolePresenter(
-          final OutputConsoleView view,
-          MachineResources resources,
-          CommandExecutor commandExecutor,
-          MacroProcessor macroProcessor,
-          EventBus eventBus,
-          ExecAgentCommandManager execAgentCommandManager,
-          @Assisted CommandImpl command,
-          @Assisted String machineName,
-          AppContext appContext,
-          EditorAgent editorAgent) {
+      final OutputConsoleView view,
+      MachineResources resources,
+      CommandExecutor commandExecutor,
+      MacroProcessor macroProcessor,
+      EventBus eventBus,
+      ExecAgentCommandManager execAgentCommandManager,
+      @Assisted CommandImpl command,
+      @Assisted String machineName,
+      AppContext appContext,
+      EditorAgent editorAgent) {
     this.view = view;
     this.resources = resources;
     this.execAgentCommandManager = execAgentCommandManager;
@@ -148,7 +149,7 @@ public class CommandOutputConsolePresenter
   public Consumer<ProcessStdErrEventDto> getStdErrConsumer() {
     return event -> {
       String text = event.getText();
-      //todo handle error consumer too.
+      // todo handle error consumer too.
       boolean carriageReturn = text.endsWith("\r");
       String color = "red";
       view.print(text, carriageReturn, color);
@@ -159,71 +160,76 @@ public class CommandOutputConsolePresenter
     };
   }
 
-  private static class OutPutPaginator {
+  private static class OutPutPaginator {}
 
-  }
-
-  private static final int PAGE_SIZE = 20;
-  //todo use long...
+  private static final int PAGE_SIZE = 10;
+//  private static final int
+  // todo use long...
   private int totalLineNum;
   private int lineNum;
   private int amountPages = 1;
   private int currentPageNum = 1;
 
-
   @Override
   public void onPaginationNextClicked() {
-    int skip = (amountPages - currentPageNum - 1) * PAGE_SIZE;
+    // int skip = (amountPages*PAGE_SIZE) - (currentPageNum)*PAGE_SIZE - PAGE_SIZE/2
+    int skip = (amountPages*PAGE_SIZE) + (currentPageNum - 1) * (PAGE_SIZE/2);
 
     if (skip < 0) {
       return;
     }
 
-    Log.info(getClass(), "previous: line number " + lineNum +
-                         " total line number " + totalLineNum +
-                         " amount pages : " + amountPages +
-                         " current pages : " + currentPageNum);
+//    Log.info(
+//        getClass(),
+//        "previous: line number "
+//            + lineNum
+//            + " total line number "
+//            + totalLineNum
+//            + " amount pages : "
+//            + amountPages
+//            + " current pages : "
+//            + currentPageNum);
     Log.info(getClass(), "skip " + skip);
 
-    execAgentCommandManager.getProcessLogs(machineName,
-                                           pid,
-                                           null,
-                                           null,
-                                           PAGE_SIZE,
-                                           skip)
-                           .onSuccess(consumer -> {
-                             if (currentPageNum < amountPages) {
-                               currentPageNum++;
-                             }
-                             view.clearConsole();
-                             consumer.forEach(responseDto -> printLine(responseDto.getText()));
-                             //todo scroll to bottom
-                           });
+    execAgentCommandManager
+        .getProcessLogs(machineName, pid, null, null, PAGE_SIZE / 2, skip)
+        .onSuccess(
+            consumer -> {
+              if (currentPageNum < amountPages) {
+                currentPageNum++;
+              }
+              view.clearLines(PAGE_SIZE/2, 0);
+              Log.info(getClass(), consumer.size() + " %%%%%%%%%%%%%%%%%% " );
+
+              consumer.forEach(responseDto -> Log.info(getClass(), responseDto.getText()));
+              //consumer.forEach(responseDto -> print(responseDto.getText()));
+              // todo scroll to bottom
+            });
   }
 
   @Override
   public void onPaginationPreviousClicked() {
-    int skip = (amountPages - currentPageNum + 1) * PAGE_SIZE;
+    int skip = (amountPages*PAGE_SIZE) - (currentPageNum + 1) * (PAGE_SIZE/2);
 
     if (skip >= totalLineNum) {
       return;
     }
 
-    execAgentCommandManager.getProcessLogs(machineName,
-                                           pid,
-                                           null,
-                                           null,
-                                           PAGE_SIZE,
-                                           skip)
-                          .onSuccess(consumer -> {
-                            currentPageNum = currentPageNum == 0 ? 0 : currentPageNum - 1;
-                            view.clearConsole();
-                            consumer.forEach(responseDto -> printLine(responseDto.getText()));
-                            //view.scrollToBottom();
-                            if (currentPageNum != amountPages) {
-                              view.displayPaginationNext();
-                            }
-                          });
+    execAgentCommandManager
+        .getProcessLogs(machineName, pid, null, null, PAGE_SIZE / 2, skip)
+        .onSuccess(
+            consumer -> {
+              currentPageNum = currentPageNum == 1 ? 1 : currentPageNum - 1;
+              //Log.info(getClass(), " amount " + PAGE_SIZE/2 + " offset " + PAGE_SIZE/2);
+              view.clearLines(PAGE_SIZE / 2, PAGE_SIZE/2);
+              //consumer.forEach(responseDto -> Log.info(getClass(), responseDto.getText()));
+              Lists.reverse(consumer).forEach(responseDto -> printOnTop(responseDto.getText()));
+              // consumer.forEach(responseDto -> printOnTop(responseDto.getText()));
+              // view.scrollToBottom();
+              if (currentPageNum != amountPages) {
+                view.displayPaginationNext();
+              }
+            });
   }
 
   @Override
@@ -243,8 +249,7 @@ public class CommandOutputConsolePresenter
       totalLineNum++;
       lineNum++;
 
-      printLine(event.getText());
-
+      print(event.getText());
 
       for (ActionDelegate actionDelegate : actionDelegates) {
         actionDelegate.onConsoleOutput(CommandOutputConsolePresenter.this);
@@ -252,9 +257,14 @@ public class CommandOutputConsolePresenter
     };
   }
 
-  private void printLine(String line) {
+  private void print(String line) {
     boolean carriageReturn = line.endsWith("\r");
     view.print(line, carriageReturn);
+  }
+
+  private void printOnTop(String line) {
+    boolean carriageReturn = line.endsWith("\r");
+    view.printOnTop(line, carriageReturn);
   }
 
   @Override
@@ -329,7 +339,7 @@ public class CommandOutputConsolePresenter
 
   @Override
   public void clearOutputsButtonClicked() {
-    //todo console and buffer.
+    // todo console and buffer.
     view.clearConsole();
   }
 

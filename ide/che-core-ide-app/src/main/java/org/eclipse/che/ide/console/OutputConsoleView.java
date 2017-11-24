@@ -42,6 +42,11 @@ public interface OutputConsoleView extends View<OutputConsoleView.ActionDelegate
    */
   void print(String text, boolean carriageReturn);
 
+  // todo
+  default void printOnTop(final String text, boolean carriageReturn) {
+    throw new IllegalStateException("Operation is unsupported");
+  }
+
   /**
    * Prints colored text.
    *
@@ -53,8 +58,8 @@ public interface OutputConsoleView extends View<OutputConsoleView.ActionDelegate
   void print(String text, boolean carriageReturn, String color);
 
   void clearText();
-  
-  void clearBottomLines(int amountLines);
+
+  void clearLines(int amountLines, int offset);
 
   void displayPaginationPrevious();
 

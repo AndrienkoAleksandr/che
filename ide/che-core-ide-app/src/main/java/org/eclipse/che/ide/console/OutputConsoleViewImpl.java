@@ -10,7 +10,6 @@
  */
 package org.eclipse.che.ide.console;
 
-import elemental.util.Timer;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.gwt.regexp.shared.RegExp.compile;
 import static org.eclipse.che.ide.ui.menu.PositionController.HorizontalAlign.MIDDLE;
@@ -41,9 +40,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-
+import elemental.util.Timer;
 import java.util.List;
-
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.FontAwesome;
 import org.eclipse.che.ide.machine.MachineResources;
@@ -199,38 +197,45 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
     paginationConsolePrevious.addClickHandler(event -> delegate.onPaginationPreviousClicked());
     paginationConsoleNext.addClickHandler(event -> delegate.onPaginationNextClicked());
 
-    scrollPanel.addScrollHandler(new ScrollHandler() {
-        
-        @Override
-        public void onScroll(ScrollEvent event) {
-//            Log.info(getClass(), "--------------------------------------------------------------------------");
-//            Log.info(getClass(), " scrollPanel.getOffsetHeight(): " + scrollPanel.getOffsetHeight());
-//            Log.info(getClass(), " scrollPanel.getVerticalScrollPosition(): " + scrollPanel.getVerticalScrollPosition());
-//            Log.info(getClass(), " scrollPanel.getMaximumVerticalScrollPosition(): " + scrollPanel.getMaximumVerticalScrollPosition());
-//            Log.info(getClass(), " consoleLines.getOffsetHeight(): " + consoleLines.getOffsetHeight());
-//            Log.info(getClass(), " top " + scrollPanel.getElement().getStyle().getPaddingTop());
-//            Log.info(getClass(), " bottom  " + scrollPanel.getElement().getStyle().getPaddingBottom());
-//            Log.info(getClass(), " " + scrollPanel.getElement().getClientHeight());
-//            Log.info(getClass(), scrollPanel.getElement().getStyle().getPadding());
+    scrollPanel.addScrollHandler(
+        new ScrollHandler() {
 
-           if (scrollPanel.getVerticalScrollPosition() == 0) {
-               Log.info(getClass(), "previous");
-               delegate.onPaginationPreviousClicked();  
-           }
+          @Override
+          public void onScroll(ScrollEvent event) {
+            //            Log.info(getClass(),
+            // "--------------------------------------------------------------------------");
+            //            Log.info(getClass(), " scrollPanel.getOffsetHeight(): " +
+            // scrollPanel.getOffsetHeight());
+            //            Log.info(getClass(), " scrollPanel.getVerticalScrollPosition(): " +
+            // scrollPanel.getVerticalScrollPosition());
+            //            Log.info(getClass(), " scrollPanel.getMaximumVerticalScrollPosition(): " +
+            // scrollPanel.getMaximumVerticalScrollPosition());
+            //            Log.info(getClass(), " consoleLines.getOffsetHeight(): " +
+            // consoleLines.getOffsetHeight());
+            //            Log.info(getClass(), " top " +
+            // scrollPanel.getElement().getStyle().getPaddingTop());
+            //            Log.info(getClass(), " bottom  " +
+            // scrollPanel.getElement().getStyle().getPaddingBottom());
+            //            Log.info(getClass(), " " + scrollPanel.getElement().getClientHeight());
+            //            Log.info(getClass(), scrollPanel.getElement().getStyle().getPadding());
 
-           int bottomPosition = scrollPanel.getVerticalScrollPosition() + scrollPanel.getElement().getClientHeight() - 2; // 2px it's a padding.
-           Log.info(getClass(), bottomPosition + " " + consoleLines.getOffsetHeight());
-           if (bottomPosition == consoleLines.getOffsetHeight()) {
-               Log.info(getClass(), "next");
-               delegate.onPaginationNextClicked();                
-           }
-
-//            scrollPanel.getElement().get
-//            scrollPanel.getElement().gePropertyInt("");
-//            Log.info(getClass())
-            Log.info(getClass(), "--------------------------------------------------------------------------");
-        }
-    });
+            //           if (scrollPanel.getVerticalScrollPosition() == 0) {
+            //               Log.info(getClass(), "previous");
+            //               delegate.onPaginationPreviousClicked();
+            //           }
+            //
+            //           int bottomPosition = scrollPanel.getVerticalScrollPosition() +
+            // scrollPanel.getElement().getClientHeight() - 2; // 2px it's a padding.
+            //           Log.info(getClass(), bottomPosition + " " +
+            // consoleLines.getOffsetHeight());
+            //           if (bottomPosition == consoleLines.getOffsetHeight()) {
+            //               Log.info(getClass(), "next");
+            //               delegate.onPaginationNextClicked();
+            //           }
+            //            Log.info(getClass(),
+            // "--------------------------------------------------------------------------");
+          }
+        });
 
     Tooltip.create(
         (elemental.dom.Element) reRunProcessButton.getElement(),
@@ -353,18 +358,15 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
     }
   }
 
-  //todo
-  //long getRowsQuantity();
-
   @Override
   public void displayPaginationPrevious() {
-    //todo localization constant
+    // todo localization constant
     paginationConsolePrevious.setText("Click to display previous output.");
   }
 
   @Override
   public void displayPaginationNext() {
-    //todo localization constant
+    // todo localization constant
     paginationConsoleNext.setText("Click to display next output.");
   }
 
@@ -380,7 +382,6 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @Override
   public void print(final String text, boolean carriageReturn, String color) {
-
     if (this.carriageReturn) {
       Node lastChild = consoleLines.getElement().getLastChild();
       if (lastChild != null) {
@@ -390,64 +391,96 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
     this.carriageReturn = carriageReturn;
 
-    final SafeHtml colorOutput =
-        new SafeHtml() {
-          @Override
-          public String asString() {
-
-            if (Strings.isNullOrEmpty(text)) {
-              return " ";
-            }
-
-            String encoded = SafeHtmlUtils.htmlEscape(text);
-            if (delegate != null) {
-              if (delegate.getCustomizer() != null) {
-                if (delegate.getCustomizer().canCustomize(encoded)) {
-                  encoded = delegate.getCustomizer().customize(encoded);
-                }
-              }
-            }
-
-            for (final Pair<RegExp, String> pair : output2Color) {
-              final MatchResult matcher = pair.first.exec(encoded);
-
-              if (matcher != null) {
-                return encoded.replaceAll(
-                    matcher.getGroup(1),
-                    "<span style=\"color: "
-                        + pair.second
-                        + "\">"
-                        + matcher.getGroup(1)
-                        + "</span>");
-              }
-            }
-
-            return encoded;
-          }
-        };
-
     PreElement pre = DOM.createElement("pre").cast();
-    pre.setInnerSafeHtml(colorOutput);
+    pre.setInnerSafeHtml(generateContent(text, color));
     if (color != null) {
       pre.getStyle().setColor(color);
     }
+
     consoleLines.getElement().appendChild(pre);
 
-    followOutput();
+    //followOutput();
+  }
+
+  @Override
+  public void printOnTop(final String text, boolean carriageReturn) {
+    if (this.carriageReturn) {
+      Node lastChild = consoleLines.getElement().getLastChild();
+      if (lastChild != null) {
+        lastChild.removeFromParent();
+      }
+    }
+
+    this.carriageReturn = carriageReturn;
+
+    PreElement pre = DOM.createElement("pre").cast();
+    pre.setInnerSafeHtml(generateContent(text, null));
+
+    Node firstChild = consoleLines.getElement().getFirstChild();
+//    Log.info(getClass(), lastChild.getNodeName());
+    if (firstChild != null) {
+        consoleLines.getElement().insertBefore(pre, firstChild);
+    }
+
+//    followOutput();
+  }
+
+  private SafeHtml generateContent(String text, String color) {
+    return (SafeHtml)
+        () -> {
+          if (Strings.isNullOrEmpty(text)) {
+            return " ";
+          }
+
+          String encoded = SafeHtmlUtils.htmlEscape(text);
+          if (delegate != null) {
+            if (delegate.getCustomizer() != null) {
+              if (delegate.getCustomizer().canCustomize(encoded)) {
+                encoded = delegate.getCustomizer().customize(encoded);
+              }
+            }
+          }
+
+          for (final Pair<RegExp, String> pair : output2Color) {
+            final MatchResult matcher = pair.first.exec(encoded);
+
+            if (matcher != null) {
+              return encoded.replaceAll(
+                  matcher.getGroup(1),
+                  "<span style=\"color: " + pair.second + "\">" + matcher.getGroup(1) + "</span>");
+            }
+          }
+
+          return encoded;
+        };
   }
 
   @Override
   public void clearText() {
     consoleLines.getElement().removeAllChildren();
   }
-  
+
   @Override
-  public void clearBottomLines(int amountLines) {
-      consoleLines.get   for (int i = 0; i < i < amountLines; i++) {
-          
+  public void clearLines(int amountLines, int offset) {
+    NodeList<Node> children = consoleLines.getElement().getChildNodes();
+
+    Node node = consoleLines.getElement().getFirstChild();
+    int amountChildren = children.getLength();
+    for (int i = 0; amountLines != 0 && i < amountChildren; i++) {
+      if (node == null) {
+        break;
       }
-          
-      removeChild(getElement())      consoleLines.getElement().re
+
+      Node nextNode = node.getNextSibling();
+      if (i < offset) {
+        node = nextNode;
+        continue;
+      }
+
+      consoleLines.getElement().removeChild(node);
+      amountLines--;
+      node = nextNode;
+    }
   }
 
   @Override
@@ -489,15 +522,15 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   }
 
   private Timer visibilityTimer =
-    new Timer() {
-      @Override
-      public void run() {
-        if (isVisible() && followOutput) {
-          scrollPanel.scrollToBottom();
-          scrollPanel.scrollToLeft();
+      new Timer() {
+        @Override
+        public void run() {
+          if (isVisible() && followOutput) {
+            scrollPanel.scrollToBottom();
+            scrollPanel.scrollToLeft();
+          }
         }
-    }
-  };
+      };
 
   /** Scrolls to the bottom if following the output is enabled. */
   private void followOutput() {
