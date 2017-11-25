@@ -161,7 +161,6 @@ public class CommandOutputConsolePresenter
   }
 
   private static final long LINES_TO_LOAD = 4;
-  // private long totalLineNum; // in common situation we don't know; :)
   private long AMOUNT_SAVED_LINES = 10;
   private long currentOffset;
   private long totalLineNum;
@@ -169,20 +168,33 @@ public class CommandOutputConsolePresenter
 
   @Override
   public void onPaginationNextClicked() {
-    //    execAgentCommandManager
-    //        .getProcessLogs(machineName, pid, null, null, LINES_TO_LOAD, totalLineNum)
-    //        .onSuccess(
-    //            consumer -> {
-    //              if (currentPageNum < amountPages) {
-    //                currentPageNum++;
-    //              }
-    //              view.clearLines(PAGE_SIZE/2, 0);
-    //              Log.info(getClass(), consumer.size() + " %%%%%%%%%%%%%%%%%% " );
-    //
-    //              consumer.forEach(responseDto -> Log.info(getClass(), responseDto.getText()));
-    //              //consumer.forEach(responseDto -> print(responseDto.getText()));
-    //              // todo scroll to bottom
-    //            });
+    int skip = Math.max((int)(totalLineNum - currentOffset - AMOUNT_SAVED_LINES - LINES_TO_LOAD), 0);
+
+    if (currentOffset + AMOUNT_SAVED_LINES > totalLineNum) {
+      return;
+    }
+
+//    Log.info(getClass(), "skip " + skip);
+    long diff = totalLineNum - currentOffset - AMOUNT_SAVED_LINES;
+//    Log.info(getClass(), diff);
+    long limit = diff < LINES_TO_LOAD ? diff : LINES_TO_LOAD;
+
+    execAgentCommandManager
+        .getProcessLogs(machineName, pid, null, null, (int)limit, skip)
+        .onSuccess(
+            consumer -> {
+              currentOffset += consumer.size();
+//              Log.info(getClass(), "offset " + currentOffset);
+              view.clearLines(consumer.size(), 0);
+              if (currentOffset + AMOUNT_SAVED_LINES >= totalLineNum) {
+                view.hideNextOutPutPartLink();
+              }
+              if (currentOffset > 0) {
+                view.displayPreviousOutPutLink();
+              }
+//              consumer.forEach(responseDto -> Log.info(getClass(), responseDto.getText()));
+              consumer.forEach(responseDto -> print(responseDto.getText()));
+            });
   }
 
   @Override
@@ -191,15 +203,16 @@ public class CommandOutputConsolePresenter
       return;
     }
 
-    Log.info(getClass(), " Offset = " + currentOffset);
-    // Log.info(getClass(), "totalLineNum - currentOffset = " + (totalLineNum - currentOffset));
-    int skip = (int) (totalLineNum - currentOffset);
+    //Log.info(getClass(), " Offset = " + currentOffset);
+    int skip = (int)(totalLineNum - currentOffset);
+    // Log.info(getClass(), "skip = totalLineNum - currentOffset = " + skip);
+
     execAgentCommandManager
-        .getProcessLogs(machineName, pid, null, null, (int) LINES_TO_LOAD, skip) // 20 - (10 + 4*2)
+        .getProcessLogs(machineName, pid, null, null, (int) LINES_TO_LOAD, skip)
         .onSuccess(
             consumer -> {
-              view.clearLines((int) LINES_TO_LOAD, (int) (savedLineNum - consumer.size()));
-              consumer.forEach(responseDto -> Log.info(getClass(), responseDto.getText()));
+              view.clearLines(consumer.size(), (int) (savedLineNum - consumer.size()));
+//              consumer.forEach(responseDto -> Log.info(getClass(), responseDto.getText()));
               currentOffset -= consumer.size();
               Lists.reverse(consumer).forEach(responseDto -> printOnTop(responseDto.getText()));
 

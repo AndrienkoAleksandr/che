@@ -376,7 +376,7 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @Override
   public void hideNextOutPutPartLink() {
-    paginationConsolePrevious.setText("");
+    paginationConsoleNext.setText("");
   }
 
   @Override
