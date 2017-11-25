@@ -13,6 +13,7 @@ package org.eclipse.che.ide.console;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.eclipse.che.api.workspace.shared.Constants.COMMAND_PREVIEW_URL_ATTRIBUTE_NAME;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
@@ -160,53 +161,55 @@ public class CommandOutputConsolePresenter
   }
 
   private static final long LINES_TO_LOAD = 4;
-  //private long totalLineNum; // in common situation we don't know; :)
+  // private long totalLineNum; // in common situation we don't know; :)
   private long AMOUNT_SAVED_LINES = 10;
   private long currentOffset;
+  private long totalLineNum;
   private long savedLineNum;
 
   @Override
   public void onPaginationNextClicked() {
-//    execAgentCommandManager
-//        .getProcessLogs(machineName, pid, null, null, LINES_TO_LOAD, totalLineNum)
-//        .onSuccess(
-//            consumer -> {
-//              if (currentPageNum < amountPages) {
-//                currentPageNum++;
-//              }
-//              view.clearLines(PAGE_SIZE/2, 0);
-//              Log.info(getClass(), consumer.size() + " %%%%%%%%%%%%%%%%%% " );
-//
-//              consumer.forEach(responseDto -> Log.info(getClass(), responseDto.getText()));
-//              //consumer.forEach(responseDto -> print(responseDto.getText()));
-//              // todo scroll to bottom
-//            });
+    //    execAgentCommandManager
+    //        .getProcessLogs(machineName, pid, null, null, LINES_TO_LOAD, totalLineNum)
+    //        .onSuccess(
+    //            consumer -> {
+    //              if (currentPageNum < amountPages) {
+    //                currentPageNum++;
+    //              }
+    //              view.clearLines(PAGE_SIZE/2, 0);
+    //              Log.info(getClass(), consumer.size() + " %%%%%%%%%%%%%%%%%% " );
+    //
+    //              consumer.forEach(responseDto -> Log.info(getClass(), responseDto.getText()));
+    //              //consumer.forEach(responseDto -> print(responseDto.getText()));
+    //              // todo scroll to bottom
+    //            });
   }
 
   @Override
   public void onPaginationPreviousClicked() {
-//    int skip = amountPages * PAGE_SIZE - (currentPageNum * PAGE_SIZE + LINES_TO_LOAD);
+    if (currentOffset == 0) {
+      return;
+    }
 
-//    if (skip >= totalLineNum) {
-//      return;
-//    }
-
-    Log.info(getClass(), (currentOffset - LINES_TO_LOAD));
+    Log.info(getClass(), " Offset = " + currentOffset);
+    // Log.info(getClass(), "totalLineNum - currentOffset = " + (totalLineNum - currentOffset));
+    int skip = (int) (totalLineNum - currentOffset);
     execAgentCommandManager
-        .getProcessLogs(machineName, pid, null, null, (int)LINES_TO_LOAD, (10 + 4))
+        .getProcessLogs(machineName, pid, null, null, (int) LINES_TO_LOAD, skip) // 20 - (10 + 4*2)
         .onSuccess(
             consumer -> {
+              view.clearLines((int) LINES_TO_LOAD, (int) (savedLineNum - consumer.size()));
+              consumer.forEach(responseDto -> Log.info(getClass(), responseDto.getText()));
+              currentOffset -= consumer.size();
+              Lists.reverse(consumer).forEach(responseDto -> printOnTop(responseDto.getText()));
 
-//              currentPageNum = currentPageNum == 1 ? 1 : currentPageNum - 1;
-//              //Log.info(getClass(), " amount " + PAGE_SIZE/2 + " offset " + PAGE_SIZE/2);
-//              view.clearLines(PAGE_SIZE / 2, PAGE_SIZE/2);
-            consumer.forEach(responseDto -> Log.info(getClass(), responseDto.getText()));
-//              Lists.reverse(consumer).forEach(responseDto -> printOnTop(responseDto.getText()));
-//              // consumer.forEach(responseDto -> printOnTop(responseDto.getText()));
-//              // view.scrollToBottom();
-//              if (currentPageNum != amountPages) {
-//                view.displayNextOutPutPart();
-//              }
+              if (currentOffset == 0) {
+                view.hidePreviousOutPutLink();
+              }
+              // view.scrollToBottom();
+              if (currentOffset + AMOUNT_SAVED_LINES != totalLineNum) {
+                view.displayNextOutPutPartLink();
+              }
             });
   }
 
@@ -215,13 +218,14 @@ public class CommandOutputConsolePresenter
     return event -> {
       if (savedLineNum > AMOUNT_SAVED_LINES - 1) {
         view.clearConsole();
-        view.displayPreviousOutPutPart();
+        view.displayPreviousOutPutLink();
         savedLineNum = 0;
+        currentOffset += AMOUNT_SAVED_LINES;
       }
 
       print(event.getText());
 
-      currentOffset++;
+      totalLineNum++;
       savedLineNum++;
 
       for (ActionDelegate actionDelegate : actionDelegates) {

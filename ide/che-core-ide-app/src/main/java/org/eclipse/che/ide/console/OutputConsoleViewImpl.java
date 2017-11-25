@@ -47,7 +47,6 @@ import org.eclipse.che.ide.FontAwesome;
 import org.eclipse.che.ide.machine.MachineResources;
 import org.eclipse.che.ide.ui.Tooltip;
 import org.eclipse.che.ide.util.Pair;
-import org.eclipse.che.ide.util.loging.Log;
 import org.vectomatic.dom.svg.ui.SVGImage;
 
 /**
@@ -359,15 +358,25 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   }
 
   @Override
-  public void displayPreviousOutPutPart() {
+  public void displayPreviousOutPutLink() {
     // todo localization constant
     paginationConsolePrevious.setText("Click to display previous output.");
   }
 
   @Override
-  public void displayNextOutPutPart() {
+  public void hidePreviousOutPutLink() {
+    paginationConsolePrevious.setText("");
+  }
+
+  @Override
+  public void displayNextOutPutPartLink() {
     // todo localization constant
     paginationConsoleNext.setText("Click to display next output.");
+  }
+
+  @Override
+  public void hideNextOutPutPartLink() {
+    paginationConsolePrevious.setText("");
   }
 
   @Override
@@ -399,7 +408,7 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
     consoleLines.getElement().appendChild(pre);
 
-    //followOutput();
+    // followOutput();
   }
 
   @Override
@@ -417,12 +426,12 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
     pre.setInnerSafeHtml(generateContent(text, null));
 
     Node firstChild = consoleLines.getElement().getFirstChild();
-//    Log.info(getClass(), lastChild.getNodeName());
+    //    Log.info(getClass(), lastChild.getNodeName());
     if (firstChild != null) {
-        consoleLines.getElement().insertBefore(pre, firstChild);
+      consoleLines.getElement().insertBefore(pre, firstChild);
     }
 
-//    followOutput();
+    //    followOutput();
   }
 
   private SafeHtml generateContent(String text, String color) {
