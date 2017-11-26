@@ -47,6 +47,7 @@ import org.eclipse.che.ide.FontAwesome;
 import org.eclipse.che.ide.machine.MachineResources;
 import org.eclipse.che.ide.ui.Tooltip;
 import org.eclipse.che.ide.util.Pair;
+import org.eclipse.che.ide.util.loging.Log;
 import org.vectomatic.dom.svg.ui.SVGImage;
 
 /**
@@ -218,19 +219,18 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
             //            Log.info(getClass(), " " + scrollPanel.getElement().getClientHeight());
             //            Log.info(getClass(), scrollPanel.getElement().getStyle().getPadding());
 
-            //           if (scrollPanel.getVerticalScrollPosition() == 0) {
-            //               Log.info(getClass(), "previous");
-            //               delegate.onPaginationPreviousClicked();
-            //           }
+            if (scrollPanel.getVerticalScrollPosition() == 0) {
+              Log.info(getClass(), "previous");
+              delegate.onPaginationPreviousClicked();
+            }
             //
-            //           int bottomPosition = scrollPanel.getVerticalScrollPosition() +
-            // scrollPanel.getElement().getClientHeight() - 2; // 2px it's a padding.
-            //           Log.info(getClass(), bottomPosition + " " +
-            // consoleLines.getOffsetHeight());
-            //           if (bottomPosition == consoleLines.getOffsetHeight()) {
-            //               Log.info(getClass(), "next");
-            //               delegate.onPaginationNextClicked();
-            //           }
+            int bottomPosition = scrollPanel.getVerticalScrollPosition() +
+            scrollPanel.getElement().getClientHeight() - 2; // 2px it's a padding.
+            //           Log.info(getClass(), bottomPosition + " " +consoleLines.getOffsetHeight());
+//            if (bottomPosition == consoleLines.getOffsetHeight()) {
+//              Log.info(getClass(), "next");
+//              delegate.onPaginationNextClicked();
+//            }
             //            Log.info(getClass(),
             // "--------------------------------------------------------------------------");
           }

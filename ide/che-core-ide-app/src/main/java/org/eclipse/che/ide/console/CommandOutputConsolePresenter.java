@@ -160,8 +160,8 @@ public class CommandOutputConsolePresenter
     };
   }
 
-  private static final long LINES_TO_LOAD = 4;
-  private long AMOUNT_SAVED_LINES = 10;
+  private static final long LINES_TO_LOAD = 5;
+  private long AMOUNT_SAVED_LINES = 30;
   private long currentOffset;
   private long totalLineNum;
   private long savedLineNum;
