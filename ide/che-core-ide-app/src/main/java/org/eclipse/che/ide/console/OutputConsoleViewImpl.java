@@ -36,6 +36,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -227,10 +228,10 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
             int bottomPosition = scrollPanel.getVerticalScrollPosition() +
             scrollPanel.getElement().getClientHeight() - 2; // 2px it's a padding.
             //           Log.info(getClass(), bottomPosition + " " +consoleLines.getOffsetHeight());
-//            if (bottomPosition == consoleLines.getOffsetHeight()) {
-//              Log.info(getClass(), "next");
-//              delegate.onPaginationNextClicked();
-//            }
+            if (bottomPosition == consoleLines.getOffsetHeight()) {
+              Log.info(getClass(), "next");
+              delegate.onPaginationNextClicked();
+            }
             //            Log.info(getClass(),
             // "--------------------------------------------------------------------------");
           }
@@ -360,23 +361,25 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   @Override
   public void displayPreviousOutPutLink() {
     // todo localization constant
+    paginationConsolePrevious.setVisible(true);
     paginationConsolePrevious.setText("Click to display previous output.");
   }
 
   @Override
   public void hidePreviousOutPutLink() {
-    paginationConsolePrevious.setText("");
+    paginationConsolePrevious.setVisible(false);
   }
 
   @Override
   public void displayNextOutPutPartLink() {
     // todo localization constant
+    paginationConsoleNext.setVisible(true);
     paginationConsoleNext.setText("Click to display next output.");
   }
 
   @Override
   public void hideNextOutPutPartLink() {
-    paginationConsoleNext.setText("");
+    paginationConsoleNext.setVisible(false);
   }
 
   @Override
@@ -391,6 +394,9 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @Override
   public void print(final String text, boolean carriageReturn, String color) {
+    Widget parent = consoleLines.getParent();
+    consoleLines.removeFromParent();
+
     if (this.carriageReturn) {
       Node lastChild = consoleLines.getElement().getLastChild();
       if (lastChild != null) {
@@ -408,11 +414,15 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
     consoleLines.getElement().appendChild(pre);
 
+    ((HasWidgets)parent).add(consoleLines);
     // followOutput();
   }
 
   @Override
   public void printOnTop(final String text, boolean carriageReturn) {
+    Widget parent = consoleLines.getParent();
+    consoleLines.removeFromParent();
+
     if (this.carriageReturn) {
       Node lastChild = consoleLines.getElement().getLastChild();
       if (lastChild != null) {
@@ -431,6 +441,7 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
       consoleLines.getElement().insertBefore(pre, firstChild);
     }
 
+    ((HasWidgets)parent).add(consoleLines);
     //    followOutput();
   }
 
@@ -471,6 +482,9 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @Override
   public void clearLines(int amountLines, int offset) {
+    Widget parent = consoleLines.getParent();
+    consoleLines.removeFromParent();
+
     NodeList<Node> children = consoleLines.getElement().getChildNodes();
 
     Node node = consoleLines.getElement().getFirstChild();
@@ -490,6 +504,7 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
       amountLines--;
       node = nextNode;
     }
+    ((HasWidgets)parent).add(consoleLines);
   }
 
   @Override

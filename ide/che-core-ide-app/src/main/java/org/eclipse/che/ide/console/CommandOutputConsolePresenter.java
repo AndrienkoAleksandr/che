@@ -160,24 +160,29 @@ public class CommandOutputConsolePresenter
     };
   }
 
-  private static final long LINES_TO_LOAD = 5;
+  private static final long LINES_TO_LOAD = 20;
   private long AMOUNT_SAVED_LINES = 30;
-  private long currentOffset;
-  private long totalLineNum;
-  private long savedLineNum;
+  private long    currentOffset;
+  private long    totalLineNum;
+  private long    savedLineNum;
+  // todo improve...
+  private boolean paginnationInProgress;
 
   @Override
   public void onPaginationNextClicked() {
     int skip = Math.max((int)(totalLineNum - currentOffset - AMOUNT_SAVED_LINES - LINES_TO_LOAD), 0);
 
+    Log.info(getClass(), "Total line number: " + totalLineNum + " current offset: " + currentOffset);
     if (currentOffset + AMOUNT_SAVED_LINES > totalLineNum) {
       return;
     }
 
-//    Log.info(getClass(), "skip " + skip);
     long diff = totalLineNum - currentOffset - AMOUNT_SAVED_LINES;
-//    Log.info(getClass(), diff);
     long limit = diff < LINES_TO_LOAD ? diff : LINES_TO_LOAD;
+    //Log.info(getClass(), "Limit to load = " + limit + " skip " + skip);
+    if (limit == 0) {
+      return;
+    }
 
     execAgentCommandManager
         .getProcessLogs(machineName, pid, null, null, (int)limit, skip)
@@ -194,7 +199,8 @@ public class CommandOutputConsolePresenter
               }
 //              consumer.forEach(responseDto -> Log.info(getClass(), responseDto.getText()));
               consumer.forEach(responseDto -> print(responseDto.getText()));
-            });
+            })
+        .onFailure(err -> Log.error(getClass(), "Log pagination next failed. Cause" + err.getMessage()));
   }
 
   @Override
@@ -203,8 +209,9 @@ public class CommandOutputConsolePresenter
       return;
     }
 
-    //Log.info(getClass(), " Offset = " + currentOffset);
     int skip = (int)(totalLineNum - currentOffset);
+    Log.info(getClass(), "Total line number: " + totalLineNum + " current offset: " + currentOffset);
+    //Log.info(getClass(), " Offset = " + currentOffset);
     // Log.info(getClass(), "skip = totalLineNum - currentOffset = " + skip);
 
     execAgentCommandManager
@@ -223,7 +230,8 @@ public class CommandOutputConsolePresenter
               if (currentOffset + AMOUNT_SAVED_LINES != totalLineNum) {
                 view.displayNextOutPutPartLink();
               }
-            });
+            })
+        .onFailure(err -> Log.error(getClass(), "Log pagination previous failed. Cause" + err.getMessage()));
   }
 
   @Override
@@ -236,10 +244,9 @@ public class CommandOutputConsolePresenter
         currentOffset += AMOUNT_SAVED_LINES;
       }
 
-      print(event.getText());
-
       totalLineNum++;
       savedLineNum++;
+      print(event.getText());
 
       for (ActionDelegate actionDelegate : actionDelegates) {
         actionDelegate.onConsoleOutput(CommandOutputConsolePresenter.this);
