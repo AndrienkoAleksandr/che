@@ -160,16 +160,16 @@ public class CommandOutputConsolePresenter
     };
   }
 
-  private static final long LINES_TO_LOAD = 20;
-  private long AMOUNT_SAVED_LINES = 30;
-  private long    currentOffset;
-  private long    totalLineNum;
-  private long    savedLineNum;
-  // todo improve...
-  private boolean paginnationInProgress;
+  public static final long LINES_TO_LOAD = 20;
+  private static final char AMOUNT_SCROLL_LINES = 4;
+  private long AMOUNT_SAVED_LINES = 50;
+
+  private long currentOffset;
+  private long totalLineNum;
+  private long savedLineNum;
 
   @Override
-  public void onPaginationNextClicked() {
+  public void onLoadNextLogsPortion() {
     int skip = Math.max((int)(totalLineNum - currentOffset - AMOUNT_SAVED_LINES - LINES_TO_LOAD), 0);
 
     Log.info(getClass(), "Total line number: " + totalLineNum + " current offset: " + currentOffset);
@@ -199,18 +199,20 @@ public class CommandOutputConsolePresenter
               }
 //              consumer.forEach(responseDto -> Log.info(getClass(), responseDto.getText()));
               consumer.forEach(responseDto -> print(responseDto.getText()));
+              Log.info(getClass(),  "savedLineNumber: " + savedLineNum);
+              view.setScrollPosition((int)LINES_TO_LOAD);
             })
         .onFailure(err -> Log.error(getClass(), "Log pagination next failed. Cause" + err.getMessage()));
   }
 
   @Override
-  public void onPaginationPreviousClicked() {
+  public void onLoadPreviousPortion() {
     if (currentOffset == 0) {
       return;
     }
 
     int skip = (int)(totalLineNum - currentOffset);
-    Log.info(getClass(), "Total line number: " + totalLineNum + " current offset: " + currentOffset);
+    //Log.info(getClass(), "Total line number: " + totalLineNum + " current offset: " + currentOffset);
     //Log.info(getClass(), " Offset = " + currentOffset);
     // Log.info(getClass(), "skip = totalLineNum - currentOffset = " + skip);
 
@@ -230,6 +232,8 @@ public class CommandOutputConsolePresenter
               if (currentOffset + AMOUNT_SAVED_LINES != totalLineNum) {
                 view.displayNextOutPutPartLink();
               }
+              //todo checking
+              view.setScrollPosition((int)(LINES_TO_LOAD - AMOUNT_SCROLL_LINES));
             })
         .onFailure(err -> Log.error(getClass(), "Log pagination previous failed. Cause" + err.getMessage()));
   }

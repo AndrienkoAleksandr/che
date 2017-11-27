@@ -186,12 +186,12 @@ public class DefaultOutputConsole implements OutputConsole, OutputConsoleView.Ac
 
   // todo seems pagination should be separated interface. Maybe in the core.
   @Override
-  public void onPaginationNextClicked() {
+  public void onLoadNextLogsPortion() {
     // todo
   }
 
   @Override
-  public void onPaginationPreviousClicked() {
+  public void onLoadPreviousPortion() {
     // todo
   }
 

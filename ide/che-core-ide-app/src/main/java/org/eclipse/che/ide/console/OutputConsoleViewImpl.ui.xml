@@ -225,7 +225,7 @@
         <g:center>
             <g:FlowPanel styleName="{style.consolePanel}">
                 <g:ScrollPanel ui:field="scrollPanel" debugId="commandConsoleScrollPanel" styleName="{style.console}">
-                    <g:FlowPanel width="100%" ui:field="consoleLines" debugId="commandConsoleLines" styleName="{style.consoleLines}"/>
+                    <g:FocusPanel width="100%" ui:field="consoleLines" debugId="commandConsoleLines" styleName="{style.consoleLines}"/>
                 </g:ScrollPanel>
             </g:FlowPanel>
         </g:center>

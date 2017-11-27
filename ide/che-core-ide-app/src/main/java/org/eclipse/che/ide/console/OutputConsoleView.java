@@ -71,6 +71,8 @@ public interface OutputConsoleView extends View<OutputConsoleView.ActionDelegate
 
   void scrollToBottom();
 
+  void setScrollPosition(int visibleLineNumber);
+
   /**
    * Returns the console text.
    *
@@ -156,9 +158,9 @@ public interface OutputConsoleView extends View<OutputConsoleView.ActionDelegate
     /** Handle scrolling the output. */
     void onOutputScrolled(boolean bottomReached);
 
-    void onPaginationNextClicked();
+    void onLoadNextLogsPortion();
 
-    void onPaginationPreviousClicked();
+    void onLoadPreviousPortion();
 
     /** Returns the customizer for the console output */
     OutputCustomizer getCustomizer();
