@@ -177,6 +177,7 @@
 
         .consoleLines {
             width: 100%;
+            outline: none;
         }
 
         .consoleLines > pre {

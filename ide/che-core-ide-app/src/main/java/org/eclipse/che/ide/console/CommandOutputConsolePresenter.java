@@ -161,7 +161,7 @@ public class CommandOutputConsolePresenter
   }
 
   public static final long LINES_TO_LOAD = 20;
-  private static final char AMOUNT_SCROLL_LINES = 4;
+  private static final char AMOUNT_SCROLL_LINES = 3;
   private long AMOUNT_SAVED_LINES = 50;
 
   private long currentOffset;
@@ -200,7 +200,7 @@ public class CommandOutputConsolePresenter
 //              consumer.forEach(responseDto -> Log.info(getClass(), responseDto.getText()));
               consumer.forEach(responseDto -> print(responseDto.getText()));
               Log.info(getClass(),  "savedLineNumber: " + savedLineNum);
-              view.setScrollPosition((int)LINES_TO_LOAD);
+              view.setScrollPosition((int)LINES_TO_LOAD - 1);
             })
         .onFailure(err -> Log.error(getClass(), "Log pagination next failed. Cause" + err.getMessage()));
   }
