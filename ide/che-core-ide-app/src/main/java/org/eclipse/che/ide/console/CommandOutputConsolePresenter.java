@@ -152,7 +152,7 @@ public class CommandOutputConsolePresenter
       // todo handle error consumer too.
       boolean carriageReturn = text.endsWith("\r");
       String color = "red";
-      view.print(text, carriageReturn, color);
+      view.print(text, carriageReturn, color, false);
 
       for (ActionDelegate actionDelegate : actionDelegates) {
         actionDelegate.onConsoleOutput(CommandOutputConsolePresenter.this);
@@ -170,39 +170,45 @@ public class CommandOutputConsolePresenter
 
   @Override
   public void onLoadNextLogsPortion() {
-    int skip = Math.max((int)(totalLineNum - currentOffset - AMOUNT_SAVED_LINES - LINES_TO_LOAD), 0);
+    int skip =
+        Math.max((int) (totalLineNum - currentOffset - AMOUNT_SAVED_LINES - LINES_TO_LOAD), 0);
 
-    Log.info(getClass(), "Total line number: " + totalLineNum + " current offset: " + currentOffset);
+    Log.info(
+        getClass(), "Total line number: " + totalLineNum + " current offset: " + currentOffset);
     if (currentOffset + AMOUNT_SAVED_LINES > totalLineNum) {
       return;
     }
 
     long diff = totalLineNum - currentOffset - AMOUNT_SAVED_LINES;
     long limit = diff < LINES_TO_LOAD ? diff : LINES_TO_LOAD;
-    //Log.info(getClass(), "Limit to load = " + limit + " skip " + skip);
+    // Log.info(getClass(), "Limit to load = " + limit + " skip " + skip);
     if (limit == 0) {
       return;
     }
 
     execAgentCommandManager
-        .getProcessLogs(machineName, pid, null, null, (int)limit, skip)
+        .getProcessLogs(machineName, pid, null, null, (int) limit, skip)
         .onSuccess(
             consumer -> {
               currentOffset += consumer.size();
-//              Log.info(getClass(), "offset " + currentOffset);
+              //              Log.info(getClass(), "offset " + currentOffset);
               view.clearLines(consumer.size(), 0);
-              if (currentOffset + AMOUNT_SAVED_LINES >= totalLineNum) {
-                view.hideNextOutPutPartLink();
-              }
-              if (currentOffset > 0) {
-                view.displayPreviousOutPutLink();
-              }
-//              consumer.forEach(responseDto -> Log.info(getClass(), responseDto.getText()));
+
+              //              if (currentOffset + AMOUNT_SAVED_LINES >= totalLineNum) {
+              //                view.hideNextOutPutPartLink();
+              //              }
+              //              if (currentOffset > 0) {
+              //                view.displayPreviousOutPutLink();
+              //              }
+
+              //              consumer.forEach(responseDto -> Log.info(getClass(),
+              // responseDto.getText()));
               consumer.forEach(responseDto -> print(responseDto.getText()));
-              Log.info(getClass(),  "savedLineNumber: " + savedLineNum);
-              view.setScrollPosition((int)LINES_TO_LOAD - 1);
+              Log.info(getClass(), "savedLineNumber: " + savedLineNum);
+              view.setScrollPosition((int) LINES_TO_LOAD - 1);
             })
-        .onFailure(err -> Log.error(getClass(), "Log pagination next failed. Cause" + err.getMessage()));
+        .onFailure(
+            err -> Log.error(getClass(), "Log pagination next failed. Cause" + err.getMessage()));
   }
 
   @Override
@@ -211,9 +217,10 @@ public class CommandOutputConsolePresenter
       return;
     }
 
-    int skip = (int)(totalLineNum - currentOffset);
-    //Log.info(getClass(), "Total line number: " + totalLineNum + " current offset: " + currentOffset);
-    //Log.info(getClass(), " Offset = " + currentOffset);
+    int skip = (int) (totalLineNum - currentOffset);
+    // Log.info(getClass(), "Total line number: " + totalLineNum + " current offset: " +
+    // currentOffset);
+    // Log.info(getClass(), " Offset = " + currentOffset);
     // Log.info(getClass(), "skip = totalLineNum - currentOffset = " + skip);
 
     execAgentCommandManager
@@ -221,21 +228,24 @@ public class CommandOutputConsolePresenter
         .onSuccess(
             consumer -> {
               view.clearLines(consumer.size(), (int) (savedLineNum - consumer.size()));
-//              consumer.forEach(responseDto -> Log.info(getClass(), responseDto.getText()));
+              //              consumer.forEach(responseDto -> Log.info(getClass(),
+              // responseDto.getText()));
               currentOffset -= consumer.size();
               Lists.reverse(consumer).forEach(responseDto -> printOnTop(responseDto.getText()));
 
-              if (currentOffset == 0) {
-                view.hidePreviousOutPutLink();
-              }
+              //              if (currentOffset == 0) {
+              //                view.hidePreviousOutPutLink();
+              //              }
               // view.scrollToBottom();
-              if (currentOffset + AMOUNT_SAVED_LINES != totalLineNum) {
-                view.displayNextOutPutPartLink();
-              }
-              //todo checking
-              view.setScrollPosition((int)(LINES_TO_LOAD - AMOUNT_SCROLL_LINES));
+              //              if (currentOffset + AMOUNT_SAVED_LINES != totalLineNum) {
+              //                view.displayNextOutPutPartLink();
+              //              }
+
+              view.setScrollPosition((int) (LINES_TO_LOAD - AMOUNT_SCROLL_LINES));
             })
-        .onFailure(err -> Log.error(getClass(), "Log pagination previous failed. Cause" + err.getMessage()));
+        .onFailure(
+            err ->
+                Log.error(getClass(), "Log pagination previous failed. Cause" + err.getMessage()));
   }
 
   @Override
@@ -243,7 +253,7 @@ public class CommandOutputConsolePresenter
     return event -> {
       if (savedLineNum > AMOUNT_SAVED_LINES - 1) {
         view.clearConsole();
-        view.displayPreviousOutPutLink();
+        //        view.displayPreviousOutPutLink();
         savedLineNum = 0;
         currentOffset += AMOUNT_SAVED_LINES;
       }
@@ -265,7 +275,7 @@ public class CommandOutputConsolePresenter
 
   private void printOnTop(String line) {
     boolean carriageReturn = line.endsWith("\r");
-    view.printOnTop(line, carriageReturn);
+    view.print(line, carriageReturn, null, true);
   }
 
   @Override

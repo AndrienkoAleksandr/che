@@ -42,11 +42,6 @@ public interface OutputConsoleView extends View<OutputConsoleView.ActionDelegate
    */
   void print(String text, boolean carriageReturn);
 
-  // todo
-  default void printOnTop(final String text, boolean carriageReturn) {
-    throw new IllegalStateException("Operation is unsupported");
-  }
-
   /**
    * Prints colored text.
    *
@@ -55,19 +50,15 @@ public interface OutputConsoleView extends View<OutputConsoleView.ActionDelegate
    *     false} - next message will be printed in a new line
    * @param color color of the text or NULL
    */
-  void print(String text, boolean carriageReturn, String color);
+  void print(final String text, boolean carriageReturn, String color);
+
+  default void print(final String text, boolean carriageReturn, String color, boolean isOnTop) {
+    throw new UnsupportedOperationException("Print line on top is unsupported operation");
+  }
 
   void clearText();
 
   void clearLines(int amountLines, int offset);
-
-  void displayPreviousOutPutLink();
-
-  void hidePreviousOutPutLink();
-
-  void displayNextOutPutPartLink();
-
-  void hideNextOutPutPartLink();
 
   void scrollToBottom();
 

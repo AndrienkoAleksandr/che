@@ -30,24 +30,30 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import elemental.util.Timer;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.FontAwesome;
@@ -63,7 +69,8 @@ import org.vectomatic.dom.svg.ui.SVGImage;
  * @author Artem Zatsarynnyi
  * @author Vitaliy Guliy
  */
-public class OutputConsoleViewImpl extends Composite implements OutputConsoleView, ScrollHandler {
+// todo reuse create pre elements
+public class OutputConsoleViewImpl extends Composite implements OutputConsoleView, ScrollHandler, RequiresResize {
 
   private final List<Pair<RegExp, String>> output2Color =
       newArrayList(
@@ -92,14 +99,13 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @UiField ScrollPanel scrollPanel;
 
-  @UiField
-  FocusPanel consoleLines;
+  @UiField FlowPanel consoleLines;
+
+//  @UiField FlowPanel tt;
 
   @UiField Anchor previewUrlLabel;
 
-  @UiField Label paginationConsolePrevious;
-
-  @UiField Label paginationConsoleNext;
+  @UiField Button testBtn;
 
   @UiField protected FlowPanel reRunProcessButton;
 
@@ -124,6 +130,10 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   private static final int LINE_STYLE_HEIGHT = 13;
 
+  private LinkedList<ConsoleLine> lines = new LinkedList<>();
+  private int offSetTop;
+  private int visibleRows;
+
   @Inject
   public OutputConsoleViewImpl(MachineResources resources, CoreLocalizationConstant localization) {
     initWidget(UI_BINDER.createAndBindUi(this));
@@ -136,7 +146,7 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
     wrapTextButton.add(new SVGImage(resources.lineWrapIcon()));
     scrollToBottomButton.add(new SVGImage(resources.scrollToBottomIcon()));
 
-    scrollPanel.addDomHandler(this, ScrollEvent.getType());
+//    scrollPanel.addDomHandler(this, ScrollEvent.getType());
 
     reRunProcessButton.addDomHandler(
         new ClickHandler() {
@@ -204,18 +214,22 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
         },
         ClickEvent.getType());
 
-    paginationConsolePrevious.addClickHandler(event -> delegate.onLoadPreviousPortion());
-    paginationConsoleNext.addClickHandler(event -> delegate.onLoadNextLogsPortion());
-
-    scrollPanel.addDomHandler(event -> handleLoadingLogsOnScroll(), MouseWheelEvent.getType());
-    consoleLines.addDomHandler(event -> {
-      Log.info(getClass(), "key down " + event.getNativeKeyCode());
-      int keyCode = event.getNativeKeyCode();
-      if (keyCode == KEY_UP || keyCode == KEY_DOWN) {
-        Log.info(getClass(), "key up or key down");
-        handleLoadingLogsOnScroll();
-      }
-    }, KeyDownEvent.getType());
+//    //todo this handler should be on the dom element with lines
+//    scrollPanel.addDomHandler(event -> {
+//      handleLoadingLogsOnScroll();
+//      Log.info(getClass(), "whell");
+//    }, MouseWheelEvent.getType());
+//
+//    consoleLines.addDomHandler(
+//        event -> {
+//          Log.info(getClass(), "key down " + event.getNativeKeyCode());
+//          int keyCode = event.getNativeKeyCode();
+//          if (keyCode == KEY_UP || keyCode == KEY_DOWN) {
+//            Log.info(getClass(), "key up or key down");
+//            handleLoadingLogsOnScroll();
+//          }
+//        },
+//        KeyDownEvent.getType());
 
     Tooltip.create(
         (elemental.dom.Element) reRunProcessButton.getElement(),
@@ -248,24 +262,47 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
         localization.consolesAutoScrollButtonTooltip());
   }
 
-  private void handleLoadingLogsOnScroll() {
-    if (scrollPanel.getVerticalScrollPosition() == 0) {
-      Log.info(getClass(), "previous");
-      delegate.onLoadPreviousPortion();
-    }
+  private int evaluateAmountVisibleRows() {
+    return (int) Math.floor(consoleLines.getElement().getClientHeight() / LINE_STYLE_HEIGHT);
+  }
 
-    // 2px it's a padding.
-    int bottomPosition = scrollPanel.getVerticalScrollPosition() + scrollPanel.getElement().getClientHeight() - 2;
-    if (bottomPosition == consoleLines.getOffsetHeight()) {
-      Log.info(getClass(), "next");
-      delegate.onLoadNextLogsPortion();
-    }
+  private final Timer resizeTerminal =
+      new Timer() {
+        @Override
+        public void run() {
+          visibleRows = evaluateAmountVisibleRows();
+        }
+      };
+
+  @Override
+  public void onResize() {
+    resizeTerminal.schedule(300);
+  }
+
+  @UiHandler("testBtn")
+  public void handleTestBtn(ClickEvent clickEvent) {
+    Log.info(getClass(), "Evaluated amount of visible rows: " + evaluateAmountVisibleRows());
+  }
+
+  private void handleLoadingLogsOnScroll() {
+    //    if (scrollPanel.getVerticalScrollPosition() == 0) {
+    //      Log.info(getClass(), "previous");
+    //      delegate.onLoadPreviousPortion();
+    //    }
+    //
+    //    // 2px it's a padding.
+    //    int bottomPosition = scrollPanel.getVerticalScrollPosition() +
+    // scrollPanel.getElement().getClientHeight() - 2;
+    //    if (bottomPosition == consoleLines.getOffsetHeight()) {
+    //      Log.info(getClass(), "next");
+    //      delegate.onLoadNextLogsPortion();
+    //    }
   }
 
   @Override
   public void setScrollPosition(int visibleLineNumber) {
     scrollPanel.setVerticalScrollPosition(LINE_STYLE_HEIGHT * visibleLineNumber);
-    consoleLines.setFocus(true);
+//    consoleLines.setFocus(true);
   }
 
   @Override
@@ -300,6 +337,7 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @Override
   public void clearConsole() {
+    Log.info(getClass(), "clear console");
     consoleLines.getElement().setInnerHTML("");
   }
 
@@ -359,30 +397,6 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   }
 
   @Override
-  public void displayPreviousOutPutLink() {
-    // todo localization constant
-    paginationConsolePrevious.setVisible(true);
-    paginationConsolePrevious.setText("Click to display previous output.");
-  }
-
-  @Override
-  public void hidePreviousOutPutLink() {
-    paginationConsolePrevious.setVisible(false);
-  }
-
-  @Override
-  public void displayNextOutPutPartLink() {
-    // todo localization constant
-    paginationConsoleNext.setVisible(true);
-    paginationConsoleNext.setText("Click to display next output.");
-  }
-
-  @Override
-  public void hideNextOutPutPartLink() {
-    paginationConsoleNext.setVisible(false);
-  }
-
-  @Override
   public void scrollToBottom() {
     scrollPanel.scrollToBottom();
   }
@@ -394,33 +408,49 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @Override
   public void print(final String text, boolean carriageReturn, String color) {
-    Widget parent = consoleLines.getParent();
-    consoleLines.removeFromParent();
-
-    handleCarriageReturn(carriageReturn);
-    Element lineElem = createLineElem(text, color);
-
-    consoleLines.getElement().appendChild(lineElem);
-
-    ((HasWidgets)parent).add(consoleLines);
-    // followOutput();
+    print(text, carriageReturn, color, false);
   }
 
   @Override
-  public void printOnTop(final String text, boolean carriageReturn) {
-    Widget parent = consoleLines.getParent();
-    consoleLines.removeFromParent();
+  public void print(final String text, boolean carriageReturn, String color, boolean isOnTop) {
+//    Widget parent = consoleLines.getParent();
+//    consoleLines.removeFromParent();
 
     handleCarriageReturn(carriageReturn);
-    Element lineElem = createLineElem(text, null);
+
+    ConsoleLine line = new ConsoleLine(text, color);
+    Element lineElem = createLineElem(line);
 
     Node firstChild = consoleLines.getElement().getFirstChild();
-    if (firstChild != null) {
+    if (isOnTop && firstChild != null) {
       consoleLines.getElement().insertBefore(lineElem, firstChild);
+    } else {
+      consoleLines.getElement().appendChild(lineElem);
     }
+    lines.add(line);
+    refresh();
 
-    ((HasWidgets)parent).add(consoleLines);
-    //    followOutput();
+//    ((HasWidgets) parent).add(consoleLines);
+    // followOutput();
+  }
+
+  private void ensureRows() {
+    int childrenSize = consoleLines.getElement().getChildNodes().getLength();
+    if (childrenSize < visibleRows) {
+      int rows = visibleRows;
+      for (int i = childrenSize; i <= visibleRows; i++) {
+        print("", false);
+      }
+    }
+  }
+
+  private void refresh() {
+    //ensureRows();
+
+//    Log.info(getClass(), consoleLines.getElement().getChildNodes().getLength() + " " + visibleRows);
+//    if (consoleLines.getElement().getChildNodes().getLength() > visibleRows) {
+//      consoleLines.getElement().getFirstChild().removeFromParent();
+//    }
   }
 
   private void handleCarriageReturn(boolean carriageReturn) {
@@ -434,25 +464,25 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
     this.carriageReturn = carriageReturn;
   }
 
-  private Element createLineElem(String text, String color) {
+  private Element createLineElem(ConsoleLine line) {
     PreElement pre = DOM.createElement("pre").cast();
-    pre.setInnerSafeHtml(generateLineContent(text, null));
+    pre.setInnerSafeHtml(generateLineContent(line));
     pre.getStyle().setLineHeight(LINE_STYLE_HEIGHT, Style.Unit.PX);
-    if (color != null) {
-      pre.getStyle().setColor(color);
+    if (line.getColor() != null) {
+      pre.getStyle().setColor(line.getColor());
     }
 
     return pre;
   }
 
-  private SafeHtml generateLineContent(String text, String color) {
+  private SafeHtml generateLineContent(ConsoleLine line) {
     return (SafeHtml)
         () -> {
-          if (Strings.isNullOrEmpty(text)) {
+          if (Strings.isNullOrEmpty(line.getText())) {
             return " ";
           }
 
-          String encoded = SafeHtmlUtils.htmlEscape(text);
+          String encoded = SafeHtmlUtils.htmlEscape(line.getText());
           if (delegate != null) {
             if (delegate.getCustomizer() != null) {
               if (delegate.getCustomizer().canCustomize(encoded)) {
@@ -482,8 +512,8 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @Override
   public void clearLines(int amountLines, int offset) {
-    Widget parent = consoleLines.getParent();
-    consoleLines.removeFromParent();
+//    Widget parent = consoleLines.getParent();
+//    consoleLines.removeFromParent();
 
     NodeList<Node> children = consoleLines.getElement().getChildNodes();
 
@@ -504,7 +534,7 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
       amountLines--;
       node = nextNode;
     }
-    ((HasWidgets)parent).add(consoleLines);
+//    ((HasWidgets)parent).add(consoleLines);
   }
 
   @Override
@@ -523,55 +553,56 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @Override
   public void onScroll(ScrollEvent event) {
-    //todo rework this code.
+    // todo rework this code.
     // Do nothing if content height less scroll area height
-//    if (scrollPanel.getElement().getScrollHeight() < scrollPanel.getElement().getOffsetHeight()) {
-//      followOutput = true;
-//      if (delegate != null) {
-//        delegate.onOutputScrolled(followOutput);
-//      }
-//      return;
-//    }
-//
-//    // Follow output if scroll area is scrolled to the end
-//    if (scrollPanel.getElement().getScrollTop() + scrollPanel.getElement().getOffsetHeight()
-//        >= scrollPanel.getElement().getScrollHeight()) {
-//      followOutput = true;
-//    } else {
-//      followOutput = false;
-//    }
-//
-//    if (delegate != null) {
-//      delegate.onOutputScrolled(followOutput);
-//    }
+    //    if (scrollPanel.getElement().getScrollHeight() <
+    // scrollPanel.getElement().getOffsetHeight()) {
+    //      followOutput = true;
+    //      if (delegate != null) {
+    //        delegate.onOutputScrolled(followOutput);
+    //      }
+    //      return;
+    //    }
+    //
+    //    // Follow output if scroll area is scrolled to the end
+    //    if (scrollPanel.getElement().getScrollTop() + scrollPanel.getElement().getOffsetHeight()
+    //        >= scrollPanel.getElement().getScrollHeight()) {
+    //      followOutput = true;
+    //    } else {
+    //      followOutput = false;
+    //    }
+    //
+    //    if (delegate != null) {
+    //      delegate.onOutputScrolled(followOutput);
+    //    }
   }
 
-  private Timer visibilityTimer =
-      new Timer() {
-        @Override
-        public void run() {
-          if (isVisible() && followOutput) {
-            scrollPanel.scrollToBottom();
-            scrollPanel.scrollToLeft();
-          }
-        }
-      };
+//  private Timer visibilityTimer =
+//      new Timer() {
+//        @Override
+//        public void run() {
+//          if (isVisible() && followOutput) {
+//            scrollPanel.scrollToBottom();
+//            scrollPanel.scrollToLeft();
+//          }
+//        }
+//      };
 
-  //Todo rework this code.
+  // Todo rework this code.
   /** Scrolls to the bottom if following the output is enabled. */
   private void followOutput() {
-    if (!followOutput) {
-      return;
-    }
+//    if (!followOutput) {
+//      return;
+//    }
 
     /** Scroll bottom immediately if view is visible */
-    if (isVisible() && followOutput) {
-      scrollPanel.scrollToBottom();
-      scrollPanel.scrollToLeft();
-      return;
-    } else {
-      /** Otherwise, check the visibility periodically and scroll the view when it's visible */
-      visibilityTimer.schedule(500);
-    }
+//    if (isVisible() && followOutput) {
+//      scrollPanel.scrollToBottom();
+//      scrollPanel.scrollToLeft();
+//      return;
+//    } else {
+//      /** Otherwise, check the visibility periodically and scroll the view when it's visible */
+//      visibilityTimer.schedule(500);
+//    }
   }
 }
