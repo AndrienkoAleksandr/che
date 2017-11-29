@@ -19,6 +19,7 @@ import static org.eclipse.che.ide.ui.menu.PositionController.VerticalAlign.BOTTO
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -39,6 +40,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -55,6 +57,8 @@ import com.google.inject.Inject;
 import elemental.util.Timer;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
+
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.FontAwesome;
 import org.eclipse.che.ide.machine.MachineResources;
@@ -260,9 +264,11 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
         BOTTOM,
         MIDDLE,
         localization.consolesAutoScrollButtonTooltip());
+
+    refreshTimer.scheduleRepeating(1000);
   }
 
-  private int evaluateAmountVisibleRows() {
+  public int evaluateAmountVisibleRows() {
     return (int) Math.floor(consoleLines.getElement().getClientHeight() / LINE_STYLE_HEIGHT);
   }
 
@@ -270,6 +276,7 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
       new Timer() {
         @Override
         public void run() {
+          Log.info(getClass(), "resize");
           visibleRows = evaluateAmountVisibleRows();
         }
       };
@@ -416,33 +423,66 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 //    Widget parent = consoleLines.getParent();
 //    consoleLines.removeFromParent();
 
-    handleCarriageReturn(carriageReturn);
+//    handleCarriageReturn(carriageReturn);
 
     ConsoleLine line = new ConsoleLine(text, color);
-    Element lineElem = createLineElem(line);
+//    Element lineElem = createLineElem(line);
 
-    Node firstChild = consoleLines.getElement().getFirstChild();
-    if (isOnTop && firstChild != null) {
-      consoleLines.getElement().insertBefore(lineElem, firstChild);
-    } else {
-      consoleLines.getElement().appendChild(lineElem);
-    }
+//    Node firstChild = consoleLines.getElement().getFirstChild();
+//    if (isOnTop && firstChild != null) {
+//      consoleLines.getElement().insertBefore(lineElem, firstChild);
+//    } else {
+//      consoleLines.getElement().appendChild(lineElem);
+//    }
     lines.add(line);
-    refresh();
+
+//    refresh();
 
 //    ((HasWidgets) parent).add(consoleLines);
     // followOutput();
   }
 
-  private void ensureRows() {
-    int childrenSize = consoleLines.getElement().getChildNodes().getLength();
-    if (childrenSize < visibleRows) {
-      int rows = visibleRows;
-      for (int i = childrenSize; i <= visibleRows; i++) {
-        print("", false);
+  private final Timer refreshTimer = new Timer() {
+    @Override
+    public void run() {
+      if (offSetTop >= lines.size()) {
+        return;
+      }
+
+      if (consoleLines.getElement().getClientHeight() > 0) {
+
+        int amountVisibleRows = evaluateAmountVisibleRows();
+        int amountPreviousLines = consoleLines.getElement().getChildNodes().getLength();
+
+        consoleLines.getElement().removeAllChildren();
+
+        int start = offSetTop;
+        int end = offSetTop + amountVisibleRows;
+        end = lines.size() < end ? lines.size() - 1 : end;
+
+        Log.info(getClass(), start, end);
+
+        List<ConsoleLine> linesToRender = lines.subList(start, end);
+        for (ConsoleLine line: linesToRender) {
+          Element lineElem = createLineElem(line);
+          consoleLines.getElement().appendChild(lineElem);
+        }
+        //cancel();
+        offSetTop += linesToRender.size();
       }
     }
-  }
+  };
+
+
+//  private void ensureRows() {
+//    int childrenSize = consoleLines.getElement().getChildNodes().getLength();
+//    if (childrenSize < visibleRows) {
+//      int rows = visibleRows;
+//      for (int i = childrenSize; i <= visibleRows; i++) {
+//        print("", false);
+//      }
+//    }
+//  }
 
   private void refresh() {
     //ensureRows();

@@ -33,6 +33,9 @@ public interface OutputConsoleView extends View<OutputConsoleView.ActionDelegate
    */
   void showPreviewUrl(String previewUrl);
 
+  //todo temp. Remove it!!!!
+  int evaluateAmountVisibleRows();
+
   /**
    * Prints text.
    *
