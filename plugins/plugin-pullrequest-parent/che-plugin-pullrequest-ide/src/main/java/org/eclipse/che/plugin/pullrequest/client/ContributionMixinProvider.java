@@ -29,6 +29,8 @@ import org.eclipse.che.ide.api.parts.PartStack;
 import org.eclipse.che.ide.api.parts.WorkspaceAgent;
 import org.eclipse.che.ide.api.project.MutableProjectConfig;
 import org.eclipse.che.ide.api.resources.Project;
+import org.eclipse.che.ide.api.selection.Selection;
+import org.eclipse.che.ide.api.selection.Selection.NoSelectionProvided;
 import org.eclipse.che.ide.api.selection.SelectionChangedEvent;
 import org.eclipse.che.ide.api.workspace.WorkspaceReadyEvent;
 import org.eclipse.che.ide.api.workspace.event.WorkspaceStoppedEvent;
@@ -96,22 +98,33 @@ public class ContributionMixinProvider {
                 subscribeToSelectionChangedEvent();
               });
     } else {
-//      contributePart.showStub(messages.stubTextNothingToShow());
       subscribeToSelectionChangedEvent();
       eventBus.addHandler(WorkspaceReadyEvent.getType(), event -> addPart());
     }
 
-    eventBus.addHandler(WorkspaceStoppedEvent.TYPE, event -> {
-      workspaceAgent.removePart(contributePart);
-//      contributePart.showStub(messages.stubTextNothingToShow());
-    });
+    eventBus.addHandler(
+        WorkspaceStoppedEvent.TYPE,
+        event -> {
+          workspaceAgent.removePart(contributePart);
+        });
   }
 
   private void subscribeToSelectionChangedEvent() {
-    eventBus.addHandler(SelectionChangedEvent.TYPE, event -> processCurrentProject());
+    eventBus.addHandler(
+        SelectionChangedEvent.TYPE, event -> processCurrentProject(event.getSelection()));
   }
 
-  private void processCurrentProject() {
+  private void processCurrentProject(Selection<?> selection) {
+    if (selection instanceof NoSelectionProvided) {
+      return;
+    }
+
+    if (selection.isMultiSelection()) {
+      contributePart.showStub(messages.stubTextContributionPanelNotSupportMultiSelection());
+      lastSelected = null;
+      return;
+    }
+
     final Project rootProject = appContext.getRootProject();
 
     if (lastSelected != null && lastSelected.equals(rootProject)) {

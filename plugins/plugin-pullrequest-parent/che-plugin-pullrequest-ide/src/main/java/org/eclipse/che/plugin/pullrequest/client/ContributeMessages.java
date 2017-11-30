@@ -268,4 +268,7 @@ public interface ContributeMessages extends Messages {
 
   @Key("failed.to.apply.vsc.mixin")
   String failedToApplyVSCMixin(String project, String cause);
+
+  @Key("stub.text.contribution.panel.not.support.multi.selection")
+  String stubTextContributionPanelNotSupportMultiSelection();
 }
