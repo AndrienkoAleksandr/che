@@ -19,6 +19,7 @@ import org.eclipse.che.ide.api.parts.PropertyListener;
 import org.eclipse.che.ide.api.selection.Selection;
 import org.eclipse.che.ide.api.selection.SelectionAgent;
 import org.eclipse.che.ide.api.selection.SelectionChangedEvent;
+import org.eclipse.che.ide.util.loging.Log;
 
 /**
  * Implements {@link SelectionAgent}
@@ -45,6 +46,7 @@ public class SelectionAgentImpl
   }
 
   protected void notifySelectionChanged() {
+    Log.info(getClass(), "test0");
     eventBus.fireEvent(new SelectionChangedEvent(getSelection()));
   }
 

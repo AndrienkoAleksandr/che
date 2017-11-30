@@ -21,29 +21,21 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
-import org.eclipse.che.api.promises.client.Function;
-import org.eclipse.che.api.promises.client.FunctionException;
-import org.eclipse.che.api.promises.client.Operation;
-import org.eclipse.che.api.promises.client.OperationException;
 import org.eclipse.che.api.promises.client.Promise;
-import org.eclipse.che.api.promises.client.PromiseError;
 import org.eclipse.che.api.promises.client.PromiseProvider;
 import org.eclipse.che.ide.api.app.AppContext;
 import org.eclipse.che.ide.api.factory.FactoryAcceptedEvent;
-import org.eclipse.che.ide.api.factory.FactoryAcceptedHandler;
-import org.eclipse.che.ide.api.notification.NotificationManager;
 import org.eclipse.che.ide.api.parts.PartStack;
 import org.eclipse.che.ide.api.parts.WorkspaceAgent;
 import org.eclipse.che.ide.api.project.MutableProjectConfig;
 import org.eclipse.che.ide.api.resources.Project;
 import org.eclipse.che.ide.api.selection.SelectionChangedEvent;
-import org.eclipse.che.ide.api.selection.SelectionChangedHandler;
 import org.eclipse.che.ide.api.workspace.WorkspaceReadyEvent;
+import org.eclipse.che.ide.api.workspace.event.WorkspaceStoppedEvent;
 import org.eclipse.che.ide.util.loging.Log;
 import org.eclipse.che.plugin.pullrequest.client.parts.contribute.ContributePartPresenter;
 import org.eclipse.che.plugin.pullrequest.client.vcs.VcsService;
 import org.eclipse.che.plugin.pullrequest.client.vcs.VcsServiceProvider;
-import org.eclipse.che.plugin.pullrequest.client.vcs.hosting.VcsHostingService;
 import org.eclipse.che.plugin.pullrequest.client.vcs.hosting.VcsHostingServiceProvider;
 import org.eclipse.che.plugin.pullrequest.client.workflow.Context;
 import org.eclipse.che.plugin.pullrequest.client.workflow.WorkflowExecutor;
@@ -66,8 +58,7 @@ public class ContributionMixinProvider {
   private final VcsServiceProvider vcsServiceProvider;
   private final VcsHostingServiceProvider vcsHostingServiceProvider;
   private final PromiseProvider promiseProvider;
-  private final ContributeMessages contributeMessages;
-  private final NotificationManager notificationManager;
+  private final ContributeMessages messages;
 
   private HandlerRegistration handlerRegistration;
 
@@ -83,8 +74,7 @@ public class ContributionMixinProvider {
       VcsServiceProvider vcsServiceProvider,
       VcsHostingServiceProvider vcsHostingServiceProvider,
       PromiseProvider promiseProvider,
-      ContributeMessages contributeMessages,
-      NotificationManager notificationManager) {
+      ContributeMessages messages) {
     this.eventBus = eventBus;
     this.appContext = appContext;
     this.workspaceAgent = workspaceAgent;
@@ -93,45 +83,32 @@ public class ContributionMixinProvider {
     this.vcsServiceProvider = vcsServiceProvider;
     this.vcsHostingServiceProvider = vcsHostingServiceProvider;
     this.promiseProvider = promiseProvider;
-    this.contributeMessages = contributeMessages;
-    this.notificationManager = notificationManager;
+    this.messages = messages;
 
     if (appContext.getFactory() != null) {
       handlerRegistration =
           eventBus.addHandler(
               FactoryAcceptedEvent.TYPE,
-              new FactoryAcceptedHandler() {
-                @Override
-                public void onFactoryAccepted(FactoryAcceptedEvent event) {
-                  handlerRegistration.removeHandler();
+              event -> {
+                addPart();
+                handlerRegistration.removeHandler();
 
-                  subscribeToSelectionChangedEvent();
-                }
+                subscribeToSelectionChangedEvent();
               });
     } else {
-      handlerRegistration =
-          eventBus.addHandler(
-              WorkspaceReadyEvent.getType(),
-              new WorkspaceReadyEvent.WorkspaceReadyHandler() {
-                @Override
-                public void onWorkspaceReady(WorkspaceReadyEvent event) {
-                  handlerRegistration.removeHandler();
-
-                  subscribeToSelectionChangedEvent();
-                }
-              });
+//      contributePart.showStub(messages.stubTextNothingToShow());
+      subscribeToSelectionChangedEvent();
+      eventBus.addHandler(WorkspaceReadyEvent.getType(), event -> addPart());
     }
+
+    eventBus.addHandler(WorkspaceStoppedEvent.TYPE, event -> {
+      workspaceAgent.removePart(contributePart);
+//      contributePart.showStub(messages.stubTextNothingToShow());
+    });
   }
 
   private void subscribeToSelectionChangedEvent() {
-    eventBus.addHandler(
-        SelectionChangedEvent.TYPE,
-        new SelectionChangedHandler() {
-          @Override
-          public void onSelectionChanged(SelectionChangedEvent event) {
-            processCurrentProject();
-          }
-        });
+    eventBus.addHandler(SelectionChangedEvent.TYPE, event -> processCurrentProject());
   }
 
   private void processCurrentProject() {
@@ -141,95 +118,81 @@ public class ContributionMixinProvider {
       return;
     }
 
-    final PartStack toolingPartStack = workspaceAgent.getPartStack(TOOLING);
+    contributePart.showStub(messages.stubTextLoading());
 
     if (rootProject == null) {
-      if (toolingPartStack.containsPart(contributePart)) {
-        invalidateContext(lastSelected);
-        contributePart.showStub(contributeMessages.stubTextProjectIsNotSelected());
-      }
+      invalidateContext(lastSelected);
+      contributePart.showStub(messages.stubTextProjectIsNotSelected());
     } else if (hasVcsService(rootProject)) {
-
-      contributePart.showContent();
-      if (hasContributionMixin(rootProject)) {
-
-        vcsHostingServiceProvider
-            .getVcsHostingService(rootProject)
-            .then(
-                new Operation<VcsHostingService>() {
-                  @Override
-                  public void apply(VcsHostingService vcsHostingService) throws OperationException {
-                    workflowExecutor.init(vcsHostingService, rootProject);
-                    addPart(toolingPartStack);
-                  }
-                });
-      } else {
-        vcsHostingServiceProvider
-            .getVcsHostingService(rootProject)
-            .then(
-                new Operation<VcsHostingService>() {
-                  @Override
-                  public void apply(final VcsHostingService vcsHostingService)
-                      throws OperationException {
-                    addMixin(rootProject)
-                        .then(
-                            new Operation<Project>() {
-                              @Override
-                              public void apply(Project project) throws OperationException {
-                                workflowExecutor.init(vcsHostingService, project);
-                                addPart(toolingPartStack);
-
-                                lastSelected = project;
-                              }
-                            })
-                        .catchError(
-                            new Operation<PromiseError>() {
-                              @Override
-                              public void apply(final PromiseError error)
-                                  throws OperationException {
-                                invalidateContext(rootProject);
-                                Log.error(
-                                    getClass(),
-                                    contributeMessages.failedToApplyVSCMixin(
-                                        rootProject.getName(), error.getMessage()));
-                                contributePart.showStub(contributeMessages.stubTextNothingToShow());
-                              }
-                            });
-                  }
-                })
-            .catchError(
-                new Operation<PromiseError>() {
-                  @Override
-                  public void apply(final PromiseError error) throws OperationException {
-                    invalidateContext(rootProject);
-                    Log.error(
-                        getClass(),
-                        contributeMessages.failedToGetVSCService(
-                            rootProject.getName(), error.getMessage()));
-                    contributePart.showStub(contributeMessages.stubTextNothingToShow());
-                  }
-                });
-      }
-
+      handleProjectWithVCS(rootProject);
     } else {
       invalidateContext(rootProject);
-      contributePart.showStub(contributeMessages.stubTextProjectNotProvideVSC());
+      contributePart.showStub(messages.stubTextProjectNotProvideSupportedVSC());
     }
-
     lastSelected = rootProject;
   }
 
-  private void invalidateContext(Project project) {
-    final Optional<Context> context = workflowExecutor.getContext(project.getName());
-    if (context.isPresent()) {
-      workflowExecutor.invalidateContext(context.get().getProject());
+  private void handleProjectWithVCS(Project prj) {
+    if (hasContributionMixin(prj)) {
+      vcsHostingServiceProvider
+          .getVcsHostingService(prj)
+          .then(
+              vcsHostingService -> {
+                workflowExecutor.init(vcsHostingService, prj);
+                contributePart.showContent();
+              })
+          .catchError(
+              err -> {
+                handleVCSError(
+                    prj, messages.failedToGetVSCService(prj.getName(), err.getMessage()));
+              });
+    } else {
+      vcsHostingServiceProvider
+          .getVcsHostingService(prj)
+          .then(
+              vcsHostingService -> {
+                addMixin(prj)
+                    .then(
+                        prjWithMixin -> {
+                          workflowExecutor.init(vcsHostingService, prjWithMixin);
+                          contributePart.showContent();
+
+                          lastSelected = prjWithMixin;
+                        })
+                    .catchError(
+                        err -> {
+                          handleVCSError(
+                              prj, messages.failedToApplyVSCMixin(prj.getName(), err.getMessage()));
+                        });
+              })
+          .catchError(
+              err -> {
+                handleVCSError(
+                    prj, messages.failedToGetVSCService(prj.getName(), err.getMessage()));
+              });
     }
   }
 
-  private void addPart(PartStack partStack) {
+  private void handleVCSError(Project project, String logError) {
+    Log.error(getClass(), logError);
+    invalidateContext(project);
+    contributePart.showStub(messages.stubTextNothingToShow());
+  }
+
+  private void invalidateContext(Project project) {
+    if (project != null) {
+      final Optional<Context> context = workflowExecutor.getContext(project.getName());
+      if (context.isPresent()) {
+        workflowExecutor.invalidateContext(context.get().getProject());
+      }
+    }
+  }
+
+  private void addPart() {
+    PartStack partStack = workspaceAgent.getPartStack(TOOLING);
     if (!partStack.containsPart(contributePart)) {
       partStack.addPart(contributePart, FIRST);
-      if (partStack.getActivePart() == null) {
+      if (partStack.getActivePart() == null || partStack.getActivePart().equals(contributePart)) {
         partStack.setActivePart(contributePart);
       }
     }
@@ -253,17 +216,14 @@ public class ContributionMixinProvider {
     return vcsService
         .getBranchName(project)
         .thenPromise(
-            new Function<String, Promise<Project>>() {
-              @Override
-              public Promise<Project> apply(String branchName) throws FunctionException {
-                MutableProjectConfig mutableConfig = new MutableProjectConfig(project);
-                mutableConfig.getMixins().add(CONTRIBUTION_PROJECT_TYPE_ID);
-                mutableConfig
-                    .getAttributes()
-                    .put(CONTRIBUTE_TO_BRANCH_VARIABLE_NAME, singletonList(branchName));
+            branchName -> {
+              MutableProjectConfig mutableConfig = new MutableProjectConfig(project);
+              mutableConfig.getMixins().add(CONTRIBUTION_PROJECT_TYPE_ID);
+              mutableConfig
+                  .getAttributes()
+                  .put(CONTRIBUTE_TO_BRANCH_VARIABLE_NAME, singletonList(branchName));
 
-                return project.update().withBody(mutableConfig).send();
-              }
+              return project.update().withBody(mutableConfig).send();
             });
   }
 }
