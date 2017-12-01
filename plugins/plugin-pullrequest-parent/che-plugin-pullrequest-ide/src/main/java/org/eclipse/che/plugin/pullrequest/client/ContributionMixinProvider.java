@@ -32,7 +32,6 @@ import org.eclipse.che.ide.api.project.MutableProjectConfig;
 import org.eclipse.che.ide.api.resources.Project;
 import org.eclipse.che.ide.api.resources.Resource;
 import org.eclipse.che.ide.api.selection.Selection;
-import org.eclipse.che.ide.api.selection.Selection.NoSelectionProvided;
 import org.eclipse.che.ide.api.selection.SelectionChangedEvent;
 import org.eclipse.che.ide.api.workspace.WorkspaceReadyEvent;
 import org.eclipse.che.ide.api.workspace.event.WorkspaceStoppedEvent;
@@ -141,14 +140,17 @@ public class ContributionMixinProvider {
   }
 
   private boolean isSupportedSelection(Selection<?> selection) {
+    Log.info(getClass(), "holla " + selection.hashCode());
+    boolean isNoSelectionProvide = selection instanceof Selection.NoSelectionProvided;
+
     Object headElem = selection.getHeadElement();
 
     boolean isResourceSelection = headElem instanceof Resource;
-    boolean isResourceHasDataObj =
+    boolean isHasDataWithResource =
         headElem instanceof HasDataObject
             && ((HasDataObject) headElem).getData() instanceof Resource;
 
-    return isResourceSelection || isResourceHasDataObj;
+    return isNoSelectionProvide || isResourceSelection || isHasDataWithResource;
   }
 
   private void handleProjectWithVCS(Project prj) {

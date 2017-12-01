@@ -69,6 +69,7 @@ import org.eclipse.che.ide.ui.smartTree.data.TreeExpander;
 import org.eclipse.che.ide.ui.smartTree.data.settings.NodeSettings;
 import org.eclipse.che.ide.ui.smartTree.data.settings.SettingsProvider;
 import org.eclipse.che.ide.ui.smartTree.presentation.HasPresentation;
+import org.eclipse.che.ide.util.loging.Log;
 import org.eclipse.che.providers.DynaObject;
 import org.vectomatic.dom.svg.ui.SVGResource;
 
@@ -140,7 +141,13 @@ public class ProjectExplorerPresenter extends BasePresenter
 
     view.getTree()
         .getSelectionModel()
-        .addSelectionChangedHandler(event -> setSelection(new Selection<>(event.getSelection())));
+        .addSelectionChangedHandler(
+            event -> {
+              Selection<?> selection = new Selection<>(event.getSelection());
+              Log.info(getClass(), "Project Explorer internal selection" + event.getSelection());
+              setSelection(selection);
+              Log.info(getClass(), "Project Explorer " + selection.hashCode());
+            });
 
     view.getTree()
         .addBeforeExpandHandler(
