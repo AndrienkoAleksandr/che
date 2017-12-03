@@ -141,13 +141,7 @@ public class ProjectExplorerPresenter extends BasePresenter
 
     view.getTree()
         .getSelectionModel()
-        .addSelectionChangedHandler(
-            event -> {
-              Selection<?> selection = new Selection<>(event.getSelection());
-              Log.info(getClass(), "Project Explorer internal selection" + event.getSelection());
-              setSelection(selection);
-              Log.info(getClass(), "Project Explorer " + selection.hashCode());
-            });
+        .addSelectionChangedHandler(event -> setSelection(new Selection<>(event.getSelection())));
 
     view.getTree()
         .addBeforeExpandHandler(
