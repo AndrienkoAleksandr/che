@@ -21,7 +21,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
-
 import org.eclipse.che.api.promises.client.Promise;
 import org.eclipse.che.api.promises.client.PromiseProvider;
 import org.eclipse.che.ide.api.app.AppContext;
@@ -99,6 +98,7 @@ public class ContributionMixinProvider {
     eventBus.addHandler(
         WorkspaceStoppedEvent.TYPE,
         event -> {
+          lastSelected = null;
           contributePart.showStub("");
           selectionHandlerReg.removeHandler();
         });
@@ -140,8 +140,9 @@ public class ContributionMixinProvider {
   }
 
   private boolean isSupportedSelection(Selection<?> selection) {
-    Log.info(getClass(), "holla " + selection.hashCode());
-    boolean isNoSelectionProvide = selection instanceof Selection.NoSelectionProvided;
+    if (selection instanceof Selection.NoSelectionProvided) {
+      return false;
+    }
 
     Object headElem = selection.getHeadElement();
 
@@ -150,7 +151,7 @@ public class ContributionMixinProvider {
         headElem instanceof HasDataObject
             && ((HasDataObject) headElem).getData() instanceof Resource;
 
-    return isNoSelectionProvide || isResourceSelection || isHasDataWithResource;
+    return headElem == null || isResourceSelection || isHasDataWithResource;
   }
 
   private void handleProjectWithVCS(Project prj) {
