@@ -15,7 +15,6 @@ import static org.eclipse.che.ide.ui.menu.PositionController.VerticalAlign.BOTTO
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -31,13 +30,8 @@ import com.google.inject.Inject;
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.FontAwesome;
 import org.eclipse.che.ide.machine.MachineResources;
-import org.eclipse.che.ide.terminal.TerminalGeometryJso;
-import org.eclipse.che.ide.terminal.TerminalInitializePromiseHolder;
-import org.eclipse.che.ide.terminal.TerminalJso;
-import org.eclipse.che.ide.terminal.TerminalOptionsJso;
+import org.eclipse.che.ide.terminal.Terminal;
 import org.eclipse.che.ide.ui.Tooltip;
-import org.eclipse.che.ide.util.loging.Log;
-import org.eclipse.che.requirejs.ModuleHolder;
 import org.vectomatic.dom.svg.ui.SVGImage;
 
 /**
@@ -48,7 +42,7 @@ import org.vectomatic.dom.svg.ui.SVGImage;
  */
 public class OutputConsoleViewImpl extends Composite implements OutputConsoleView, RequiresResize {
 
-  private TerminalJso terminalJso;
+  private Terminal terminal;
 
   interface OutputConsoleViewUiBinder extends UiBinder<Widget, OutputConsoleViewImpl> {}
 
@@ -85,10 +79,8 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
 
   @Inject
   public OutputConsoleViewImpl(
-      final ModuleHolder moduleHolder,
-      MachineResources resources,
-      CoreLocalizationConstant localization,
-      TerminalInitializePromiseHolder promiseHolder) {
+          MachineResources resources,
+          CoreLocalizationConstant localization) {
     initWidget(UI_BINDER.createAndBindUi(this));
 
     reRunProcessButton.add(new SVGImage(resources.reRunIcon()));
@@ -146,22 +138,20 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
         MIDDLE,
         localization.consolesClearOutputsButtonTooltip());
 
-    promiseHolder
-        .getInitializerPromise()
-        .then(
-            arg -> {
-              JavaScriptObject terminalSource = moduleHolder.getModule("Xterm");
-              TerminalOptionsJso termOps =
-                  TerminalOptionsJso.createDefault()
-                      .withFocusOnOpen(false)
-                      .withScrollBack(SCROLL_BACK)
-                      .withReadOnly(true);
+//    promiseHolder
+//        .getInitializerPromise()
+//        .then(
+//            arg -> {
+//              TerminalOptionsJso termOps =
+//                  TerminalOptionsJso.createDefault()
+//                      .withFocusOnOpen(false)
+//                      .withScrollBack(SCROLL_BACK)
+//                      .withReadOnly(true);
 
-              this.terminalJso = TerminalJso.create(terminalSource, termOps);
-              terminalJso.open(consoleLines.asWidget().getElement());
-              TerminalGeometryJso geometryJso = terminalJso.proposeGeometry();
-              terminalJso.resize(geometryJso.getCols(), geometryJso.getRows());
-            });
+      this.terminal = new Terminal();//.create(terminalSource, termOps);
+      terminal.open(consoleLines.asWidget().getElement());
+      Terminal.TerminalGeometry geometry = terminal.proposeGeometry();
+      terminal.resize(geometry.getCols(), geometry.getRows());
   }
 
   private Timer resizeTimer =
@@ -178,28 +168,28 @@ public class OutputConsoleViewImpl extends Composite implements OutputConsoleVie
   }
 
   private void resize() {
-    TerminalGeometryJso geometryJso = terminalJso.proposeGeometry();
+    Terminal.TerminalGeometry geometryJso = terminal.proposeGeometry();
     int rows = geometryJso.getRows();
 
     // don't resize in case if size was not changed.
-//    if (terminalJso.getCols() == x && terminalJso.getRows() == y) {
+//    if (terminal.getCols() == x && terminal.getRows() == y) {
 //      return;
 //    }
 
     if (rows > 0 && geometryJso.getCols() > 0) {
-      Log.info(getClass(), " Get vertical width = " + terminalJso.getVerticalWidth());
-      Log.info(getClass(),"Resize rows: " + geometryJso.getRows() + " Resize cols: " + terminalJso.getVerticalWidth());
-      terminalJso.resize(terminalJso.getVerticalWidth(), evaluateHeight());
+//      Log.info(getClass(), " Get vertical width = " + terminal.getVerticalWidth());
+//      Log.info(getClass(),"Resize rows: " + geometryJso.getRows() + " Resize cols: " + terminal.getVerticalWidth());
+//      terminal.resize(terminal.getVerticalWidth(), evaluateHeight());
     }
   }
 
   private int  evaluateHeight() {
-    return (int)Math.floor((terminalJso.getElement().getClientHeight() - 19)/13);
+    return (int)Math.floor((terminal.getElement().getClientHeight() - 19) / 13);
   }
 
   @Override
   public void print(String text) {
-    terminalJso.writeln(text);
+    terminal.writeln(text);
   }
 
   /**

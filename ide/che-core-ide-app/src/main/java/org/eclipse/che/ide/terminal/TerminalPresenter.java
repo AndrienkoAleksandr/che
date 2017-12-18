@@ -16,7 +16,6 @@ import static org.eclipse.che.ide.api.notification.StatusNotification.DisplayMod
 import static org.eclipse.che.ide.api.notification.StatusNotification.Status.FAIL;
 import static org.eclipse.che.ide.websocket.events.WebSocketClosedEvent.CLOSE_NORMAL;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -33,8 +32,6 @@ import org.eclipse.che.ide.api.workspace.model.ServerImpl;
 import org.eclipse.che.ide.collections.Jso;
 import org.eclipse.che.ide.core.AgentURLModifier;
 import org.eclipse.che.ide.websocket.WebSocket;
-import org.eclipse.che.ide.websocket.events.ConnectionErrorHandler;
-import org.eclipse.che.requirejs.ModuleHolder;
 
 /**
  * The class defines methods which contains business logic to control machine's terminal.
@@ -52,14 +49,12 @@ public class TerminalPresenter implements Presenter, TerminalView.ActionDelegate
   private final NotificationManager notificationManager;
   private final CoreLocalizationConstant locale;
   private final MachineImpl machine;
-  private final TerminalInitializePromiseHolder terminalHolder;
-  private final ModuleHolder moduleHolder;
   private final AgentURLModifier agentURLModifier;
 
   private WebSocket socket;
   private boolean connected;
   private int countRetry;
-  private TerminalJso terminal;
+  private Terminal terminal;
   private TerminalStateListener terminalStateListener;
   private int width;
   private int height;
@@ -71,8 +66,6 @@ public class TerminalPresenter implements Presenter, TerminalView.ActionDelegate
       CoreLocalizationConstant locale,
       @NotNull @Assisted MachineImpl machine,
       @Assisted TerminalOptionsJso options,
-      final TerminalInitializePromiseHolder terminalHolder,
-      final ModuleHolder moduleHolder,
       AgentURLModifier agentURLModifier) {
     this.view = view;
     this.options = options != null ? options : TerminalOptionsJso.createDefault();
@@ -84,8 +77,6 @@ public class TerminalPresenter implements Presenter, TerminalView.ActionDelegate
 
     connected = false;
     countRetry = 2;
-    this.terminalHolder = terminalHolder;
-    this.moduleHolder = moduleHolder;
   }
 
   /**
@@ -98,30 +89,19 @@ public class TerminalPresenter implements Presenter, TerminalView.ActionDelegate
     }
 
     if (!connected) {
-      terminalHolder
-          .getInitializerPromise()
-          .then(
-              aVoid -> {
-                ServerImpl terminalServer =
-                    machine
-                        .getServerByName(SERVER_TERMINAL_REFERENCE)
-                        .orElseThrow(
-                            () ->
-                                new OperationException(
-                                    "Machine "
-                                        + machine.getName()
-                                        + " doesn't provide terminal server."));
-                connectToTerminal(agentURLModifier.modify(terminalServer.getUrl()));
-              })
-          .catchError(
-              arg -> {
-                notificationManager.notify(
-                    locale.failedToConnectTheTerminal(),
-                    locale.terminalCanNotLoadScript(),
-                    FAIL,
-                    NOT_EMERGE_MODE);
-                reconnect();
-              });
+      try {
+        ServerImpl terminalServer =
+                machine.getServerByName(SERVER_TERMINAL_REFERENCE)
+                       .orElseThrow(() -> new OperationException("Machine " + machine.getName() + " doesn't provide terminal server."));
+        connectToTerminal(agentURLModifier.modify(terminalServer.getUrl()));
+      } catch (Exception e) {
+        notificationManager.notify(
+        locale.failedToConnectTheTerminal(),
+        locale.terminalCanNotLoadScript(),
+        FAIL,
+        NOT_EMERGE_MODE);
+        reconnect();
+      }
     }
   }
 
@@ -156,8 +136,7 @@ public class TerminalPresenter implements Presenter, TerminalView.ActionDelegate
 
     socket.setOnOpenHandler(
         () -> {
-          JavaScriptObject terminalJso = moduleHolder.getModule("Xterm");
-          terminal = TerminalJso.create(terminalJso, options);
+          terminal = new Terminal();
           connected = true;
 
           view.openTerminal(terminal);
@@ -173,23 +152,20 @@ public class TerminalPresenter implements Presenter, TerminalView.ActionDelegate
         });
 
     socket.setOnErrorHandler(
-        new ConnectionErrorHandler() {
-          @Override
-          public void onError() {
-            connected = false;
+      () -> {
+        connected = false;
 
-            if (countRetry == 0) {
-              view.showErrorMessage(locale.terminalErrorStart());
-              notificationManager.notify(
-                  locale.connectionFailedWithTerminal(),
-                  locale.terminalErrorConnection(),
-                  FAIL,
-                  FLOAT_MODE);
-            } else {
-              reconnect();
-            }
-          }
-        });
+        if (countRetry == 0) {
+          view.showErrorMessage(locale.terminalErrorStart());
+          notificationManager.notify(
+              locale.connectionFailedWithTerminal(),
+              locale.terminalErrorConnection(),
+              FAIL,
+              FLOAT_MODE);
+        } else {
+          reconnect();
+        }
+      });
   }
 
   /** Sends 'close' message on server side to stop terminal. */
