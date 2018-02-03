@@ -11,6 +11,7 @@
 package org.eclipse.che.ide.editor.orion.client;
 
 import static java.lang.Boolean.parseBoolean;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -60,9 +61,7 @@ import org.vectomatic.dom.svg.ui.SVGResource;
  * performed.
  */
 public class OrionEditorPresenter extends AbstractEditorPresenter
-    implements TextEditor,
-        TextEditorPartView.Delegate
-{
+    implements TextEditor, TextEditorPartView.Delegate {
   /** File type used when we have no idea of the actual content type. */
   public static final String DEFAULT_CONTENT_TYPE = "text/plain";
 
@@ -129,20 +128,20 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
     Promise<Void> initializerPromise = editorModule.getInitializerPromise();
     initializerPromise
         .catchError(
-                arg -> {
-                  displayErrorPanel(constant.editorInitErrorMessage());
-                  callback.onInitializationFailed();
-                })
-        .thenPromise(
-                arg -> documentStorage.getDocument(input.getFile()))
-        .then(content -> {
-                  createEditor(content, callback);
-                })
+            arg -> {
+              displayErrorPanel(constant.editorInitErrorMessage());
+              callback.onInitializationFailed();
+            })
+        .thenPromise(arg -> documentStorage.getDocument(input.getFile()))
+        .then(
+            content -> {
+              createEditor(content, callback);
+            })
         .catchError(
-                arg -> {
-                  displayErrorPanel(constant.editorFileErrorMessage());
-                  callback.onInitializationFailed();
-                });
+            arg -> {
+              displayErrorPanel(constant.editorFileErrorMessage());
+              callback.onInitializationFailed();
+            });
   }
 
   private void createEditor(final String content, OpenEditorCallback openEditorCallback) {
@@ -152,8 +151,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   }
 
   @Override
-  public void updateDirtyState(boolean dirty) {
-  }
+  public void updateDirtyState(boolean dirty) {}
 
   private void displayErrorPanel(final String message) {
     this.editorView.showPlaceHolder(new Label(message));
@@ -209,8 +207,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   }
 
   @Override
-  public void onClosing(@NotNull final AsyncCallback<Void> callback) {
-  }
+  public void onClosing(@NotNull final AsyncCallback<Void> callback) {}
 
   @Override
   public TextEditorPartView getView() {
@@ -274,9 +271,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   }
 
   @Override
-  public void doSave(final AsyncCallback<EditorInput> callback) {
-
-  }
+  public void doSave(final AsyncCallback<EditorInput> callback) {}
 
   @Override
   public void doSaveAs() {}
@@ -364,8 +359,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   }
 
   @Override
-  public void addKeybinding(KeyBinding keyBinding) {
-  }
+  public void addKeybinding(KeyBinding keyBinding) {}
 
   private List<String> detectFileType(final VirtualFile file) {
     final List<String> result = new ArrayList<>();
@@ -421,7 +415,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   }
 
   private class EditorWidgetInitializedCallback implements EditorWidget.WidgetInitializedCallback {
-    private  String content;
+    private String content;
     private boolean isInitialized;
     private OpenEditorCallback openEditorCallback;
 
@@ -457,18 +451,17 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
       editorWidget.setValue(
           content,
-              () -> {
+          () -> {
+            if (isInitialized) {
+              return;
+            }
 
-                if (isInitialized) {
-                  return;
-                }
+            generalEventBus.fireEvent(new DocumentReadyEvent(document));
+            firePropertyChange(PROP_INPUT);
 
-                generalEventBus.fireEvent(new DocumentReadyEvent(document));
-                firePropertyChange(PROP_INPUT);
-
-                isInitialized = true;
-                openEditorCallback.onEditorOpened(OrionEditorPresenter.this);
-              });
+            isInitialized = true;
+            openEditorCallback.onEditorOpened(OrionEditorPresenter.this);
+          });
     }
   }
 }

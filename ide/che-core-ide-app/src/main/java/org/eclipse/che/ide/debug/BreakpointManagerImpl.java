@@ -41,7 +41,6 @@ import org.eclipse.che.ide.api.editor.EditorPartPresenter;
 import org.eclipse.che.ide.api.editor.document.Document;
 import org.eclipse.che.ide.api.editor.events.DocumentChangedEvent;
 import org.eclipse.che.ide.api.editor.events.FileContentUpdateEvent;
-import org.eclipse.che.ide.api.editor.text.TextPosition;
 import org.eclipse.che.ide.api.editor.texteditor.TextEditor;
 import org.eclipse.che.ide.api.resources.Resource;
 import org.eclipse.che.ide.api.resources.ResourceChangedEvent;
@@ -430,8 +429,9 @@ public class BreakpointManagerImpl
                       public void run() {
                         breakpointRenderer.setLineActive(
                             suspendedLocation.getLineNumber() - 1, true);
-//                        textEditor.setCursorPosition(
-//                            new TextPosition(suspendedLocation.getLineNumber(), 0));
+                        //                        textEditor.setCursorPosition(
+                        //                            new
+                        // TextPosition(suspendedLocation.getLineNumber(), 0));
                       }
                     }.schedule(300);
                   }

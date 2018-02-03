@@ -40,7 +40,7 @@ public class OrionCodeEditWidgetProvider implements Provider<OrionCodeEditWidget
       JsArrayString plugins = JavaScriptObject.createArray().cast();
 
       OrionCodeEditWidgetOverlay codeEditWidgetModule =
-              moduleHolder.getModule("CodeEditWidget").cast();
+          moduleHolder.getModule("CodeEditWidget").cast();
       orionCodeEditWidgetOverlay = codeEditWidgetModule.create(plugins);
     }
     return orionCodeEditWidgetOverlay;

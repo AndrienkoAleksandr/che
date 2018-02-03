@@ -58,7 +58,7 @@ public class CodeAssistantImpl implements CodeAssistant {
       this.lastErrorMessage = processor.getErrorMessage();
       if (this.lastErrorMessage != null) {
         notificationManager.notify("", lastErrorMessage, FAIL, EMERGE_MODE);
-//        this.textEditor.showMessage(this.lastErrorMessage);
+        //        this.textEditor.showMessage(this.lastErrorMessage);
       }
     } else {
       final CodeAssistProcessor fallbackProcessor = getFallbackProcessor();
@@ -66,7 +66,7 @@ public class CodeAssistantImpl implements CodeAssistant {
         fallbackProcessor.computeCompletionProposals(textEditor, offset, triggered, callback);
         this.lastErrorMessage = fallbackProcessor.getErrorMessage();
         if (this.lastErrorMessage != null) {
-//          this.textEditor.showMessage(this.lastErrorMessage);
+          //          this.textEditor.showMessage(this.lastErrorMessage);
         }
       }
     }

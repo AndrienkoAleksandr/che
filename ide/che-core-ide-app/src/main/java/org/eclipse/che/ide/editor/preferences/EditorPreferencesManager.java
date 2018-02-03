@@ -45,7 +45,6 @@ import org.eclipse.che.commons.annotation.Nullable;
 import org.eclipse.che.ide.api.editor.EditorLocalizationConstants;
 import org.eclipse.che.ide.api.preferences.PreferencesManager;
 import org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties;
-import org.eclipse.che.ide.util.loging.Log;
 
 /**
  * The class contains methods to simplify the work with editor preferences.
@@ -169,11 +168,13 @@ public class EditorPreferencesManager {
         .stream()
         .filter(property -> !savedPreferences.containsKey(property))
         .forEach(property -> savedPreferences.put(property, defaultPreferences.get(property)));
-//    Log.info(getClass(), "-------------------Preferences------------------------------------");
-//    for (Map.Entry<String, JSONValue> pref: savedPreferences.entrySet()) {
-//      Log.info(getClass(), pref.getKey() + ":" + pref.getValue().toString());
-//    }
-//    Log.info(getClass(), "-------------------Preferences------------------------------------");
+    //    Log.info(getClass(),
+    // "-------------------Preferences------------------------------------");
+    //    for (Map.Entry<String, JSONValue> pref: savedPreferences.entrySet()) {
+    //      Log.info(getClass(), pref.getKey() + ":" + pref.getValue().toString());
+    //    }
+    //    Log.info(getClass(),
+    // "-------------------Preferences------------------------------------");
     return savedPreferences;
   }
 

@@ -10,19 +10,18 @@
  */
 package org.eclipse.che.ide.editor.orion.client;
 
+import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.*;
+
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 import com.google.inject.Inject;
-import org.eclipse.che.ide.editor.orion.client.jso.OrionEditorViewOverlay;
-import org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties;
-import org.eclipse.che.ide.util.loging.Log;
-
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.*;
+import org.eclipse.che.ide.editor.orion.client.jso.OrionEditorViewOverlay;
+import org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties;
+import org.eclipse.che.ide.util.loging.Log;
 
 /**
  * The class contains methods to simplify the work with orion settings.
@@ -33,7 +32,7 @@ public class OrionSettingsController {
 
   private OrionEditorViewOverlay editorViewOverlay;
   private final EnumSet<EditorProperties> orionPropertiesSet =
-          EnumSet.noneOf(EditorProperties.class);
+      EnumSet.noneOf(EditorProperties.class);
 
   @Inject
   public OrionSettingsController() {
@@ -53,7 +52,7 @@ public class OrionSettingsController {
     }
   }
 
-  private Map<String,JSONValue> getEditorPreferences() {
+  private Map<String, JSONValue> getEditorPreferences() {
     Map<String, JSONValue> editorPreferences = new HashMap<>();
 
     JSONBoolean expandTapValue = JSONBoolean.getInstance(true);
@@ -62,7 +61,7 @@ public class OrionSettingsController {
     JSONBoolean autoSaveValue = JSONBoolean.getInstance(true);
     editorPreferences.put(ENABLE_AUTO_SAVE.toString(), autoSaveValue);
 
-    //WORD WRAP VALUE!!!!
+    // WORD WRAP VALUE!!!!
     JSONBoolean softWrapValue = JSONBoolean.getInstance(true);
     editorPreferences.put(SOFT_WRAP.toString(), softWrapValue);
 
@@ -106,7 +105,8 @@ public class OrionSettingsController {
     editorPreferences.put(SHOW_OCCURRENCES.toString(), occurrencesRulerValue);
 
     JSONBoolean contentAssistantAutoTriggerValue = JSONBoolean.getInstance(true);
-    editorPreferences.put(SHOW_CONTENT_ASSIST_AUTOMATICALLY.toString(), contentAssistantAutoTriggerValue);
+    editorPreferences.put(
+        SHOW_CONTENT_ASSIST_AUTOMATICALLY.toString(), contentAssistantAutoTriggerValue);
 
     Log.info(getClass(), "pref size " + editorPreferences.size());
     return editorPreferences;

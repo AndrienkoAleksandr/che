@@ -11,10 +11,6 @@
 package org.eclipse.che.ide.editor.texteditor;
 
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -22,16 +18,10 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import elemental.dom.Element;
-import org.eclipse.che.ide.api.editor.codeassist.AdditionalInfoCallback;
 import org.eclipse.che.ide.api.editor.codeassist.CompletionsSource;
-import org.eclipse.che.ide.api.editor.events.CursorActivityEvent;
-import org.eclipse.che.ide.api.editor.events.CursorActivityHandler;
-import org.eclipse.che.ide.api.editor.keymap.Keymap;
 import org.eclipse.che.ide.api.editor.text.TextPosition;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidget;
 import org.eclipse.che.ide.api.editor.texteditor.TextEditorPartView;
-import org.eclipse.che.ide.editor.codeassist.AdditionalInformationWidget;
 import org.eclipse.che.ide.editor.texteditor.infopanel.InfoPanel;
 import org.eclipse.che.ide.ui.popup.PopupResources;
 
@@ -74,25 +64,25 @@ public class TextEditorPartViewImpl extends Composite implements TextEditorPartV
   @Override
   public void showCompletionProposals(
       final EditorWidget editorWidget, final CompletionsSource source) {
-//    editorWidget.showCompletionProposals(
-//        source,
-//        new AdditionalInfoCallback() {
-//
-//          @Override
-//          public Element onAdditionalInfoNeeded(
-//              final float pixelX, final float pixelY, final Element infoWidget) {
-//            final AdditionalInformationWidget popup =
-//                new AdditionalInformationWidget(popupResources);
-//            popup.addItem(infoWidget);
-//            popup.show(pixelX, pixelY);
-//            return popup.asElement();
-//          }
-//        });
+    //    editorWidget.showCompletionProposals(
+    //        source,
+    //        new AdditionalInfoCallback() {
+    //
+    //          @Override
+    //          public Element onAdditionalInfoNeeded(
+    //              final float pixelX, final float pixelY, final Element infoWidget) {
+    //            final AdditionalInformationWidget popup =
+    //                new AdditionalInformationWidget(popupResources);
+    //            popup.addItem(infoWidget);
+    //            popup.show(pixelX, pixelY);
+    //            return popup.asElement();
+    //          }
+    //        });
   }
 
   @Override
   public void showCompletionProposals(final EditorWidget editorWidget) {
-//    editorWidget.showCompletionProposals();
+    //    editorWidget.showCompletionProposals();
   }
 
   @Override
@@ -121,27 +111,27 @@ public class TextEditorPartViewImpl extends Composite implements TextEditorPartV
     }
     this.editorPanel.setWidget(editorWidget);
 
-//    editorWidget.addCursorActivityHandler(
-//        new CursorActivityHandler() {
-//          @Override
-//          public void onCursorActivity(final CursorActivityEvent event) {
-//            delegate.editorCursorPositionChanged();
-//          }
-//        });
-//    editorWidget.addBlurHandler(
-//        new BlurHandler() {
-//          @Override
-//          public void onBlur(final BlurEvent event) {
-//            delegate.editorLostFocus();
-//          }
-//        });
-//    editorWidget.addFocusHandler(
-//        new FocusHandler() {
-//          @Override
-//          public void onFocus(final FocusEvent event) {
-//            delegate.editorGotFocus();
-//          }
-//        });
+    //    editorWidget.addCursorActivityHandler(
+    //        new CursorActivityHandler() {
+    //          @Override
+    //          public void onCursorActivity(final CursorActivityEvent event) {
+    //            delegate.editorCursorPositionChanged();
+    //          }
+    //        });
+    //    editorWidget.addBlurHandler(
+    //        new BlurHandler() {
+    //          @Override
+    //          public void onBlur(final BlurEvent event) {
+    //            delegate.editorLostFocus();
+    //          }
+    //        });
+    //    editorWidget.addFocusHandler(
+    //        new FocusHandler() {
+    //          @Override
+    //          public void onFocus(final FocusEvent event) {
+    //            delegate.editorGotFocus();
+    //          }
+    //        });
   }
 
   @Override

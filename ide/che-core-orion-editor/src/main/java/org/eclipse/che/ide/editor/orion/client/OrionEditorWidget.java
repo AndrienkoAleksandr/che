@@ -15,7 +15,6 @@ import static org.eclipse.che.ide.editor.orion.client.KeyMode.VI;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -78,10 +77,7 @@ import org.eclipse.che.requirejs.ModuleHolder;
  * @author "Mickaël Leduque"
  */
 public class OrionEditorWidget extends Composite
-    implements EditorWidget,
-        HasChangeHandlers,
-        HasCursorActivityHandlers,
-        HasGutter {
+    implements EditorWidget, HasChangeHandlers, HasCursorActivityHandlers, HasGutter {
 
   /** The UI binder instance. */
   private static final OrionEditorWidgetUiBinder UIBINDER =
@@ -127,7 +123,6 @@ public class OrionEditorWidget extends Composite
       @Assisted final List<String> editorModes,
       @Assisted final WidgetInitializedCallback widgetInitializedCallback,
       final Provider<OrionEditorOptionsOverlay> editorOptionsProvider,
-
       final OrionSettingsController orionSettingsController) {
 
     this.moduleHolder = moduleHolder;
@@ -140,14 +135,12 @@ public class OrionEditorWidget extends Composite
     panel.getElement().setId("orion-parent-" + Document.get().createUniqueId());
     panel.getElement().addClassName(this.editorElementStyle.editorParent());
 
-
-    //todo
+    // todo
     orionCodeEditWidgetProvider
         .get()
         .createEditorView(panel.getElement(), editorOptionsProvider.get())
         .then(new EditorViewCreatedOperation(widgetInitializedCallback));
   }
-
 
   private Gutter initBreakpointRuler(ModuleHolder moduleHolder) {
     JavaScriptObject orionEventTargetModule = moduleHolder.getModule("OrionEventTarget");
@@ -221,9 +214,8 @@ public class OrionEditorWidget extends Composite
 
   @Override
   public void setSelectedRange(final Region selection, final boolean show) {
-//    this.editorOverlay.setSelection(selection.getOffset(), selection.getLength(), show);
+    //    this.editorOverlay.setSelection(selection.getOffset(), selection.getLength(), show);
   }
-
 
   @Override
   public HandlerRegistration addChangeHandler(final ChangeHandler handler) {
@@ -468,7 +460,7 @@ public class OrionEditorWidget extends Composite
       undoRedo = new OrionUndoRedo(editorOverlay.getUndoStack());
       editorOverlay.setZoomRulerVisible(true);
       editorOverlay.getAnnotationStyler().addAnnotationType("che-marker", 100);
-//
+      //
       gutter = initBreakpointRuler(moduleHolder);
 
       orionSettingsController.updateSettings();
@@ -483,49 +475,54 @@ public class OrionEditorWidget extends Composite
    * display in the dialog box defaultValue The default value callback function(value) clicking "OK"
    * will return input value clicking "Cancel" will return null
    */
-//  private native void registerPromptFunction() /*-{
-//        if (!$wnd["promptIDE"]) {
-//            var instance = this;
-//            $wnd["promptIDE"] = function (title, text, defaultValue, callback) {
-//                instance.@org.eclipse.che.ide.editor.orion.client.OrionEditorWidget::askLineNumber(*)(title, text, defaultValue, callback);
-//            };
-//        }
-//    }-*/;
+  //  private native void registerPromptFunction() /*-{
+  //        if (!$wnd["promptIDE"]) {
+  //            var instance = this;
+  //            $wnd["promptIDE"] = function (title, text, defaultValue, callback) {
+  //
+  // instance.@org.eclipse.che.ide.editor.orion.client.OrionEditorWidget::askLineNumber(*)(title,
+  // text, defaultValue, callback);
+  //            };
+  //        }
+  //    }-*/;
 
   /** Custom callback to pass given value to native javascript function. */
-//  private class InputCallback implements org.eclipse.che.ide.ui.dialogs.input.InputCallback {
-//
-//    private JavaScriptObject callback;
-//
-//    public InputCallback(JavaScriptObject callback) {
-//      this.callback = callback;
-//    }
-//
-//    @Override
-//    public void accepted(String value) {
-//      acceptedNative(value);
-//      editorAgent.activateEditor(editorAgent.getActiveEditor());
-//    }
-//
-//    private native void acceptedNative(String value) /*-{
-//            var callback = this.@org.eclipse.che.ide.editor.orion.client.OrionEditorWidget.InputCallback::callback;
-//            callback(value);
-//        }-*/;
-//  }
-//
-//  private void askLineNumber(
-//      String title, String text, String defaultValue, final JavaScriptObject callback) {
-//    if (defaultValue == null) {
-//      defaultValue = "";
-//    } else {
-//      // It's strange situation defaultValue.length() returns 'undefined' but must return a number.
-//      // Reinitialise the variable resolves the problem.
-//      defaultValue = "" + defaultValue;
-//    }
-//
-//    dialogFactory
-//        .createInputDialog(
-//            title, text, defaultValue, 0, defaultValue.length(), new InputCallback(callback), null)
-//        .show();
-//  }
+  //  private class InputCallback implements org.eclipse.che.ide.ui.dialogs.input.InputCallback {
+  //
+  //    private JavaScriptObject callback;
+  //
+  //    public InputCallback(JavaScriptObject callback) {
+  //      this.callback = callback;
+  //    }
+  //
+  //    @Override
+  //    public void accepted(String value) {
+  //      acceptedNative(value);
+  //      editorAgent.activateEditor(editorAgent.getActiveEditor());
+  //    }
+  //
+  //    private native void acceptedNative(String value) /*-{
+  //            var callback =
+  // this.@org.eclipse.che.ide.editor.orion.client.OrionEditorWidget.InputCallback::callback;
+  //            callback(value);
+  //        }-*/;
+  //  }
+  //
+  //  private void askLineNumber(
+  //      String title, String text, String defaultValue, final JavaScriptObject callback) {
+  //    if (defaultValue == null) {
+  //      defaultValue = "";
+  //    } else {
+  //      // It's strange situation defaultValue.length() returns 'undefined' but must return a
+  // number.
+  //      // Reinitialise the variable resolves the problem.
+  //      defaultValue = "" + defaultValue;
+  //    }
+  //
+  //    dialogFactory
+  //        .createInputDialog(
+  //            title, text, defaultValue, 0, defaultValue.length(), new InputCallback(callback),
+  // null)
+  //        .show();
+  //  }
 }

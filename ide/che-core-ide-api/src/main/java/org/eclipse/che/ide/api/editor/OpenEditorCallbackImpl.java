@@ -19,16 +19,16 @@ public class OpenEditorCallbackImpl implements EditorAgent.OpenEditorCallback {
 
   @Override
   public void onEditorOpened(EditorPartPresenter editor) {
-//    Log.info(getClass(), "!!!!!!!!!!!!!!");
+    //    Log.info(getClass(), "!!!!!!!!!!!!!!");
   }
 
   @Override
   public void onEditorActivated(EditorPartPresenter editor) {
-//    Log.info(getClass(), "Editor activated!!!!");
+    //    Log.info(getClass(), "Editor activated!!!!");
   }
 
   @Override
   public void onInitializationFailed() {
-//    Log.info(getClass(), "Failed to initialize editor !!!!");
+    //    Log.info(getClass(), "Failed to initialize editor !!!!");
   }
 }

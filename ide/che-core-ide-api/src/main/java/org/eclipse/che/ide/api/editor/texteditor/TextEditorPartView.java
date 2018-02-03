@@ -15,7 +15,6 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.eclipse.che.ide.api.editor.EditorWithErrors;
 import org.eclipse.che.ide.api.editor.codeassist.CompletionsSource;
-import org.eclipse.che.ide.api.editor.keymap.Keymap;
 import org.eclipse.che.ide.api.editor.text.TextPosition;
 
 /**
@@ -84,7 +83,5 @@ public interface TextEditorPartView extends RequiresResize, IsWidget, HasNotific
   void updateInfoPanelUnfocused(int lineCount);
 
   /** Delegate interface for this view. */
-  interface Delegate extends EditorWithErrors, RequiresResize {
-
-  }
+  interface Delegate extends EditorWithErrors, RequiresResize {}
 }

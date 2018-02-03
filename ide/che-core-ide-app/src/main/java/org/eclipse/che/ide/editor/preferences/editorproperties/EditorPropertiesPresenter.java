@@ -69,7 +69,7 @@ public class EditorPropertiesPresenter implements EditorPreferenceSection {
       }
     }
 
-    //todo event here
+    // todo event here
     eventBus.fireEvent(new EditorSettingsChangedEvent());
   }
 

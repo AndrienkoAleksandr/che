@@ -112,7 +112,6 @@ public interface TextEditor extends EditorPartPresenter {
    */
   TextPosition getCursorPosition();
 
-
   /**
    * Returns the cursor model for the editor.
    *
@@ -154,7 +153,7 @@ public interface TextEditor extends EditorPartPresenter {
    *
    * @param message message
    */
-//  void showMessage(String message);
+  //  void showMessage(String message);
 
   /**
    * Returns focus state of the text editor

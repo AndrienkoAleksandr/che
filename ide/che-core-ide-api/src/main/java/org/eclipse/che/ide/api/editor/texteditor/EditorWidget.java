@@ -15,17 +15,9 @@ import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
-import java.util.List;
-import javax.validation.constraints.NotNull;
-import org.eclipse.che.ide.api.editor.codeassist.AdditionalInfoCallback;
-import org.eclipse.che.ide.api.editor.codeassist.CompletionProposal;
-import org.eclipse.che.ide.api.editor.codeassist.CompletionsSource;
 import org.eclipse.che.ide.api.editor.document.Document;
 import org.eclipse.che.ide.api.editor.events.DocumentChangedEvent;
-import org.eclipse.che.ide.api.editor.events.HasCursorActivityHandlers;
 import org.eclipse.che.ide.api.editor.events.HasGutterClickHandlers;
-import org.eclipse.che.ide.api.editor.hotkeys.HotKeyItem;
-import org.eclipse.che.ide.api.editor.keymap.Keymap;
 import org.eclipse.che.ide.api.editor.position.PositionConverter;
 import org.eclipse.che.ide.api.editor.text.Region;
 
@@ -107,7 +99,6 @@ public interface EditorWidget
 
   /** Refresh the editor widget. */
   void refresh();
-
 
   /** Callback that should be called when editor widget implementation is fully initialized. */
   interface WidgetInitializedCallback {

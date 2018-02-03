@@ -14,9 +14,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.eclipse.che.ide.api.action.ActionEvent;
 import org.eclipse.che.ide.api.editor.EditorAgent;
-import org.eclipse.che.ide.api.editor.EditorPartPresenter;
-import org.eclipse.che.ide.api.editor.codeassist.HasCompletionInformation;
-import org.eclipse.che.ide.api.editor.texteditor.TextEditor;
 import org.eclipse.che.ide.api.filetypes.FileTypeRegistry;
 import org.eclipse.che.ide.ext.java.client.JavaLocalizationConstant;
 import org.eclipse.che.ide.ext.java.client.JavaResources;
@@ -46,16 +43,17 @@ public class QuickDocumentationAction extends JavaEditorAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-//    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
-//    if (activeEditor == null) {
-//      return;
-//    }
-//    if (activeEditor instanceof TextEditor && activeEditor instanceof HasCompletionInformation) {
-//      if (((TextEditor) activeEditor).getEditorWidget().isCompletionProposalsShowing()) {
-//        ((HasCompletionInformation) activeEditor).showCompletionInformation();
-//        return;
-//      }
-//    }
-//    quickDocumentation.showDocumentation();
+    //    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
+    //    if (activeEditor == null) {
+    //      return;
+    //    }
+    //    if (activeEditor instanceof TextEditor && activeEditor instanceof
+    // HasCompletionInformation) {
+    //      if (((TextEditor) activeEditor).getEditorWidget().isCompletionProposalsShowing()) {
+    //        ((HasCompletionInformation) activeEditor).showCompletionInformation();
+    //        return;
+    //      }
+    //    }
+    //    quickDocumentation.showDocumentation();
   }
 }

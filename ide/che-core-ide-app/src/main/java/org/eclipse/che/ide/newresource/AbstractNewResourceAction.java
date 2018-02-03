@@ -124,7 +124,8 @@ public abstract class AbstractNewResourceAction extends AbstractPerspectiveActio
               @Override
               public void apply(File newFile) throws OperationException {
                 editorAgentProvider.get().openEditor(newFile);
-//                Log.info(AbstractNewResourceAction.this.getClass(), "Editor should be opened!!!");
+                //                Log.info(AbstractNewResourceAction.this.getClass(), "Editor should
+                // be opened!!!");
                 eventBus.fireEvent(new RevealResourceEvent(newFile));
               }
             })

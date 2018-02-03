@@ -10,44 +10,11 @@
  */
 package org.eclipse.che.ide.editor.orion.client;
 
-import elemental.events.KeyboardEvent.KeyCode;
-import java.util.List;
-import java.util.Map;
-import org.eclipse.che.ide.api.editor.annotation.AnnotationModel;
-import org.eclipse.che.ide.api.editor.annotation.HasAnnotationRendering;
-import org.eclipse.che.ide.api.editor.annotation.QueryAnnotationsEvent;
 import org.eclipse.che.ide.api.editor.autosave.AutoSaveMode;
-import org.eclipse.che.ide.api.editor.changeintercept.ChangeInterceptorProvider;
-import org.eclipse.che.ide.api.editor.changeintercept.TextChange;
-import org.eclipse.che.ide.api.editor.changeintercept.TextChangeInterceptor;
-import org.eclipse.che.ide.api.editor.codeassist.CodeAssistCallback;
-import org.eclipse.che.ide.api.editor.codeassist.CodeAssistProcessor;
-import org.eclipse.che.ide.api.editor.codeassist.CodeAssistant;
-import org.eclipse.che.ide.api.editor.codeassist.CodeAssistantFactory;
-import org.eclipse.che.ide.api.editor.codeassist.CompletionProposal;
-import org.eclipse.che.ide.api.editor.codeassist.CompletionReadyCallback;
-import org.eclipse.che.ide.api.editor.codeassist.CompletionsSource;
 import org.eclipse.che.ide.api.editor.document.Document;
-import org.eclipse.che.ide.api.editor.document.DocumentHandle;
 import org.eclipse.che.ide.api.editor.editorconfig.TextEditorConfiguration;
-import org.eclipse.che.ide.api.editor.events.CompletionRequestEvent;
-import org.eclipse.che.ide.api.editor.events.CompletionRequestHandler;
-import org.eclipse.che.ide.api.editor.events.DocumentChangedEvent;
-import org.eclipse.che.ide.api.editor.events.TextChangeEvent;
-import org.eclipse.che.ide.api.editor.events.TextChangeHandler;
-import org.eclipse.che.ide.api.editor.formatter.ContentFormatter;
-import org.eclipse.che.ide.api.editor.keymap.KeyBinding;
-import org.eclipse.che.ide.api.editor.keymap.KeyBindingAction;
-import org.eclipse.che.ide.api.editor.partition.DocumentPartitioner;
-import org.eclipse.che.ide.api.editor.position.PositionConverter;
-import org.eclipse.che.ide.api.editor.quickfix.QuickAssistAssistant;
 import org.eclipse.che.ide.api.editor.reconciler.Reconciler;
 import org.eclipse.che.ide.api.editor.signature.SignatureHelpProvider;
-import org.eclipse.che.ide.api.editor.text.TextPosition;
-import org.eclipse.che.ide.api.editor.text.TypedRegion;
-import org.eclipse.che.ide.api.editor.texteditor.HasKeyBindings;
-import org.eclipse.che.ide.api.editor.texteditor.TextEditor;
-import org.eclipse.che.ide.util.browser.UserAgent;
 
 /**
  * Initialization controller for the text editor. Sets-up (when available) the different components
@@ -55,14 +22,12 @@ import org.eclipse.che.ide.util.browser.UserAgent;
  */
 public class OrionEditorInit {
 
-
   private final AutoSaveMode autoSaveMode;
   private final TextEditorConfiguration configuration;
 
   /** The quick assist assistant. */
   public OrionEditorInit(
-      final AutoSaveMode autoSaveMode,
-      final TextEditorConfiguration configuration) {
+      final AutoSaveMode autoSaveMode, final TextEditorConfiguration configuration) {
     this.autoSaveMode = autoSaveMode;
     this.configuration = configuration;
   }
@@ -72,9 +37,7 @@ public class OrionEditorInit {
    *
    * @param document to initialise with
    */
-  public void init(Document document) {
-
-  }
+  public void init(Document document) {}
 
   public void uninstall() {
     Reconciler reconciler = configuration.getReconciler();
