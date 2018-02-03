@@ -430,8 +430,8 @@ public class BreakpointManagerImpl
                       public void run() {
                         breakpointRenderer.setLineActive(
                             suspendedLocation.getLineNumber() - 1, true);
-                        textEditor.setCursorPosition(
-                            new TextPosition(suspendedLocation.getLineNumber(), 0));
+//                        textEditor.setCursorPosition(
+//                            new TextPosition(suspendedLocation.getLineNumber(), 0));
                       }
                     }.schedule(300);
                   }

@@ -46,16 +46,16 @@ public class QuickDocumentationAction extends JavaEditorAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
-    if (activeEditor == null) {
-      return;
-    }
-    if (activeEditor instanceof TextEditor && activeEditor instanceof HasCompletionInformation) {
-      if (((TextEditor) activeEditor).getEditorWidget().isCompletionProposalsShowing()) {
-        ((HasCompletionInformation) activeEditor).showCompletionInformation();
-        return;
-      }
-    }
-    quickDocumentation.showDocumentation();
+//    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
+//    if (activeEditor == null) {
+//      return;
+//    }
+//    if (activeEditor instanceof TextEditor && activeEditor instanceof HasCompletionInformation) {
+//      if (((TextEditor) activeEditor).getEditorWidget().isCompletionProposalsShowing()) {
+//        ((HasCompletionInformation) activeEditor).showCompletionInformation();
+//        return;
+//      }
+//    }
+//    quickDocumentation.showDocumentation();
   }
 }

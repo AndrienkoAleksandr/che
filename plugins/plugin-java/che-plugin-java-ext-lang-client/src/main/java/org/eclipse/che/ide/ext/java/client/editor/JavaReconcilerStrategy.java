@@ -95,25 +95,25 @@ public class JavaReconcilerStrategy
 
   @Override
   public void setDocument(final Document document) {
-    highlighter.init(editor.getEditorWidget(), document);
-
-    VirtualFile file = getFile();
-    Project project = getProject(file);
-    if (project == null) {
-      return;
-    }
-
-    String projectType = project.getType();
-    resolvingProjectStateHolder =
-        resolvingProjectStateHolderRegistry.getResolvingProjectStateHolder(projectType);
-    if (resolvingProjectStateHolder == null) {
-      return;
-    }
-    resolvingProjectStateHolder.addResolvingProjectStateListener(this);
-
-    if (isProjectResolving()) {
-      disableReconciler(localizationConstant.codeAssistErrorMessageResolvingProject());
-    }
+//    highlighter.init(editor.getEditorWidget(), document);
+//
+//    VirtualFile file = getFile();
+//    Project project = getProject(file);
+//    if (project == null) {
+//      return;
+//    }
+//
+//    String projectType = project.getType();
+//    resolvingProjectStateHolder =
+//        resolvingProjectStateHolderRegistry.getResolvingProjectStateHolder(projectType);
+//    if (resolvingProjectStateHolder == null) {
+//      return;
+//    }
+//    resolvingProjectStateHolder.addResolvingProjectStateListener(this);
+//
+//    if (isProjectResolving()) {
+//      disableReconciler(localizationConstant.codeAssistErrorMessageResolvingProject());
+//    }
   }
 
   @Override

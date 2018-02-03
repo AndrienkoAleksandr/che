@@ -69,16 +69,6 @@ public interface TextEditorPartView extends RequiresResize, IsWidget, HasNotific
   void setInfoPanelVisible(boolean visible);
 
   /**
-   * Sets the initial state of the info panel.
-   *
-   * @param mode the file mode
-   * @param keymap the current keymap
-   * @param lineCount the number of lines
-   * @param tabSize the tab size in this editor
-   */
-  void initInfoPanel(String mode, Keymap keymap, int lineCount, int tabSize);
-
-  /**
    * Update the location displayed in the info panel.
    *
    * @param position the new position
@@ -95,13 +85,6 @@ public interface TextEditorPartView extends RequiresResize, IsWidget, HasNotific
 
   /** Delegate interface for this view. */
   interface Delegate extends EditorWithErrors, RequiresResize {
-    /** Reaction on loss of focus. */
-    void editorLostFocus();
 
-    /** Reaction when the editor gains focus. */
-    void editorGotFocus();
-
-    /** Reaction when the cursor position changes. */
-    void editorCursorPositionChanged();
   }
 }

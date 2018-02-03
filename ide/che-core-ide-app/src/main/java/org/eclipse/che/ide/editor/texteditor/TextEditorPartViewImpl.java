@@ -74,25 +74,25 @@ public class TextEditorPartViewImpl extends Composite implements TextEditorPartV
   @Override
   public void showCompletionProposals(
       final EditorWidget editorWidget, final CompletionsSource source) {
-    editorWidget.showCompletionProposals(
-        source,
-        new AdditionalInfoCallback() {
-
-          @Override
-          public Element onAdditionalInfoNeeded(
-              final float pixelX, final float pixelY, final Element infoWidget) {
-            final AdditionalInformationWidget popup =
-                new AdditionalInformationWidget(popupResources);
-            popup.addItem(infoWidget);
-            popup.show(pixelX, pixelY);
-            return popup.asElement();
-          }
-        });
+//    editorWidget.showCompletionProposals(
+//        source,
+//        new AdditionalInfoCallback() {
+//
+//          @Override
+//          public Element onAdditionalInfoNeeded(
+//              final float pixelX, final float pixelY, final Element infoWidget) {
+//            final AdditionalInformationWidget popup =
+//                new AdditionalInformationWidget(popupResources);
+//            popup.addItem(infoWidget);
+//            popup.show(pixelX, pixelY);
+//            return popup.asElement();
+//          }
+//        });
   }
 
   @Override
   public void showCompletionProposals(final EditorWidget editorWidget) {
-    editorWidget.showCompletionProposals();
+//    editorWidget.showCompletionProposals();
   }
 
   @Override
@@ -121,27 +121,27 @@ public class TextEditorPartViewImpl extends Composite implements TextEditorPartV
     }
     this.editorPanel.setWidget(editorWidget);
 
-    editorWidget.addCursorActivityHandler(
-        new CursorActivityHandler() {
-          @Override
-          public void onCursorActivity(final CursorActivityEvent event) {
-            delegate.editorCursorPositionChanged();
-          }
-        });
-    editorWidget.addBlurHandler(
-        new BlurHandler() {
-          @Override
-          public void onBlur(final BlurEvent event) {
-            delegate.editorLostFocus();
-          }
-        });
-    editorWidget.addFocusHandler(
-        new FocusHandler() {
-          @Override
-          public void onFocus(final FocusEvent event) {
-            delegate.editorGotFocus();
-          }
-        });
+//    editorWidget.addCursorActivityHandler(
+//        new CursorActivityHandler() {
+//          @Override
+//          public void onCursorActivity(final CursorActivityEvent event) {
+//            delegate.editorCursorPositionChanged();
+//          }
+//        });
+//    editorWidget.addBlurHandler(
+//        new BlurHandler() {
+//          @Override
+//          public void onBlur(final BlurEvent event) {
+//            delegate.editorLostFocus();
+//          }
+//        });
+//    editorWidget.addFocusHandler(
+//        new FocusHandler() {
+//          @Override
+//          public void onFocus(final FocusEvent event) {
+//            delegate.editorGotFocus();
+//          }
+//        });
   }
 
   @Override
@@ -152,12 +152,6 @@ public class TextEditorPartViewImpl extends Composite implements TextEditorPartV
   @Override
   public void setInfoPanelVisible(boolean visible) {
     infoPanel.setVisible(visible);
-  }
-
-  @Override
-  public void initInfoPanel(
-      final String mode, final Keymap keymap, final int lineCount, final int tabSize) {
-    this.infoPanel.createDefaultState(mode, lineCount, tabSize);
   }
 
   @Override

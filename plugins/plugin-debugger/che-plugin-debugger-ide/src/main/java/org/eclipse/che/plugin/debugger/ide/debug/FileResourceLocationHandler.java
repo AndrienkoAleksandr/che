@@ -276,7 +276,7 @@ public class FileResourceLocationHandler implements DebuggerLocationHandler {
   protected void scrollToLine(EditorPartPresenter editor, int lineNumber) {
     if (editor instanceof TextEditor) {
       TextEditor textEditor = (TextEditor) editor;
-      textEditor.setCursorPosition(new TextPosition(lineNumber - 1, 0));
+//      textEditor.setCursorPosition(new TextPosition(lineNumber - 1, 0));
     }
   }
 }
