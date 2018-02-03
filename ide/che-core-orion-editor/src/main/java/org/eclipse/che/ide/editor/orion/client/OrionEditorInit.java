@@ -87,7 +87,7 @@ public class OrionEditorInit {
     DocumentHandle documentHandle = document.getDocumentHandle();
     configurePartitioner(documentHandle);
     configureReconciler(documentHandle);
-    configureAnnotationModel(documentHandle);
+//    configureAnnotationModel(documentHandle);
     configureCodeAssist(documentHandle);
     configureChangeInterceptors(documentHandle);
     configureFormatter(textEditor);
@@ -160,21 +160,21 @@ public class OrionEditorInit {
    *
    * @param documentHandle the handle on the editor
    */
-  private void configureAnnotationModel(final DocumentHandle documentHandle) {
-    final AnnotationModel annotationModel = configuration.getAnnotationModel();
-    if (annotationModel == null) {
-      return;
-    }
+//  private void configureAnnotationModel(final DocumentHandle documentHandle) {
+//    final AnnotationModel annotationModel = configuration.getAnnotationModel();
+//    if (annotationModel == null) {
+//      return;
+//    }
     // add the renderers (event handler) before the model (event source)
-    if (textEditor instanceof HasAnnotationRendering) {
-      ((HasAnnotationRendering) textEditor).configure(annotationModel, documentHandle);
-    }
-    annotationModel.setDocumentHandle(documentHandle);
-    documentHandle.getDocEventBus().addHandler(DocumentChangedEvent.TYPE, annotationModel);
-
-    // the model listens to QueryAnnotation events
-    documentHandle.getDocEventBus().addHandler(QueryAnnotationsEvent.TYPE, annotationModel);
-  }
+//    if (textEditor instanceof HasAnnotationRendering) {
+//      ((HasAnnotationRendering) textEditor).configure(annotationModel, documentHandle);
+//    }
+//    annotationModel.setDocumentHandle(documentHandle);
+//    documentHandle.getDocEventBus().addHandler(DocumentChangedEvent.TYPE, annotationModel);
+//
+//    // the model listens to QueryAnnotation events
+//    documentHandle.getDocEventBus().addHandler(QueryAnnotationsEvent.TYPE, annotationModel);
+//  }
 
   /**
    * Configure the editor's code assistant.

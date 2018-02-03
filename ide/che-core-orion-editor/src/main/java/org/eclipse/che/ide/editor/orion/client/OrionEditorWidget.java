@@ -131,13 +131,13 @@ public class OrionEditorWidget extends Composite
   private final ModuleHolder moduleHolder;
   private final EventBus eventBus;
   private final KeyModeInstances keyModeInstances;
-  private final JavaScriptObject uiUtilsOverlay;
-  private EditorAgentImpl editorAgent;
-  private final ContentAssistWidgetFactory contentAssistWidgetFactory;
-  private final DialogFactory dialogFactory;
-  private final PreferencesManager preferencesManager;
+//  private final JavaScriptObject uiUtilsOverlay;
+//  private EditorAgentImpl editorAgent;
+//  private final ContentAssistWidgetFactory contentAssistWidgetFactory;
+//  private final DialogFactory dialogFactory;
+//  private final PreferencesManager preferencesManager;
   private final OrionSettingsController orionSettingsController;
-  private final OrionAnnotationTypeOverlay annotationType;
+//  private final OrionAnnotationTypeOverlay annotationType;
 
   private final List<OrionAnnotationOverlay> problems = new ArrayList<>();
 
@@ -173,55 +173,56 @@ public class OrionEditorWidget extends Composite
   public OrionEditorWidget(
       final ModuleHolder moduleHolder,
       final KeyModeInstances keyModeInstances,
-      final EditorAgentImpl editorAgent,
+//      final EditorAgentImpl editorAgent,
       final EventBus eventBus,
       final Provider<OrionCodeEditWidgetOverlay> orionCodeEditWidgetProvider,
-      final ContentAssistWidgetFactory contentAssistWidgetFactory,
-      final DialogFactory dialogFactory,
-      final PreferencesManager preferencesManager,
+//      final ContentAssistWidgetFactory contentAssistWidgetFactory,
+//      final DialogFactory dialogFactory,
+//      final PreferencesManager preferencesManager,
       @Assisted final List<String> editorModes,
       @Assisted final WidgetInitializedCallback widgetInitializedCallback,
       final Provider<OrionEditorOptionsOverlay> editorOptionsProvider,
-      final StatusMessageReporter statusMessageReporter,
-      final IncrementalFindReportStatusObserver incrementalFindObserver,
+//      final StatusMessageReporter statusMessageReporter,
+//      final IncrementalFindReportStatusObserver incrementalFindObserver,
       final OrionSettingsController orionSettingsController) {
-    this.editorAgent = editorAgent;
-    this.contentAssistWidgetFactory = contentAssistWidgetFactory;
+//    this.editorAgent = editorAgent;
+//    this.contentAssistWidgetFactory = contentAssistWidgetFactory;
     this.moduleHolder = moduleHolder;
     this.keyModeInstances = keyModeInstances;
     this.eventBus = eventBus;
-    this.dialogFactory = dialogFactory;
-    this.preferencesManager = preferencesManager;
+//    this.dialogFactory = dialogFactory;
+//    this.preferencesManager = preferencesManager;
     this.orionSettingsController = orionSettingsController;
     initWidget(UIBINDER.createAndBindUi(this));
 
-    this.uiUtilsOverlay = moduleHolder.getModule("UiUtils");
-    this.annotationType =
-        moduleHolder
-            .getModule("OrionAnnotations")
-            .<OrionAnnotationsOverlay>cast()
-            .getAnnotationType();
+//    this.uiUtilsOverlay = moduleHolder.getModule("UiUtils");
+//    this.annotationType =
+//        moduleHolder
+//            .getModule("OrionAnnotations")
+//            .<OrionAnnotationsOverlay>cast()
+//            .getAnnotationType();
 
     // just first choice for the moment
-    if (editorModes != null && !editorModes.isEmpty()) {
-      setMode(editorModes.get(0));
-    }
+//    if (editorModes != null && !editorModes.isEmpty()) {
+//      setMode(editorModes.get(0));
+//    }
 
     panel.getElement().setId("orion-parent-" + Document.get().createUniqueId());
     panel.getElement().addClassName(this.editorElementStyle.editorParent());
 
-    OrionEditorOptionsOverlay editorOptions =
-        initEditorOptions(editorOptionsProvider.get(), statusMessageReporter);
+//    OrionEditorOptionsOverlay editorOptions =
+//        initEditorOptions(editorOptionsProvider.get(), statusMessageReporter);
 
+    //todo
     orionCodeEditWidgetProvider
         .get()
-        .createEditorView(panel.getElement(), editorOptions)
+        .createEditorView(panel.getElement(), editorOptionsProvider.get())
         .then(new EditorViewCreatedOperation(widgetInitializedCallback));
 
-    incrementalFindObserver.setEditorWidget(this);
-    statusMessageReporter.registerObserver(incrementalFindObserver);
-
-    registerPromptFunction();
+//    incrementalFindObserver.setEditorWidget(this);
+//    statusMessageReporter.registerObserver(incrementalFindObserver);
+//
+//    registerPromptFunction();
   }
 
   private OrionEditorOptionsOverlay initEditorOptions(
@@ -229,7 +230,7 @@ public class OrionEditorWidget extends Composite
       StatusMessageReporter statusMessageReporter) {
     StatusMessageReporterOverlay statusMessageReporterOverlay =
         StatusMessageReporterOverlay.create(statusMessageReporter);
-    orionEditorOptionsOverlay.setStatusReporter(statusMessageReporterOverlay);
+    //orionEditorOptionsOverlay.setStatusReporter(statusMessageReporterOverlay);
     return orionEditorOptionsOverlay;
   }
 
@@ -254,14 +255,16 @@ public class OrionEditorWidget extends Composite
         OrionInputChangedEventOverlay.TYPE,
         (OrionEditorOverlay.EventHandler<OrionInputChangedEventOverlay>)
             event -> {
+              Log.info(getClass(), "INIT HANDLER!!!!!");
               if (initializationHandler != null) {
                 initializationHandler.onContentInitialized();
               }
             },
         true);
 
+//    Log.info(getClass(), "Set content to widget with content type " + modeName);
     this.editorViewOverlay.setContents(newValue, modeName);
-    this.editorOverlay.getUndoStack().reset();
+    //this.editorOverlay.getUndoStack().reset();
   }
 
   @Override
@@ -487,6 +490,7 @@ public class OrionEditorWidget extends Composite
     DomEvent.fireNativeEvent(Document.get().createBlurEvent(), this);
   }
 
+  //todo
   @Override
   public HandlerRegistration addScrollHandler(final ScrollHandler handler) {
     if (!scrollHandlerAdded) {
@@ -509,19 +513,19 @@ public class OrionEditorWidget extends Composite
     fireEvent(new ScrollEvent());
   }
 
-  private void setupKeymode() {
-    final String propertyValue =
-        preferencesManager.getValue(KeyMapsPreferencePresenter.KEYMAP_PREF_KEY);
-
-    Keymap keymap;
-    try {
-      keymap = Keymap.fromKey(propertyValue);
-    } catch (final IllegalArgumentException e) {
-      LOG.log(Level.WARNING, "Unknown value in keymap preference.", e);
-      return;
-    }
-    selectKeyMode(keymap);
-  }
+//  private void setupKeymode() {
+//    final String propertyValue =
+//        preferencesManager.getValue(KeyMapsPreferencePresenter.KEYMAP_PREF_KEY);
+//
+//    Keymap keymap;
+//    try {
+//      keymap = Keymap.fromKey(propertyValue);
+//    } catch (final IllegalArgumentException e) {
+//      LOG.log(Level.WARNING, "Unknown value in keymap preference.", e);
+//      return;
+//    }
+//    selectKeyMode(keymap);
+//  }
 
   @Override
   public Keymap getKeymap() {
@@ -620,21 +624,21 @@ public class OrionEditorWidget extends Composite
 
   @Override
   public List<HotKeyItem> getHotKeys() {
-    OrionTextViewOverlay orionTextViewOverlay = editorOverlay.getTextView();
+//    OrionTextViewOverlay orionTextViewOverlay = editorOverlay.getTextView();
     List<HotKeyItem> hotKeyItems = new ArrayList<>();
-    JsArray<OrionKeyBindingsRelationOverlay> keyBindings =
-        OrionKeyModeOverlay.getKeyBindings_(orionTextViewOverlay);
-    for (int i = 0; i < keyBindings.length(); i++) {
-      OrionKeyBindingsRelationOverlay key = keyBindings.get(i);
-
-      String actionId = key.getActionId();
-      String actionDescription = orionTextViewOverlay.getActionDescription(actionId);
-      String hotKey = UiUtilsOverlay.getUserKeyString(uiUtilsOverlay, key.getKeyBindings());
-
-      if (actionDescription != null) {
-        hotKeyItems.add(new HotKeyItem(actionDescription, hotKey));
-      }
-    }
+//    JsArray<OrionKeyBindingsRelationOverlay> keyBindings =
+//        OrionKeyModeOverlay.getKeyBindings_(orionTextViewOverlay);
+//    for (int i = 0; i < keyBindings.length(); i++) {
+//      OrionKeyBindingsRelationOverlay key = keyBindings.get(i);
+//
+//      String actionId = key.getActionId();
+//      String actionDescription = orionTextViewOverlay.getActionDescription(actionId);
+//      String hotKey = UiUtilsOverlay.getUserKeyString(uiUtilsOverlay, key.getKeyBindings());
+//
+//      if (actionDescription != null) {
+//        hotKeyItems.add(new HotKeyItem(actionDescription, hotKey));
+//      }
+//    }
     return hotKeyItems;
   }
 
@@ -744,38 +748,38 @@ public class OrionEditorWidget extends Composite
   }
 
   public void showErrors(AnnotationModelEvent event) {
-    AnnotationModel annotationModel = event.getAnnotationModel();
-    OrionAnnotationSeverityProvider severityProvider = null;
-    if (annotationModel instanceof OrionAnnotationSeverityProvider) {
-      severityProvider = (OrionAnnotationSeverityProvider) annotationModel;
-    }
-
-    for (OrionAnnotationOverlay annotationOverlay : problems) {
-      editorOverlay.getAnnotationModel().removeAnnotation(annotationOverlay);
-    }
-
-    Iterator<Annotation> annotationIterator = annotationModel.getAnnotationIterator();
-    while (annotationIterator.hasNext()) {
-      Annotation annotation = annotationIterator.next();
-      OrionAnnotationOverlay problem =
-          getOrionAnnotationOverlay(annotationModel, severityProvider, annotation);
-      editorOverlay.getAnnotationModel().addAnnotation(problem);
-      problems.add(problem);
-    }
+//    AnnotationModel annotationModel = event.getAnnotationModel();
+//    OrionAnnotationSeverityProvider severityProvider = null;
+//    if (annotationModel instanceof OrionAnnotationSeverityProvider) {
+//      severityProvider = (OrionAnnotationSeverityProvider) annotationModel;
+//    }
+//
+//    for (OrionAnnotationOverlay annotationOverlay : problems) {
+//      editorOverlay.getAnnotationModel().removeAnnotation(annotationOverlay);
+//    }
+//
+//    Iterator<Annotation> annotationIterator = annotationModel.getAnnotationIterator();
+//    while (annotationIterator.hasNext()) {
+//      Annotation annotation = annotationIterator.next();
+//      OrionAnnotationOverlay problem =
+//          getOrionAnnotationOverlay(annotationModel, severityProvider, annotation);
+//      editorOverlay.getAnnotationModel().addAnnotation(problem);
+//      problems.add(problem);
+//    }
   }
 
-  private OrionAnnotationOverlay getOrionAnnotationOverlay(
-      AnnotationModel annotationModel,
-      OrionAnnotationSeverityProvider severityProvider,
-      Annotation annotation) {
-    Position position = annotationModel.getPosition(annotation);
-
-    return annotationType.createAnnotation(
-        getSeverity(annotation.getType(), severityProvider),
-        position.getOffset(),
-        position.getOffset() + position.getLength(),
-        annotation.getText());
-  }
+//  private OrionAnnotationOverlay getOrionAnnotationOverlay(
+//      AnnotationModel annotationModel,
+//      OrionAnnotationSeverityProvider severityProvider,
+//      Annotation annotation) {
+//    Position position = annotationModel.getPosition(annotation);
+//
+//    return annotationType.createAnnotation(
+//        getSeverity(annotation.getType(), severityProvider),
+//        position.getOffset(),
+//        position.getOffset() + position.getLength(),
+//        annotation.getText());
+//  }
 
   private String getSeverity(String type, OrionAnnotationSeverityProvider provider) {
     if (provider != null) {
@@ -879,24 +883,24 @@ public class OrionEditorWidget extends Composite
           EMACS,
           OrionKeyModeOverlay.getEmacsKeyMode(moduleHolder.getModule("OrionEmacs"), textView));
 
-      setupKeymode();
-      eventBus.addHandler(
-          KeymapChangeEvent.TYPE,
-          new KeymapChangeHandler() {
-
-            @Override
-            public void onKeymapChanged(final KeymapChangeEvent event) {
-              setupKeymode();
-            }
-          });
+//      setupKeymode();
+//      eventBus.addHandler(
+//          KeymapChangeEvent.TYPE,
+//          new KeymapChangeHandler() {
+//
+//            @Override
+//            public void onKeymapChanged(final KeymapChangeEvent event) {
+//              setupKeymode();
+//            }
+//          });
       undoRedo = new OrionUndoRedo(editorOverlay.getUndoStack());
       editorOverlay.setZoomRulerVisible(true);
       editorOverlay.getAnnotationStyler().addAnnotationType("che-marker", 100);
       cheContentAssistMode =
           OrionKeyModeOverlay.getCheCodeAssistMode(
               moduleHolder.getModule("CheContentAssistMode"), editorOverlay.getTextView());
-      assistWidget =
-          contentAssistWidgetFactory.create(OrionEditorWidget.this, cheContentAssistMode);
+//      assistWidget =
+//          contentAssistWidgetFactory.create(OrionEditorWidget.this, cheContentAssistMode);
       gutter = initBreakpointRuler(moduleHolder);
 
       orionSettingsController.updateSettings();
@@ -911,49 +915,49 @@ public class OrionEditorWidget extends Composite
    * display in the dialog box defaultValue The default value callback function(value) clicking "OK"
    * will return input value clicking "Cancel" will return null
    */
-  private native void registerPromptFunction() /*-{
-        if (!$wnd["promptIDE"]) {
-            var instance = this;
-            $wnd["promptIDE"] = function (title, text, defaultValue, callback) {
-                instance.@org.eclipse.che.ide.editor.orion.client.OrionEditorWidget::askLineNumber(*)(title, text, defaultValue, callback);
-            };
-        }
-    }-*/;
+//  private native void registerPromptFunction() /*-{
+//        if (!$wnd["promptIDE"]) {
+//            var instance = this;
+//            $wnd["promptIDE"] = function (title, text, defaultValue, callback) {
+//                instance.@org.eclipse.che.ide.editor.orion.client.OrionEditorWidget::askLineNumber(*)(title, text, defaultValue, callback);
+//            };
+//        }
+//    }-*/;
 
   /** Custom callback to pass given value to native javascript function. */
-  private class InputCallback implements org.eclipse.che.ide.ui.dialogs.input.InputCallback {
-
-    private JavaScriptObject callback;
-
-    public InputCallback(JavaScriptObject callback) {
-      this.callback = callback;
-    }
-
-    @Override
-    public void accepted(String value) {
-      acceptedNative(value);
-      editorAgent.activateEditor(editorAgent.getActiveEditor());
-    }
-
-    private native void acceptedNative(String value) /*-{
-            var callback = this.@org.eclipse.che.ide.editor.orion.client.OrionEditorWidget.InputCallback::callback;
-            callback(value);
-        }-*/;
-  }
-
-  private void askLineNumber(
-      String title, String text, String defaultValue, final JavaScriptObject callback) {
-    if (defaultValue == null) {
-      defaultValue = "";
-    } else {
-      // It's strange situation defaultValue.length() returns 'undefined' but must return a number.
-      // Reinitialise the variable resolves the problem.
-      defaultValue = "" + defaultValue;
-    }
-
-    dialogFactory
-        .createInputDialog(
-            title, text, defaultValue, 0, defaultValue.length(), new InputCallback(callback), null)
-        .show();
-  }
+//  private class InputCallback implements org.eclipse.che.ide.ui.dialogs.input.InputCallback {
+//
+//    private JavaScriptObject callback;
+//
+//    public InputCallback(JavaScriptObject callback) {
+//      this.callback = callback;
+//    }
+//
+//    @Override
+//    public void accepted(String value) {
+//      acceptedNative(value);
+//      editorAgent.activateEditor(editorAgent.getActiveEditor());
+//    }
+//
+//    private native void acceptedNative(String value) /*-{
+//            var callback = this.@org.eclipse.che.ide.editor.orion.client.OrionEditorWidget.InputCallback::callback;
+//            callback(value);
+//        }-*/;
+//  }
+//
+//  private void askLineNumber(
+//      String title, String text, String defaultValue, final JavaScriptObject callback) {
+//    if (defaultValue == null) {
+//      defaultValue = "";
+//    } else {
+//      // It's strange situation defaultValue.length() returns 'undefined' but must return a number.
+//      // Reinitialise the variable resolves the problem.
+//      defaultValue = "" + defaultValue;
+//    }
+//
+//    dialogFactory
+//        .createInputDialog(
+//            title, text, defaultValue, 0, defaultValue.length(), new InputCallback(callback), null)
+//        .show();
+//  }
 }

@@ -18,11 +18,17 @@ package org.eclipse.che.ide.api.editor;
 public class OpenEditorCallbackImpl implements EditorAgent.OpenEditorCallback {
 
   @Override
-  public void onEditorOpened(EditorPartPresenter editor) {}
+  public void onEditorOpened(EditorPartPresenter editor) {
+//    Log.info(getClass(), "!!!!!!!!!!!!!!");
+  }
 
   @Override
-  public void onEditorActivated(EditorPartPresenter editor) {}
+  public void onEditorActivated(EditorPartPresenter editor) {
+//    Log.info(getClass(), "Editor activated!!!!");
+  }
 
   @Override
-  public void onInitializationFailed() {}
+  public void onInitializationFailed() {
+//    Log.info(getClass(), "Failed to initialize editor !!!!");
+  }
 }

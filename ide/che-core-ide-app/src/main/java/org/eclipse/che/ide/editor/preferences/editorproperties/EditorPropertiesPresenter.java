@@ -68,6 +68,8 @@ public class EditorPropertiesPresenter implements EditorPreferenceSection {
         section.storeChanges();
       }
     }
+
+    //todo event here
     eventBus.fireEvent(new EditorSettingsChangedEvent());
   }
 

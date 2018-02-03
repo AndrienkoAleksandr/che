@@ -18,6 +18,7 @@ public class OrionEditorOverlay extends JavaScriptObject {
 
   protected OrionEditorOverlay() {}
 
+  // todo add Event listener
   public final native <T extends OrionEventOverlay> void addEventListener(
       String eventType, EventHandler<T> handler, boolean useCapture) /*-{
         var func = function (param) {

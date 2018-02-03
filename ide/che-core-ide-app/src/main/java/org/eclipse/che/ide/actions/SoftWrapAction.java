@@ -17,6 +17,7 @@ import org.eclipse.che.ide.api.action.ToggleAction;
 import org.eclipse.che.ide.api.editor.EditorAgent;
 import org.eclipse.che.ide.api.editor.EditorPartPresenter;
 import org.eclipse.che.ide.api.editor.texteditor.CanWrapLines;
+import org.eclipse.che.ide.util.loging.Log;
 
 /**
  * Toggle wrapping long lines action
@@ -53,6 +54,7 @@ public class SoftWrapAction extends ToggleAction {
 
   @Override
   public void update(ActionEvent e) {
+//    Log.info(getClass(), "what????");
     EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
 
     if (activeEditor != null && activeEditor instanceof CanWrapLines) {

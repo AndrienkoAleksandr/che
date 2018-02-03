@@ -151,6 +151,7 @@ import org.eclipse.che.ide.resource.Path;
 import org.eclipse.che.ide.ui.dialogs.CancelCallback;
 import org.eclipse.che.ide.ui.dialogs.DialogFactory;
 import org.eclipse.che.ide.ui.dialogs.confirm.ConfirmCallback;
+import org.eclipse.che.ide.util.loging.Log;
 import org.vectomatic.dom.svg.ui.SVGResource;
 
 /**
@@ -168,7 +169,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
         EditorWithErrors,
         HasHotKeyItems,
         TextEditorPartView.Delegate,
-        HasAnnotationRendering,
+//        HasAnnotationRendering,
         HasLinkedMode,
         HasCompletionInformation,
         HasGutter,
@@ -204,7 +205,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   private final EditorFileStatusNotificationOperation editorFileStatusNotificationOperation;
   private final WordDetectionUtil wordDetectionUtil;
 
-  private final AnnotationRendering rendering = new AnnotationRendering();
+//  private final AnnotationRendering rendering = new AnnotationRendering();
   private HasKeyBindings keyBindingsManager;
   private List<EditorUpdateAction> updateActions;
   private TextEditorConfiguration configuration;
@@ -285,11 +286,12 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
   @Override
   protected void initializeEditor(final OpenEditorCallback callback) {
-    QuickAssistProcessor processor = configuration.getQuickAssistProcessor();
-    if (quickAssistantFactory != null && processor != null) {
-      quickAssistant = quickAssistantFactory.createQuickAssistant(this);
-      quickAssistant.setQuickAssistProcessor(processor);
-    }
+//    Log.info(getClass(), "Init editor!!!!");
+//    QuickAssistProcessor processor = configuration.getQuickAssistProcessor();
+//    if (quickAssistantFactory != null && processor != null) {
+//      quickAssistant = quickAssistantFactory.createQuickAssistant(this);
+//      quickAssistant.setQuickAssistProcessor(processor);
+//    }
 
     editorInit =
         new OrionEditorInit(
@@ -309,6 +311,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
             new Function<Void, Promise<String>>() {
               @Override
               public Promise<String> apply(Void arg) throws FunctionException {
+//                Log.info(getClass(), "open document storage");
                 return documentStorage.getDocument(input.getFile());
               }
             })
@@ -333,111 +336,112 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
     this.fileTypes = detectFileType(getEditorInput().getFile());
     editorWidgetFactory.createEditorWidget(
         fileTypes, new EditorWidgetInitializedCallback(content, openEditorCallback));
+//    Log.info(getClass(), "editor created!!!");
   }
 
-  private void setupEventHandlers() {
-    this.editorWidget.addChangeHandler(
-        new ChangeHandler() {
-          @Override
-          public void onChange(final ChangeEvent event) {
-            handleDocumentChanged();
-          }
-        });
-    this.editorWidget.addGutterClickHandler(
-        new GutterClickHandler() {
-          @Override
-          public void onGutterClick(final GutterClickEvent event) {
-            if (Gutters.BREAKPOINTS_GUTTER.equals(event.getGutterId())
-                || Gutters.LINE_NUMBERS_GUTTER.equals(event.getGutterId())) {
-              breakpointManager.changeBreakpointState(event.getLineNumber());
-            }
-          }
-        });
-    this.editorWidget.addKeyBinding(
-        new KeyBinding(
-            true,
-            false,
-            false,
-            false,
-            KeyCodes.KEY_F8,
-            new KeyBindingAction() {
-              @Override
-              public boolean action() {
-                int currentLine = editorWidget.getDocument().getCursorPosition().getLine();
-                breakpointManager.changeBreakpointState(currentLine);
-                return true;
-              }
-            }),
-        TOGGLE_LINE_BREAKPOINT);
-  }
+//  private void setupEventHandlers() {
+//    this.editorWidget.addChangeHandler(
+//        new ChangeHandler() {
+//          @Override
+//          public void onChange(final ChangeEvent event) {
+//            handleDocumentChanged();
+//          }
+//        });
+//    this.editorWidget.addGutterClickHandler(
+//        new GutterClickHandler() {
+//          @Override
+//          public void onGutterClick(final GutterClickEvent event) {
+//            if (Gutters.BREAKPOINTS_GUTTER.equals(event.getGutterId())
+//                || Gutters.LINE_NUMBERS_GUTTER.equals(event.getGutterId())) {
+//              breakpointManager.changeBreakpointState(event.getLineNumber());
+//            }
+//          }
+//        });
+//    this.editorWidget.addKeyBinding(
+//        new KeyBinding(
+//            true,
+//            false,
+//            false,
+//            false,
+//            KeyCodes.KEY_F8,
+//            new KeyBindingAction() {
+//              @Override
+//              public boolean action() {
+//                int currentLine = editorWidget.getDocument().getCursorPosition().getLine();
+//                breakpointManager.changeBreakpointState(currentLine);
+//                return true;
+//              }
+//            }),
+//        TOGGLE_LINE_BREAKPOINT);
+//  }
 
-  private void setupFileContentUpdateHandler() {
-    resourceChangeHandler =
-        generalEventBus.addHandler(
-            ResourceChangedEvent.getType(),
-            new ResourceChangedEvent.ResourceChangedHandler() {
-              @Override
-              public void onResourceChanged(ResourceChangedEvent event) {
-                final ResourceDelta delta = event.getDelta();
+//  private void setupFileContentUpdateHandler() {
+//    resourceChangeHandler =
+//        generalEventBus.addHandler(
+//            ResourceChangedEvent.getType(),
+//            new ResourceChangedEvent.ResourceChangedHandler() {
+//              @Override
+//              public void onResourceChanged(ResourceChangedEvent event) {
+//                final ResourceDelta delta = event.getDelta();
+//
+//                switch (delta.getKind()) {
+//                  case ADDED:
+//                    onResourceCreated(delta);
+//                    break;
+//                  case REMOVED:
+//                    onResourceRemoved(delta);
+//                    break;
+//                  case UPDATED:
+//                    onResourceUpdated(delta);
+//                }
+//              }
+//            });
+//  }
 
-                switch (delta.getKind()) {
-                  case ADDED:
-                    onResourceCreated(delta);
-                    break;
-                  case REMOVED:
-                    onResourceRemoved(delta);
-                    break;
-                  case UPDATED:
-                    onResourceUpdated(delta);
-                }
-              }
-            });
-  }
-
-  private void onResourceCreated(ResourceDelta delta) {
-    if ((delta.getFlags() & (MOVED_FROM | MOVED_TO)) == 0) {
-      return;
-    }
-
-    final Resource resource = delta.getResource();
-    final Path movedFrom = delta.getFromPath();
-
-    // file moved directly
-    if (document.getFile().getLocation().equals(movedFrom)) {
-      deletedFilesController.add(movedFrom.toString());
-      document.setFile((File) resource);
-      input.setFile((File) resource);
-
-      updateContent();
-    } else if (movedFrom.isPrefixOf(
-        document.getFile().getLocation())) { // directory where file moved
-      final Path relPath =
-          document.getFile().getLocation().removeFirstSegments(movedFrom.segmentCount());
-      final Path newPath = delta.getToPath().append(relPath);
-
-      appContext
-          .getWorkspaceRoot()
-          .getFile(newPath)
-          .then(
-              optional -> {
-                if (optional.isPresent()) {
-                  final Path location = document.getFile().getLocation();
-                  deletedFilesController.add(location.toString());
-
-                  File file = optional.get();
-                  clientServerEventService
-                      .sendFileTrackingStartEvent(file.getLocation().toString())
-                      .then(
-                          aVoid -> {
-                            document.setFile(file);
-                            input.setFile(file);
-                            updateTabReference(file, location);
-                            updateContent();
-                          });
-                }
-              });
-    }
-  }
+//  private void onResourceCreated(ResourceDelta delta) {
+//    if ((delta.getFlags() & (MOVED_FROM | MOVED_TO)) == 0) {
+//      return;
+//    }
+//
+//    final Resource resource = delta.getResource();
+//    final Path movedFrom = delta.getFromPath();
+//
+//    // file moved directly
+//    if (document.getFile().getLocation().equals(movedFrom)) {
+//      deletedFilesController.add(movedFrom.toString());
+//      document.setFile((File) resource);
+//      input.setFile((File) resource);
+//
+//      updateContent();
+//    } else if (movedFrom.isPrefixOf(
+//        document.getFile().getLocation())) { // directory where file moved
+//      final Path relPath =
+//          document.getFile().getLocation().removeFirstSegments(movedFrom.segmentCount());
+//      final Path newPath = delta.getToPath().append(relPath);
+//
+//      appContext
+//          .getWorkspaceRoot()
+//          .getFile(newPath)
+//          .then(
+//              optional -> {
+//                if (optional.isPresent()) {
+//                  final Path location = document.getFile().getLocation();
+//                  deletedFilesController.add(location.toString());
+//
+//                  File file = optional.get();
+//                  clientServerEventService
+//                      .sendFileTrackingStartEvent(file.getLocation().toString())
+//                      .then(
+//                          aVoid -> {
+//                            document.setFile(file);
+//                            input.setFile(file);
+//                            updateTabReference(file, location);
+//                            updateContent();
+//                          });
+//                }
+//              });
+//    }
+//  }
 
   @Override
   public void updateDirtyState(boolean dirty) {
@@ -449,61 +453,61 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
     super.updateDirtyState(dirty);
   }
 
-  private void updateTabReference(File file, Path oldPath) {
-    final PartPresenter activePart = editorMultiPartStackPresenter.getActivePart();
-    final EditorPartStack activePartStack =
-        editorMultiPartStackPresenter.getPartStackByPart(activePart);
-    if (activePartStack == null) {
-      return;
-    }
-    final EditorTab editorTab = activePartStack.getTabByPath(oldPath);
-    if (editorTab != null) {
-      editorTab.setFile(file);
-    }
-  }
+//  private void updateTabReference(File file, Path oldPath) {
+//    final PartPresenter activePart = editorMultiPartStackPresenter.getActivePart();
+//    final EditorPartStack activePartStack =
+//        editorMultiPartStackPresenter.getPartStackByPart(activePart);
+//    if (activePartStack == null) {
+//      return;
+//    }
+//    final EditorTab editorTab = activePartStack.getTabByPath(oldPath);
+//    if (editorTab != null) {
+//      editorTab.setFile(file);
+//    }
+//  }
+//
+//  private void onResourceRemoved(ResourceDelta delta) {
+//    if ((delta.getFlags() & DERIVED) == 0) {
+//      return;
+//    }
+//
+//    final Resource resource = delta.getResource();
+//
+//    if (resource.isFile() && document.getFile().getLocation().equals(resource.getLocation())) {
+//      handleClose();
+//    }
+//  }
+//
+//  private void onResourceUpdated(ResourceDelta delta) {
+//    if ((delta.getFlags() & DERIVED) == 0) {
+//      return;
+//    }
+//
+//    if (delta.getResource().isFile()
+//        && document.getFile().getLocation().equals(delta.getResource().getLocation())) {
+//      updateContent();
+//    }
+//  }
 
-  private void onResourceRemoved(ResourceDelta delta) {
-    if ((delta.getFlags() & DERIVED) == 0) {
-      return;
-    }
-
-    final Resource resource = delta.getResource();
-
-    if (resource.isFile() && document.getFile().getLocation().equals(resource.getLocation())) {
-      handleClose();
-    }
-  }
-
-  private void onResourceUpdated(ResourceDelta delta) {
-    if ((delta.getFlags() & DERIVED) == 0) {
-      return;
-    }
-
-    if (delta.getResource().isFile()
-        && document.getFile().getLocation().equals(delta.getResource().getLocation())) {
-      updateContent();
-    }
-  }
-
-  private void updateContent() {
-    generalEventBus.fireEvent(
-        new FileContentUpdateEvent(document.getFile().getLocation().toString()));
-  }
+//  private void updateContent() {
+//    generalEventBus.fireEvent(
+//        new FileContentUpdateEvent(document.getFile().getLocation().toString()));
+//  }
 
   private void displayErrorPanel(final String message) {
     this.editorView.showPlaceHolder(new Label(message));
   }
 
-  private void handleDocumentChanged() {
-    Scheduler.get()
-        .scheduleDeferred(
-            new Scheduler.ScheduledCommand() {
-              @Override
-              public void execute() {
-                updateDirtyState(editorWidget.isDirty());
-              }
-            });
-  }
+//  private void handleDocumentChanged() {
+//    Scheduler.get()
+//        .scheduleDeferred(
+//            new Scheduler.ScheduledCommand() {
+//              @Override
+//              public void execute() {
+//                updateDirtyState(editorWidget.isDirty());
+//              }
+//            });
+//  }
 
   protected void showQuickAssist() {
     if (quickAssistant == null) {
@@ -546,7 +550,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
   @Override
   public boolean isEditable() {
-    return false;
+    return true;
   }
 
   @Override
@@ -1011,11 +1015,11 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
     autoSaveMode.suspend();
   }
 
-  @Override
-  public void configure(AnnotationModel model, DocumentHandle document) {
-    document.getDocEventBus().addHandler(AnnotationModelEvent.TYPE, rendering);
-    document.getDocEventBus().addHandler(ClearAnnotationModelEvent.TYPE, rendering);
-  }
+//  @Override
+//  public void configure(AnnotationModel model, DocumentHandle document) {
+//    document.getDocEventBus().addHandler(AnnotationModelEvent.TYPE, rendering);
+//    document.getDocEventBus().addHandler(ClearAnnotationModelEvent.TYPE, rendering);
+//  }
 
   @Override
   public LinkedMode getLinkedMode() {
@@ -1093,7 +1097,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   }
 
   private class EditorWidgetInitializedCallback implements EditorWidget.WidgetInitializedCallback {
-    private final String content;
+    private  String content;
     private boolean isInitialized;
     private OpenEditorCallback openEditorCallback;
 
@@ -1104,6 +1108,8 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
     @Override
     public void initialized(EditorWidget widget) {
+//      content = "?";
+      Log.info(getClass(), "content ^)---------" + content + "");
       editorWidget = (OrionEditorWidget) widget;
       // finish editor initialization
       editorView.setEditorWidget(editorWidget);
@@ -1121,11 +1127,11 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
       editorWidget.setTabSize(configuration.getTabWidth());
 
       // initialize info panel
-      editorView.initInfoPanel(
-          editorWidget.getMode(),
-          editorWidget.getKeymap(),
-          document.getLineCount(),
-          configuration.getTabWidth());
+//      editorView.initInfoPanel(
+//          editorWidget.getMode(),
+//          editorWidget.getKeymap(),
+//          document.getLineCount(),
+//          configuration.getTabWidth());
 
       // TODO: delayed activation
       // handle delayed focus (initialization editor widget)
@@ -1140,19 +1146,22 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
       // delayed keybindings creation ?
       switchHasKeybinding();
 
+//      Log.info(getClass(), "try to set content for widget!!!");
       editorWidget.setValue(
           content,
           new ContentInitializedHandler() {
             @Override
             public void onContentInitialized() {
+//              Log.info(getClass(), "initialized????????????????????????????");
               if (isInitialized) {
                 return;
               }
+//              Log.info(EditorWidgetInitializedCallback.this.getClass(), "document ready !!!!");
               editorInit.init(document);
               generalEventBus.fireEvent(new DocumentReadyEvent(document));
               firePropertyChange(PROP_INPUT);
-              setupEventHandlers();
-              setupFileContentUpdateHandler();
+//              setupEventHandlers();
+//              setupFileContentUpdateHandler();
 
               isInitialized = true;
               initializeChangeMarkersRender()
@@ -1165,25 +1174,25 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
             }
           });
 
-      editorWidget.addDomHandler(
-          new ContextMenuHandler() {
-            @Override
-            public void onContextMenu(ContextMenuEvent event) {
-              contextMenu.show(
-                  event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
-            }
-          },
-          ContextMenuEvent.getType());
-
-      getUndoRedo()
-          .addUndoRedoOperationsListener(
-              () ->
-                  Scheduler.get()
-                      .scheduleDeferred(
-                          () -> {
-                            editorWidget.markDirty();
-                            updateDirtyState(true);
-                          }));
+//      editorWidget.addDomHandler(
+//          new ContextMenuHandler() {
+//            @Override
+//            public void onContextMenu(ContextMenuEvent event) {
+//              contextMenu.show(
+//                  event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
+//            }
+//          },
+//          ContextMenuEvent.getType());
+//
+//      getUndoRedo()
+//          .addUndoRedoOperationsListener(
+//              () ->
+//                  Scheduler.get()
+//                      .scheduleDeferred(
+//                          () -> {
+//                            editorWidget.markDirty();
+//                            updateDirtyState(true);
+//                          }));
     }
   }
 
@@ -1254,6 +1263,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
   @Override
   public void toggleWrapLines() {
+//    Log.info(getClass(), "Toggle!!");
     editorWidget.getTextView().toggleWrapMode();
   }
 }

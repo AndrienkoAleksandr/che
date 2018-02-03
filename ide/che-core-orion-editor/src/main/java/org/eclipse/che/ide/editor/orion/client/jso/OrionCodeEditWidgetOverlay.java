@@ -31,7 +31,7 @@ public class OrionCodeEditWidgetOverlay extends JavaScriptObject {
    *     initialization
    */
   public final native OrionCodeEditWidgetOverlay create(JsArrayString plugins) /*-{
-        return new this({userPlugins: plugins});
+        return new this({_defaultPlugins: [], userPlugins: plugins});
     }-*/;
 
   /**

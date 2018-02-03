@@ -286,11 +286,13 @@ public class EditorAgentImpl
 
   private void doOpen(
       VirtualFile file, EditorPartStack editorPartStackConsumer, OpenEditorCallback callback) {
+//    Log.info(getClass(), "Do open-------------");
 
     addToOpeningFilesList(file.getLocation(), editorPartStackConsumer);
 
     final FileType fileType = fileTypeRegistry.getFileTypeByFile(file);
     final EditorProvider editorProvider = editorRegistry.getEditor(fileType);
+//    Log.info(getClass(), "Get editor provider-----------------------");
     if (editorProvider instanceof AsyncEditorProvider) {
       AsyncEditorProvider provider = (AsyncEditorProvider) editorProvider;
       Promise<EditorPartPresenter> promise = provider.createEditor(file);
@@ -314,10 +316,12 @@ public class EditorAgentImpl
       EditorPartPresenter editor,
       EditorPartStack editorPartStack,
       EditorProvider editorProvider) {
+//    Log.info(getClass(), "init-----------------");
     OpenEditorCallback initializeCallback =
         new OpenEditorCallbackImpl() {
           @Override
           public void onEditorOpened(EditorPartPresenter editor) {
+//            Log.info(EditorAgentImpl.this.getClass(), "BEGIN INITIALIZATION!!!------------");
             editorPartStack.addPart(editor);
             editorMultiPartStack.setActivePart(editor);
 
@@ -331,6 +335,7 @@ public class EditorAgentImpl
 
           @Override
           public void onInitializationFailed() {
+//            Log.info(getClass(), "Failed----------------");
             openEditorCallback.onInitializationFailed();
 
             removeFromOpeningFilesList(file.getLocation(), editorPartStack);
@@ -634,118 +639,118 @@ public class EditorAgentImpl
                       @Override
                       public void apply(java.util.Optional<VirtualFile> optionalFile)
                           throws OperationException {
-                        if (optionalFile.isPresent()) {
-                          restoreCreateEditor(
-                              optionalFile.get(), file, editorPartStack, callback, activeEditors);
-                        } else {
+//                        if (optionalFile.isPresent()) {
+//                          restoreCreateEditor(
+//                              optionalFile.get(), file, editorPartStack, callback, activeEditors);
+//                        } else {
                           callback.onSuccess(null);
-                        }
+//                        }
                       }
                     });
           }
         });
   }
 
-  private void restoreCreateEditor(
-      final VirtualFile resourceFile,
-      JsonObject file,
-      final EditorPartStack editorPartStack,
-      final AsyncCallback<Void> openCallback,
-      final Map<EditorPartPresenter, EditorPartStack> activeEditors) {
-    String providerId = file.getString("EDITOR_PROVIDER");
-    final OpenEditorCallback callback;
-    if (file.hasKey("CURSOR_OFFSET") && file.hasKey("TOP_VISIBLE_LINE")) {
-      final int cursorOffset = (int) file.getNumber("CURSOR_OFFSET");
-      final int topLine = (int) file.getNumber("TOP_VISIBLE_LINE");
-      callback = new RestoreStateEditorCallBack(cursorOffset, topLine);
-    } else {
-      callback = new OpenEditorCallbackImpl();
-    }
-    final boolean active = file.hasKey("ACTIVE") && file.getBoolean("ACTIVE");
+//  private void restoreCreateEditor(
+//      final VirtualFile resourceFile,
+//      JsonObject file,
+//      final EditorPartStack editorPartStack,
+//      final AsyncCallback<Void> openCallback,
+//      final Map<EditorPartPresenter, EditorPartStack> activeEditors) {
+//    String providerId = file.getString("EDITOR_PROVIDER");
+//    final OpenEditorCallback callback;
+//    if (file.hasKey("CURSOR_OFFSET") && file.hasKey("TOP_VISIBLE_LINE")) {
+//      final int cursorOffset = (int) file.getNumber("CURSOR_OFFSET");
+//      final int topLine = (int) file.getNumber("TOP_VISIBLE_LINE");
+//      callback = new RestoreStateEditorCallBack(cursorOffset, topLine);
+//    } else {
+//      callback = new OpenEditorCallbackImpl();
+//    }
+//    final boolean active = file.hasKey("ACTIVE") && file.getBoolean("ACTIVE");
+//
+//    final EditorProvider provider = editorRegistry.findEditorProviderById(providerId);
+//    if (provider instanceof AsyncEditorProvider) {
+//      ((AsyncEditorProvider) provider)
+//          .createEditor(resourceFile)
+//          .then(
+//              editor -> {
+//                restoreInitEditor(
+//                        resourceFile,
+//                        callback,
+//                        fileTypeRegistry.getFileTypeByFile(resourceFile),
+//                        editor,
+//                        provider,
+//                        editorPartStack)
+//                    .then(
+//                        arg -> {
+//                          if (active) {
+//                            activeEditors.put(editor, editorPartStack);
+//                          }
+//                          openCallback.onSuccess(null);
+//                        });
+//              });
+//    } else {
+//      EditorPartPresenter editor = provider.getEditor();
+//      restoreInitEditor(
+//              resourceFile,
+//              callback,
+//              fileTypeRegistry.getFileTypeByFile(resourceFile),
+//              editor,
+//              provider,
+//              editorPartStack)
+//          .then(
+//              arg -> {
+//                if (active) {
+//                  activeEditors.put(editor, editorPartStack);
+//                }
+//                openCallback.onSuccess(null);
+//              });
+//    }
+//  }
 
-    final EditorProvider provider = editorRegistry.findEditorProviderById(providerId);
-    if (provider instanceof AsyncEditorProvider) {
-      ((AsyncEditorProvider) provider)
-          .createEditor(resourceFile)
-          .then(
-              editor -> {
-                restoreInitEditor(
-                        resourceFile,
-                        callback,
-                        fileTypeRegistry.getFileTypeByFile(resourceFile),
-                        editor,
-                        provider,
-                        editorPartStack)
-                    .then(
-                        arg -> {
-                          if (active) {
-                            activeEditors.put(editor, editorPartStack);
-                          }
-                          openCallback.onSuccess(null);
-                        });
-              });
-    } else {
-      EditorPartPresenter editor = provider.getEditor();
-      restoreInitEditor(
-              resourceFile,
-              callback,
-              fileTypeRegistry.getFileTypeByFile(resourceFile),
-              editor,
-              provider,
-              editorPartStack)
-          .then(
-              arg -> {
-                if (active) {
-                  activeEditors.put(editor, editorPartStack);
-                }
-                openCallback.onSuccess(null);
-              });
-    }
-  }
-
-  private Promise<Void> restoreInitEditor(
-      final VirtualFile file,
-      final OpenEditorCallback openEditorCallback,
-      FileType fileType,
-      final EditorPartPresenter editor,
-      EditorProvider editorProvider,
-      EditorPartStack editorPartStack) {
-    return AsyncPromiseHelper.createFromAsyncRequest(
-        (AsyncCallback<Void> promiseCallback) -> {
-          OpenEditorCallback initializeCallback =
-              new OpenEditorCallbackImpl() {
-                @Override
-                public void onEditorOpened(EditorPartPresenter editor) {
-                  editorPartStack.addPart(editor);
-
-                  openedEditors.add(editor);
-                  removeFromOpeningFilesList(file.getLocation(), editorPartStack);
-
-                  promiseCallback.onSuccess(null);
-                  openEditorCallback.onEditorOpened(editor);
-                  openEditorCallback.onEditorActivated(editor);
-
-                  eventBus.fireEvent(new EditorOpenedEvent(file, editor));
-                }
-
-                @Override
-                public void onInitializationFailed() {
-                  promiseCallback.onFailure(
-                      new Exception("Can not initialize editor for " + file.getLocation()));
-                  openEditorCallback.onInitializationFailed();
-                  removeFromOpeningFilesList(file.getLocation(), editorPartStack);
-
-                  if (!openingEditorsPathsToStacks.containsKey(editorPartStack)
-                      && editorPartStack.getParts().isEmpty()) {
-                    editorMultiPartStack.removePartStack(editorPartStack);
-                  }
-                }
-              };
-
-          editor.init(new EditorInputImpl(fileType, file), initializeCallback);
-          finalizeInit(file, editor, editorProvider);
-        });
-  }
+//  private Promise<Void> restoreInitEditor(
+//      final VirtualFile file,
+//      final OpenEditorCallback openEditorCallback,
+//      FileType fileType,
+//      final EditorPartPresenter editor,
+//      EditorProvider editorProvider,
+//      EditorPartStack editorPartStack) {
+//    return AsyncPromiseHelper.createFromAsyncRequest(
+//        (AsyncCallback<Void> promiseCallback) -> {
+//          OpenEditorCallback initializeCallback =
+//              new OpenEditorCallbackImpl() {
+//                @Override
+//                public void onEditorOpened(EditorPartPresenter editor) {
+//                  editorPartStack.addPart(editor);
+//
+//                  openedEditors.add(editor);
+//                  removeFromOpeningFilesList(file.getLocation(), editorPartStack);
+//
+//                  promiseCallback.onSuccess(null);
+//                  openEditorCallback.onEditorOpened(editor);
+//                  openEditorCallback.onEditorActivated(editor);
+//
+//                  eventBus.fireEvent(new EditorOpenedEvent(file, editor));
+//                }
+//
+//                @Override
+//                public void onInitializationFailed() {
+//                  promiseCallback.onFailure(
+//                      new Exception("Can not initialize editor for " + file.getLocation()));
+//                  openEditorCallback.onInitializationFailed();
+//                  removeFromOpeningFilesList(file.getLocation(), editorPartStack);
+//
+//                  if (!openingEditorsPathsToStacks.containsKey(editorPartStack)
+//                      && editorPartStack.getParts().isEmpty()) {
+//                    editorMultiPartStack.removePartStack(editorPartStack);
+//                  }
+//                }
+//              };
+//
+//          editor.init(new EditorInputImpl(fileType, file), initializeCallback);
+//          finalizeInit(file, editor, editorProvider);
+//        });
+//  }
 
   @Override
   public void onSelectionChanged(SelectionChangedEvent event) {
@@ -805,30 +810,30 @@ public class EditorAgentImpl
     }
   }
 
-  private static class RestoreStateEditorCallBack extends OpenEditorCallbackImpl {
-    private final int cursorOffset;
-    private final int topLine;
-
-    public RestoreStateEditorCallBack(int cursorOffset, int topLine) {
-      this.cursorOffset = cursorOffset;
-      this.topLine = topLine;
-    }
-
-    @Override
-    public void onEditorOpened(EditorPartPresenter editor) {
-      if (editor instanceof TextEditor) {
-        TextEditor textEditor = (TextEditor) editor;
-        textEditor.getCursorModel().setCursorPosition(cursorOffset);
-      }
-    }
-
-    @Override
-    public void onEditorActivated(EditorPartPresenter editor) {
-      if (editor instanceof TextEditor) {
-        Scheduler.get().scheduleDeferred(() -> ((TextEditor) editor).setTopLine(topLine));
-      }
-    }
-  }
+//  private static class RestoreStateEditorCallBack extends OpenEditorCallbackImpl {
+//    private final int cursorOffset;
+//    private final int topLine;
+//
+//    public RestoreStateEditorCallBack(int cursorOffset, int topLine) {
+//      this.cursorOffset = cursorOffset;
+//      this.topLine = topLine;
+//    }
+//
+//    @Override
+//    public void onEditorOpened(EditorPartPresenter editor) {
+//      if (editor instanceof TextEditor) {
+//        TextEditor textEditor = (TextEditor) editor;
+//        textEditor.getCursorModel().setCursorPosition(cursorOffset);
+//      }
+//    }
+//
+//    @Override
+//    public void onEditorActivated(EditorPartPresenter editor) {
+//      if (editor instanceof TextEditor) {
+//        Scheduler.get().scheduleDeferred(() -> ((TextEditor) editor).setTopLine(topLine));
+//      }
+//    }
+//  }
 
   @Override
   public int getPriority() {

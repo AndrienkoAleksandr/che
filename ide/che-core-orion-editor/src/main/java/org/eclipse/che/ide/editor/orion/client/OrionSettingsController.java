@@ -10,55 +10,34 @@
  */
 package org.eclipse.che.ide.editor.orion.client;
 
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.AUTO_COMPLETE_COMMENTS;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.AUTO_PAIR_ANGLE_BRACKETS;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.AUTO_PAIR_BRACES;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.AUTO_PAIR_PARENTHESES;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.AUTO_PAIR_QUOTATIONS;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.AUTO_PAIR_SQUARE_BRACKETS;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.EXPAND_TAB;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.SHOW_ANNOTATION_RULER;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.SHOW_CONTENT_ASSIST_AUTOMATICALLY;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.SHOW_FOLDING_RULER;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.SHOW_LINE_NUMBER_RULER;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.SHOW_OCCURRENCES;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.SHOW_OVERVIEW_RULER;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.SHOW_WHITESPACES;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.SHOW_ZOOM_RULER;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.SMART_INDENTATION;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.SOFT_WRAP;
-import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.TAB_SIZE;
-
+import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONValue;
 import com.google.inject.Inject;
-import com.google.web.bindery.event.shared.EventBus;
-import java.util.EnumSet;
-import org.eclipse.che.ide.api.editor.events.EditorSettingsChangedEvent;
-import org.eclipse.che.ide.api.editor.events.EditorSettingsChangedEvent.EditorSettingsChangedHandler;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionEditorViewOverlay;
-import org.eclipse.che.ide.editor.preferences.EditorPreferencesManager;
 import org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties;
+import org.eclipse.che.ide.util.loging.Log;
+
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.eclipse.che.ide.editor.preferences.editorproperties.EditorProperties.*;
 
 /**
  * The class contains methods to simplify the work with orion settings.
  *
  * @author Roman Nikitenko
  */
-public class OrionSettingsController implements EditorSettingsChangedHandler {
+public class OrionSettingsController {
 
   private OrionEditorViewOverlay editorViewOverlay;
   private final EnumSet<EditorProperties> orionPropertiesSet =
-      EnumSet.noneOf(EditorProperties.class);
-
-  private final EditorPreferencesManager editorPreferencesManager;
+          EnumSet.noneOf(EditorProperties.class);
 
   @Inject
-  public OrionSettingsController(
-      final EventBus eventBus, final EditorPreferencesManager editorPreferencesManager) {
-    this.editorPreferencesManager = editorPreferencesManager;
-
+  public OrionSettingsController() {
     fillUpEditorPropertiesSet();
-    eventBus.addHandler(EditorSettingsChangedEvent.TYPE, this);
   }
 
   public void setEditorViewOverlay(OrionEditorViewOverlay editorViewOverlay) {
@@ -67,15 +46,88 @@ public class OrionSettingsController implements EditorSettingsChangedHandler {
 
   public void updateSettings() {
     if (editorViewOverlay != null) {
-      JSONObject properties =
-          editorPreferencesManager.getJsonEditorPreferencesFor(orionPropertiesSet);
+      JSONObject properties = getJsonEditorPreferencesFor(orionPropertiesSet);
       editorViewOverlay.updateSettings(properties.getJavaScriptObject());
+
+      Log.info(getClass(), "settings was updated!!!!");
     }
   }
 
-  @Override
-  public void onEditorSettingsChanged(EditorSettingsChangedEvent event) {
-    updateSettings();
+  private Map<String,JSONValue> getEditorPreferences() {
+    Map<String, JSONValue> editorPreferences = new HashMap<>();
+
+    JSONBoolean expandTapValue = JSONBoolean.getInstance(true);
+    editorPreferences.put(EXPAND_TAB.toString(), expandTapValue);
+
+    JSONBoolean autoSaveValue = JSONBoolean.getInstance(true);
+    editorPreferences.put(ENABLE_AUTO_SAVE.toString(), autoSaveValue);
+
+    //WORD WRAP VALUE!!!!
+    JSONBoolean softWrapValue = JSONBoolean.getInstance(true);
+    editorPreferences.put(SOFT_WRAP.toString(), softWrapValue);
+
+    JSONBoolean autoPairParenthesesValue = JSONBoolean.getInstance(true);
+    editorPreferences.put(AUTO_PAIR_PARENTHESES.toString(), autoPairParenthesesValue);
+
+    JSONBoolean autoPairBracesValue = JSONBoolean.getInstance(true);
+    editorPreferences.put(AUTO_PAIR_BRACES.toString(), autoPairBracesValue);
+
+    JSONBoolean autoPairAngleBracesValue = JSONBoolean.getInstance(true);
+    editorPreferences.put(AUTO_PAIR_ANGLE_BRACKETS.toString(), autoPairAngleBracesValue);
+
+    JSONBoolean autoPairQuotationsValue = JSONBoolean.getInstance(true);
+    editorPreferences.put(AUTO_PAIR_QUOTATIONS.toString(), autoPairQuotationsValue);
+
+    JSONBoolean autoCompleteCommentsValue = JSONBoolean.getInstance(true);
+    editorPreferences.put(AUTO_COMPLETE_COMMENTS.toString(), autoCompleteCommentsValue);
+
+    JSONBoolean smartIndentionValue = JSONBoolean.getInstance(true);
+    editorPreferences.put(SMART_INDENTATION.toString(), smartIndentionValue);
+
+    JSONBoolean showWriteSpacesValue = JSONBoolean.getInstance(false);
+    editorPreferences.put(SHOW_WHITESPACES.toString(), showWriteSpacesValue);
+
+    JSONBoolean annotationRulerValue = JSONBoolean.getInstance(true);
+    editorPreferences.put(SHOW_ANNOTATION_RULER.toString(), annotationRulerValue);
+
+    JSONBoolean lineNumberRulerValue = JSONBoolean.getInstance(true);
+    editorPreferences.put(SHOW_LINE_NUMBER_RULER.toString(), lineNumberRulerValue);
+
+    JSONBoolean foldingRulerValue = JSONBoolean.getInstance(true);
+    editorPreferences.put(SHOW_FOLDING_RULER.toString(), foldingRulerValue);
+
+    JSONBoolean overviewRulerValue = JSONBoolean.getInstance(true);
+    editorPreferences.put(SHOW_OVERVIEW_RULER.toString(), overviewRulerValue);
+
+    JSONBoolean zoomRulerValue = JSONBoolean.getInstance(true);
+    editorPreferences.put(SHOW_ZOOM_RULER.toString(), zoomRulerValue);
+
+    JSONBoolean occurrencesRulerValue = JSONBoolean.getInstance(true);
+    editorPreferences.put(SHOW_OCCURRENCES.toString(), occurrencesRulerValue);
+
+    JSONBoolean contentAssistantAutoTriggerValue = JSONBoolean.getInstance(true);
+    editorPreferences.put(SHOW_CONTENT_ASSIST_AUTOMATICALLY.toString(), contentAssistantAutoTriggerValue);
+
+    Log.info(getClass(), "pref size " + editorPreferences.size());
+    return editorPreferences;
+  }
+
+  /**
+   * Returns saved editor preferences in json format if they exist or default preferences otherwise
+   * for given set properties.
+   */
+  public JSONObject getJsonEditorPreferencesFor(EnumSet<EditorProperties> filter) {
+    JSONObject jsonPreferences = new JSONObject();
+    Map<String, JSONValue> editorPreferences = getEditorPreferences();
+
+    for (EditorProperties property : filter) {
+      String key = property.toString();
+      if (editorPreferences.containsKey(key)) {
+        jsonPreferences.put(key, editorPreferences.get(key));
+        Log.info(getClass(), "key " + key);
+      }
+    }
+    return jsonPreferences;
   }
 
   private void fillUpEditorPropertiesSet() {

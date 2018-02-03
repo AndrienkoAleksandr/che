@@ -96,6 +96,7 @@ public class OpenFileAction extends BaseAction implements PromisableAction {
                   actionCompletedCallback.onSuccess(null);
                 }
 
+//                Log.info(getClass(), "What?");
                 editorAgent.openEditor(
                     optionalFile.get(),
                     new EditorAgent.OpenEditorCallback() {
