@@ -216,10 +216,10 @@ public class RenamePresenter implements ActionDelegate {
   }
 
   private void setEditorFocus() {
-    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
-    if (activeEditor instanceof TextEditor) {
-      ((TextEditor) activeEditor).setFocus();
-    }
+//    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
+//    if (activeEditor instanceof TextEditor) {
+//      ((TextEditor) activeEditor).setFocus();
+//    }
   }
 
   /** {@inheritDoc} */

@@ -159,53 +159,6 @@ public class RenamePresenter extends BasePresenter implements ActionDelegate {
 //            });
   }
 
-  private void showWindow(TextPosition cursorPosition, TextEditor editor, String oldName) {
-    String value = inputBox.getInputValue();
-    inputBox.hide(false);
-    inputBox = null;
-
-    showPreview = false;
-    RenameDialog renameDialog = this.renameWindow.get();
-    renameDialog.show(
-        value,
-        oldName,
-        newName -> {
-          renameDialog.closeDialog();
-          callRename(newName, cursorPosition, editor);
-        },
-        newName -> {
-          showPreview = true;
-          renameDialog.closeDialog();
-          callRename(newName, cursorPosition, editor);
-        },
-        () -> {
-          renameDialog.closeDialog();
-          editor.setFocus();
-        });
-  }
-
-  private void callRename(String newName, TextPosition cursorPosition, TextEditor editor) {
-    RenameParams dto = dtoFactory.createDto(RenameParams.class);
-
-    TextDocumentIdentifier identifier = dtoFactory.createDto(TextDocumentIdentifier.class);
-    identifier.setUri(editor.getEditorInput().getFile().getLocation().toString());
-
-    dto.setNewName(newName);
-    dto.setTextDocument(identifier);
-
-    org.eclipse.lsp4j.Position position = dtoFactory.createDto(org.eclipse.lsp4j.Position.class);
-    position.setCharacter(cursorPosition.getCharacter());
-    position.setLine(cursorPosition.getLine());
-    dto.setPosition(position);
-    client
-        .rename(dto)
-        .then(this::handleRename)
-        .catchError(
-            arg -> {
-              LOG.error(arg.getMessage());
-            });
-  }
-
   private void handleRename(RenameResult renameResult) {
     if (!renameResult.getRenameResults().isEmpty()) {
       ExtendedWorkspaceEdit workspaceEdit =
@@ -254,18 +207,18 @@ public class RenamePresenter extends BasePresenter implements ActionDelegate {
 
   @Override
   public void cancel() {
-    workspaceAgent.hidePart(this);
-    workspaceAgent.removePart(this);
-    textEditor.setFocus();
+//    workspaceAgent.hidePart(this);
+//    workspaceAgent.removePart(this);
+//    textEditor.setFocus();
   }
 
   @Override
   public void applyRename() {
-    List<RenameProject> projects = view.getRenameProjects();
-    applyRename(projects);
-    workspaceAgent.hidePart(this);
-    workspaceAgent.removePart(this);
-    textEditor.setFocus();
+//    List<RenameProject> projects = view.getRenameProjects();
+//    applyRename(projects);
+//    workspaceAgent.hidePart(this);
+//    workspaceAgent.removePart(this);
+//    textEditor.setFocus();
   }
 
   private void applyRename(List<RenameProject> projects) {

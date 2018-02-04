@@ -119,22 +119,22 @@ public class JavaRefactoringRename implements FileEventHandler {
    * @param textEditorPresenter editor where user makes refactoring
    */
   public void refactor(final TextEditor textEditorPresenter) {
-    if (!(textEditorPresenter instanceof HasLinkedMode)) {
-      return;
-    }
-
-    if (isActiveLinkedEditor) {
-      createRenameSession();
-    } else {
-      textEditor = textEditorPresenter;
-
-      createLinkedRenameSession();
-    }
-
-    isActiveLinkedEditor = !isActiveLinkedEditor;
-
-    linkedEditor = (HasLinkedMode) textEditorPresenter;
-    textEditorPresenter.setFocus();
+//    if (!(textEditorPresenter instanceof HasLinkedMode)) {
+//      return;
+//    }
+//
+//    if (isActiveLinkedEditor) {
+//      createRenameSession();
+//    } else {
+//      textEditor = textEditorPresenter;
+//
+//      createLinkedRenameSession();
+//    }
+//
+//    isActiveLinkedEditor = !isActiveLinkedEditor;
+//
+//    linkedEditor = (HasLinkedMode) textEditorPresenter;
+//    textEditorPresenter.setFocus();
   }
 
   private void createRenameSession() {

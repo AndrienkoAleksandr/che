@@ -200,14 +200,14 @@ public class OpenImplementationPresenter {
                 }
               });
     }
-    Scheduler.get()
-        .scheduleDeferred(
-            new Scheduler.ScheduledCommand() {
-              @Override
-              public void execute() {
-                activeEditor.setFocus();
-              }
-            });
+//    Scheduler.get()
+//        .scheduleDeferred(
+//            new Scheduler.ScheduledCommand() {
+//              @Override
+//              public void execute() {
+//                activeEditor.setFocus();
+//              }
+//            });
   }
 
   private void showNoImplementations(

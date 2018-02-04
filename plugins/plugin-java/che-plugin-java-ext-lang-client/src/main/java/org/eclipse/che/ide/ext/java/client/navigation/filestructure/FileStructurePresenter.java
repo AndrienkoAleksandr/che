@@ -205,8 +205,8 @@ public class FileStructurePresenter implements FileStructure.ActionDelegate {
 
   @Override
   public void onEscapeClicked() {
-    activeEditor.setFocus();
-    setCursor(activeEditor, cursorOffset);
+//    activeEditor.setFocus();
+//    setCursor(activeEditor, cursorOffset);
   }
 
   private void setCursorPosition(Region region) {

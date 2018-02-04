@@ -108,10 +108,10 @@ public class PreviewPresenter implements PreviewView.ActionDelegate {
   /** {@inheritDoc} */
   @Override
   public void onCancelButtonClicked() {
-    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
-    if (activeEditor instanceof TextEditor) {
-      ((TextEditor) activeEditor).setFocus();
-    }
+//    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
+//    if (activeEditor instanceof TextEditor) {
+//      ((TextEditor) activeEditor).setFocus();
+//    }
   }
 
   /** {@inheritDoc} */

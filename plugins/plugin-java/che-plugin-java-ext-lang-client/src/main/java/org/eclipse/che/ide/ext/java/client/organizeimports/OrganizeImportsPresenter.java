@@ -200,7 +200,7 @@ public class OrganizeImportsPresenter implements OrganizeImportsView.ActionDeleg
   /** {@inheritDoc} */
   @Override
   public void onCancelButtonClicked() {
-    ((TextEditor) editor).setFocus();
+//    ((TextEditor) editor).setFocus();
   }
 
   /** Show Organize Imports panel with the special information. */
