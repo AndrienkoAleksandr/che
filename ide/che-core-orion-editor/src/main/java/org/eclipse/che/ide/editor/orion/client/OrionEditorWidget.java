@@ -75,8 +75,6 @@ public class OrionEditorWidget extends Composite
   private static final Logger LOG = Logger.getLogger(OrionEditorWidget.class.getSimpleName());
 
   private final ModuleHolder moduleHolder;
-  private final EventBus eventBus;
-  private final KeyModeInstances keyModeInstances;
   private final OrionSettingsController orionSettingsController;
 
   @UiField SimplePanel panel;
@@ -99,8 +97,6 @@ public class OrionEditorWidget extends Composite
   @AssistedInject
   public OrionEditorWidget(
       final ModuleHolder moduleHolder,
-      final KeyModeInstances keyModeInstances,
-      final EventBus eventBus,
       final Provider<OrionCodeEditWidgetOverlay> orionCodeEditWidgetProvider,
       @Assisted final List<String> editorModes,
       @Assisted final WidgetInitializedCallback widgetInitializedCallback,
@@ -108,8 +104,6 @@ public class OrionEditorWidget extends Composite
       final OrionSettingsController orionSettingsController) {
 
     this.moduleHolder = moduleHolder;
-    this.keyModeInstances = keyModeInstances;
-    this.eventBus = eventBus;
 
     this.orionSettingsController = orionSettingsController;
     initWidget(UIBINDER.createAndBindUi(this));
@@ -346,25 +340,6 @@ public class OrionEditorWidget extends Composite
       editorViewOverlay = arg;
       editorOverlay = arg.getEditor();
       orionSettingsController.setEditorViewOverlay(arg);
-
-      final OrionContentAssistOverlay contentAssist = editorOverlay.getContentAssist();
-      eventBus.addHandler(
-          SelectionChangedEvent.TYPE,
-          new SelectionChangedHandler() {
-            @Override
-            public void onSelectionChanged(SelectionChangedEvent event) {
-              if (contentAssist.isActive()) {
-                contentAssist.deactivate();
-              }
-            }
-          });
-
-      final OrionTextViewOverlay textView = editorOverlay.getTextView();
-      keyModeInstances.add(
-          VI, OrionKeyModeOverlay.getViKeyMode(moduleHolder.getModule("OrionVi"), textView));
-      keyModeInstances.add(
-          EMACS,
-          OrionKeyModeOverlay.getEmacsKeyMode(moduleHolder.getModule("OrionEmacs"), textView));
 
       editorOverlay.setZoomRulerVisible(true);
       editorOverlay.getAnnotationStyler().addAnnotationType("che-marker", 100);
