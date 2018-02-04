@@ -33,28 +33,28 @@ public class PublishDiagnosticsProcessor {
   }
 
   public void processDiagnostics(ExtendedPublishDiagnosticsParams diagnosticsMessage) {
-    EditorPartPresenter openedEditor =
-        editorAgent.getOpenedEditor(new Path(diagnosticsMessage.getParams().getUri()));
-    // TODO add markers
-    if (openedEditor == null) {
-      return;
-    }
+//    EditorPartPresenter openedEditor =
+//        editorAgent.getOpenedEditor(new Path(diagnosticsMessage.getParams().getUri()));
+//    // TODO add markers
+//    if (openedEditor == null) {
+//      return;
+//    }
 
-    if (openedEditor instanceof TextEditor) {
-      TextEditorConfiguration editorConfiguration = ((TextEditor) openedEditor).getConfiguration();
-      AnnotationModel annotationModel = editorConfiguration.getAnnotationModel();
-      if (annotationModel != null && annotationModel instanceof DiagnosticCollector) {
-        DiagnosticCollector collector = (DiagnosticCollector) annotationModel;
-        String languageServerId = diagnosticsMessage.getLanguageServerId();
-        collector.beginReporting(languageServerId);
-        try {
-          for (Diagnostic diagnostic : diagnosticsMessage.getParams().getDiagnostics()) {
-            collector.acceptDiagnostic(languageServerId, diagnostic);
-          }
-        } finally {
-          collector.endReporting(languageServerId);
-        }
-      }
-    }
+//    if (openedEditor instanceof TextEditor) {
+//      TextEditorConfiguration editorConfiguration = ((TextEditor) openedEditor).getConfiguration();
+//      AnnotationModel annotationModel = editorConfiguration.getAnnotationModel();
+//      if (annotationModel != null && annotationModel instanceof DiagnosticCollector) {
+//        DiagnosticCollector collector = (DiagnosticCollector) annotationModel;
+//        String languageServerId = diagnosticsMessage.getLanguageServerId();
+//        collector.beginReporting(languageServerId);
+//        try {
+//          for (Diagnostic diagnostic : diagnosticsMessage.getParams().getDiagnostics()) {
+//            collector.acceptDiagnostic(languageServerId, diagnostic);
+//          }
+//        } finally {
+//          collector.endReporting(languageServerId);
+//        }
+//      }
+//    }
   }
 }

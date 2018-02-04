@@ -44,7 +44,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   private final EditorInitializePromiseHolder editorModule;
   private final TextEditorPartView editorView;
 
-  private TextEditorConfiguration configuration;
   private OrionEditorWidget editorWidget;
 
   private boolean delayedFocus;
@@ -128,12 +127,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
   @Override
   public void initialize(@NotNull TextEditorConfiguration configuration) {
-    this.configuration = configuration;
-  }
 
-  @Override
-  public TextEditorConfiguration getConfiguration() {
-    return configuration;
   }
 
   @Override
@@ -176,11 +170,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
     if (this.editorWidget != null) {
       this.editorWidget.onResize();
     }
-  }
-
-  @Override
-  public EditorWidget getEditorWidget() {
-    return this.editorWidget;
   }
 
   private class EditorWidgetInitializedCallback implements EditorWidget.WidgetInitializedCallback {

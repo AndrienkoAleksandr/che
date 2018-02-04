@@ -24,19 +24,9 @@ public interface TextEditor extends EditorPartPresenter {
    */
   void initialize(@NotNull TextEditorConfiguration configuration);
 
-  /**
-   * Returns the text editor configuration that was used for initialization.
-   *
-   * @return the text editor configuration
-   */
-  TextEditorConfiguration getConfiguration();
-
   /** @return the text editor view implementation */
   @Override
   TextEditorPartView getView();
-
-  /** @return the text editor widget */
-  EditorWidget getEditorWidget();
 
   /**
    * Closes this text editor after optionally saving changes.

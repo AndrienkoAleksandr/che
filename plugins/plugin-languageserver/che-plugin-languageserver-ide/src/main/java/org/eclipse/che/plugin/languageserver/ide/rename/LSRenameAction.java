@@ -53,23 +53,23 @@ public class LSRenameAction extends AbstractPerspectiveAction {
 
   @Override
   public void updateInPerspective(ActionEvent event) {
-    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
-    Presentation presentation = event.getPresentation();
-    if (activeEditor != workspaceAgent.getActivePart()) {
-      presentation.setEnabledAndVisible(false);
-      return;
-    }
-    if (Objects.nonNull(activeEditor) && activeEditor instanceof TextEditor) {
-      TextEditorConfiguration configuration = ((TextEditor) activeEditor).getConfiguration();
-      if (configuration instanceof LanguageServerEditorConfiguration) {
-        ServerCapabilities capabilities =
-            ((LanguageServerEditorConfiguration) configuration).getServerCapabilities();
-        presentation.setEnabledAndVisible(
-            capabilities.getRenameProvider() != null && capabilities.getRenameProvider());
-        return;
-      }
-    }
-    presentation.setEnabledAndVisible(false);
+//    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
+//    Presentation presentation = event.getPresentation();
+//    if (activeEditor != workspaceAgent.getActivePart()) {
+//      presentation.setEnabledAndVisible(false);
+//      return;
+//    }
+//    if (Objects.nonNull(activeEditor) && activeEditor instanceof TextEditor) {
+//      TextEditorConfiguration configuration = ((TextEditor) activeEditor).getConfiguration();
+//      if (configuration instanceof LanguageServerEditorConfiguration) {
+//        ServerCapabilities capabilities =
+//            ((LanguageServerEditorConfiguration) configuration).getServerCapabilities();
+//        presentation.setEnabledAndVisible(
+//            capabilities.getRenameProvider() != null && capabilities.getRenameProvider());
+//        return;
+//      }
+//    }
+//    presentation.setEnabledAndVisible(false);
   }
 
   @Override

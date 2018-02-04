@@ -57,21 +57,21 @@ public class FindDefinitionAction extends AbstractPerspectiveAction {
 
   @Override
   public void updateInPerspective(@NotNull ActionEvent event) {
-    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
-    if (activeEditor instanceof TextEditor) {
-      TextEditorConfiguration configuration = ((TextEditor) activeEditor).getConfiguration();
-      if (configuration instanceof LanguageServerEditorConfiguration) {
-        ServerCapabilities capabilities =
-            ((LanguageServerEditorConfiguration) configuration).getServerCapabilities();
-        event
-            .getPresentation()
-            .setEnabledAndVisible(
-                capabilities.getDefinitionProvider() != null
-                    && capabilities.getDefinitionProvider());
-        return;
-      }
-    }
-    event.getPresentation().setEnabledAndVisible(false);
+//    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
+//    if (activeEditor instanceof TextEditor) {
+//      TextEditorConfiguration configuration = ((TextEditor) activeEditor).getConfiguration();
+//      if (configuration instanceof LanguageServerEditorConfiguration) {
+//        ServerCapabilities capabilities =
+//            ((LanguageServerEditorConfiguration) configuration).getServerCapabilities();
+//        event
+//            .getPresentation()
+//            .setEnabledAndVisible(
+//                capabilities.getDefinitionProvider() != null
+//                    && capabilities.getDefinitionProvider());
+//        return;
+//      }
+//    }
+//    event.getPresentation().setEnabledAndVisible(false);
   }
 
   @Override
