@@ -49,15 +49,12 @@ public class OrionDocument extends AbstractDocument {
 
   private final OrionTextViewOverlay textViewOverlay;
   private final OrionPositionConverter positionConverter;
-  private final HasCursorActivityHandlers hasCursorActivityHandlers;
   private final OrionEditorOverlay editorOverlay;
 
   public OrionDocument(
       OrionTextViewOverlay textViewOverlay,
-      HasCursorActivityHandlers hasCursorActivityHandlers,
       OrionEditorOverlay editorOverlay) {
     this.textViewOverlay = textViewOverlay;
-    this.hasCursorActivityHandlers = hasCursorActivityHandlers;
     this.editorOverlay = editorOverlay;
     this.positionConverter = new OrionPositionConverter();
 
@@ -175,11 +172,6 @@ public class OrionDocument extends AbstractDocument {
   @Override
   public int getLineCount() {
     return this.editorOverlay.getModel().getLineCount();
-  }
-
-  @Override
-  public HandlerRegistration addCursorHandler(final CursorActivityHandler handler) {
-    return this.hasCursorActivityHandlers.addCursorActivityHandler(handler);
   }
 
   @Override

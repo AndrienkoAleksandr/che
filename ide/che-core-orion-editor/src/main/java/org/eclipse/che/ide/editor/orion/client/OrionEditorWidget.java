@@ -42,19 +42,14 @@ import org.eclipse.che.api.promises.client.OperationException;
 import org.eclipse.che.ide.api.editor.events.CursorActivityEvent;
 import org.eclipse.che.ide.api.editor.events.CursorActivityHandler;
 import org.eclipse.che.ide.api.editor.events.HasCursorActivityHandlers;
-import org.eclipse.che.ide.api.editor.text.Region;
 import org.eclipse.che.ide.api.editor.texteditor.ContentInitializedHandler;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidget;
-import org.eclipse.che.ide.api.selection.SelectionChangedEvent;
-import org.eclipse.che.ide.api.selection.SelectionChangedHandler;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionAnnotationModelOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionCodeEditWidgetOverlay;
-import org.eclipse.che.ide.editor.orion.client.jso.OrionContentAssistOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionEditorOptionsOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionEditorOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionEditorViewOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionInputChangedEventOverlay;
-import org.eclipse.che.ide.editor.orion.client.jso.OrionKeyModeOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionTextViewOverlay;
 import org.eclipse.che.ide.util.loging.Log;
 import org.eclipse.che.requirejs.ModuleHolder;
@@ -65,7 +60,7 @@ import org.eclipse.che.requirejs.ModuleHolder;
  * @author "Mickaël Leduque"
  */
 public class OrionEditorWidget extends Composite
-    implements EditorWidget, HasChangeHandlers, HasCursorActivityHandlers {
+    implements EditorWidget, HasChangeHandlers {
 
   /** The UI binder instance. */
   private static final OrionEditorWidgetUiBinder UIBINDER =
@@ -87,7 +82,6 @@ public class OrionEditorWidget extends Composite
   /** Component that handles undo/redo. */
 
   private OrionDocument embeddedDocument;
-//  private Gutter gutter;
 
   private boolean changeHandlerAdded = false;
   private boolean focusHandlerAdded = false;
@@ -168,14 +162,9 @@ public class OrionEditorWidget extends Composite
   public org.eclipse.che.ide.api.editor.document.Document getDocument() {
     if (this.embeddedDocument == null) {
       this.embeddedDocument =
-          new OrionDocument(this.editorOverlay.getTextView(), this, editorOverlay);
+          new OrionDocument(this.editorOverlay.getTextView(),  editorOverlay);
     }
     return this.embeddedDocument;
-  }
-
-  @Override
-  public void setSelectedRange(final Region selection, final boolean show) {
-    //    this.editorOverlay.setSelection(selection.getOffset(), selection.getLength(), show);
   }
 
   @Override
@@ -198,24 +187,6 @@ public class OrionEditorWidget extends Composite
 
   private void fireChangeEvent() {
     DomEvent.fireNativeEvent(Document.get().createChangeEvent(), this);
-  }
-
-  @Override
-  public HandlerRegistration addCursorActivityHandler(CursorActivityHandler handler) {
-    if (!cursorHandlerAdded) {
-      cursorHandlerAdded = true;
-      final OrionTextViewOverlay textView = this.editorOverlay.getTextView();
-      textView.addEventListener(
-          OrionEventConstants.SELECTION_EVENT,
-          new OrionTextViewOverlay.EventHandlerNoParameter() {
-
-            @Override
-            public void onEvent() {
-              fireCursorActivityEvent();
-            }
-          });
-    }
-    return addHandler(handler, CursorActivityEvent.TYPE);
   }
 
   private void fireCursorActivityEvent() {

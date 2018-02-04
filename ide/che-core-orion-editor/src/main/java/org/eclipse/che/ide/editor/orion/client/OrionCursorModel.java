@@ -32,7 +32,6 @@ class OrionCursorModel implements CursorModelWithHandler, CursorActivityHandler 
 
   public OrionCursorModel(final Document document) {
     this.document = document;
-    this.document.addCursorHandler(this);
   }
 
   @Override

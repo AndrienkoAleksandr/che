@@ -74,14 +74,6 @@ public interface EditorWidget
   /** Give the focus to the editor. */
   void setFocus();
 
-  /**
-   * Selects the given range in the editor.
-   *
-   * @param selection the new selection
-   * @param show whether the editor should be scrolled to show the range
-   */
-  void setSelectedRange(Region selection, boolean show);
-
   /** Refresh the editor widget. */
   void refresh();
 

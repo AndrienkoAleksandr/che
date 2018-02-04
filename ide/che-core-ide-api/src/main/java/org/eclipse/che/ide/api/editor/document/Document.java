@@ -90,14 +90,6 @@ public interface Document extends ReadOnlyDocument {
   DocumentHandle getDocumentHandle();
 
   /**
-   * Adds a cursor handler.
-   *
-   * @param handler the added handler
-   * @return a handle to remove the handler
-   */
-  HandlerRegistration addCursorHandler(CursorActivityHandler handler);
-
-  /**
    * Replaces the text range with the given replacement contents.
    *
    * @param offset start of the range
