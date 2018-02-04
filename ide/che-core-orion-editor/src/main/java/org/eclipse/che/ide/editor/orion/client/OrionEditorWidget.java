@@ -45,6 +45,8 @@ import org.eclipse.che.ide.editor.orion.client.jso.OrionTextViewOverlay;
 import org.eclipse.che.ide.util.loging.Log;
 import org.eclipse.che.requirejs.ModuleHolder;
 
+import static org.eclipse.che.ide.editor.orion.client.OrionEditorPresenter.DEFAULT_CONTENT_TYPE;
+
 /**
  * Orion implementation for {@link EditorWidget}.
  *
@@ -69,10 +71,7 @@ public class OrionEditorWidget extends Composite
 
   private OrionEditorViewOverlay editorViewOverlay;
   private OrionEditorOverlay editorOverlay;
-  private String modeName;
   /** Component that handles undo/redo. */
-
-  private OrionDocument embeddedDocument;
 
   private boolean changeHandlerAdded = false;
   private boolean focusHandlerAdded = false;
@@ -82,7 +81,6 @@ public class OrionEditorWidget extends Composite
   public OrionEditorWidget(
       final ModuleHolder moduleHolder,
       final Provider<OrionCodeEditWidgetOverlay> orionCodeEditWidgetProvider,
-      @Assisted final List<String> editorModes,
       @Assisted final WidgetInitializedCallback widgetInitializedCallback,
       final Provider<OrionEditorOptionsOverlay> editorOptionsProvider,
       final OrionSettingsController orionSettingsController) {
@@ -115,7 +113,7 @@ public class OrionEditorWidget extends Composite
             },
         true);
 
-    this.editorViewOverlay.setContents(newValue, modeName);
+    this.editorViewOverlay.setContents(newValue, DEFAULT_CONTENT_TYPE);
   }
 
   @Override

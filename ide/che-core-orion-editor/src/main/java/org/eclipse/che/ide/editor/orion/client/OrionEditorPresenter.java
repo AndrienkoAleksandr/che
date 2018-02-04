@@ -10,24 +10,17 @@
  */
 package org.eclipse.che.ide.editor.orion.client;
 
-import static java.lang.Boolean.parseBoolean;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 import javax.validation.constraints.NotNull;
 import org.eclipse.che.api.promises.client.Promise;
-import org.eclipse.che.ide.actions.LinkWithEditorAction;
 import org.eclipse.che.ide.api.editor.AbstractEditorPresenter;
 import org.eclipse.che.ide.api.editor.EditorAgent.OpenEditorCallback;
 import org.eclipse.che.ide.api.editor.EditorInput;
-import org.eclipse.che.ide.api.editor.EditorLocalizationConstants;
 import org.eclipse.che.ide.api.editor.document.DocumentStorage;
 import org.eclipse.che.ide.api.editor.editorconfig.TextEditorConfiguration;
 import org.eclipse.che.ide.api.editor.filetype.FileTypeIdentifier;
@@ -35,9 +28,6 @@ import org.eclipse.che.ide.api.editor.texteditor.EditorWidget;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidgetFactory;
 import org.eclipse.che.ide.api.editor.texteditor.TextEditor;
 import org.eclipse.che.ide.api.editor.texteditor.TextEditorPartView;
-import org.eclipse.che.ide.api.preferences.PreferencesManager;
-import org.eclipse.che.ide.api.resources.VirtualFile;
-import org.eclipse.che.ide.api.selection.Selection;
 import org.eclipse.che.ide.editor.EditorFileStatusNotificationOperation;
 import org.eclipse.che.ide.util.loging.Log;
 import org.vectomatic.dom.svg.ui.SVGResource;
@@ -52,35 +42,27 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   public static final String DEFAULT_CONTENT_TYPE = "text/plain";
 
   private final DocumentStorage documentStorage;
-  private final EditorLocalizationConstants constant;
   private final EditorWidgetFactory<OrionEditorWidget> editorWidgetFactory;
   private final EditorInitializePromiseHolder editorModule;
   private final TextEditorPartView editorView;
-  private final FileTypeIdentifier fileTypeIdentifier;
   private final EditorFileStatusNotificationOperation editorFileStatusNotificationOperation;
 
   private TextEditorConfiguration configuration;
   private OrionEditorWidget editorWidget;
-//  private Document document;
 
   private boolean delayedFocus;
-  private List<String> fileTypes;
 
   @Inject
   public OrionEditorPresenter(
       final DocumentStorage documentStorage,
-      final EditorLocalizationConstants constant,
       final EditorWidgetFactory<OrionEditorWidget> editorWigetFactory,
       final EditorInitializePromiseHolder editorModule,
       final TextEditorPartView editorView,
-      final FileTypeIdentifier fileTypeIdentifier,
       final EditorFileStatusNotificationOperation editorFileStatusNotificationOperation) {
     this.documentStorage = documentStorage;
-    this.constant = constant;
     this.editorWidgetFactory = editorWigetFactory;
     this.editorModule = editorModule;
     this.editorView = editorView;
-    this.fileTypeIdentifier = fileTypeIdentifier;
     this.editorFileStatusNotificationOperation = editorFileStatusNotificationOperation;
 
     this.editorView.setDelegate(this);
@@ -109,9 +91,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   }
 
   private void createEditor(final String content, OpenEditorCallback openEditorCallback) {
-    this.fileTypes = detectFileType(getEditorInput().getFile());
-    editorWidgetFactory.createEditorWidget(
-        fileTypes, new EditorWidgetInitializedCallback(content, openEditorCallback));
+    editorWidgetFactory.createEditorWidget(new EditorWidgetInitializedCallback(content, openEditorCallback));
   }
 
   @Override
@@ -210,28 +190,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
   @Override
   public String getContentType() {
-    // Before the editor content is ready, the content type is not defined
-    if (this.fileTypes == null || this.fileTypes.isEmpty()) {
-      return null;
-    } else {
-      return this.fileTypes.get(0);
-    }
-  }
-
-  private List<String> detectFileType(final VirtualFile file) {
-    final List<String> result = new ArrayList<>();
-    if (file != null) {
-      // use the identification patterns
-      final List<String> types = this.fileTypeIdentifier.identifyType(file);
-      if (types != null && !types.isEmpty()) {
-        result.addAll(types);
-      }
-    }
-
-    // ultimate fallback - can't make more generic for text
-    result.add(DEFAULT_CONTENT_TYPE);
-
-    return result;
+    return DEFAULT_CONTENT_TYPE;
   }
 
   @Override
