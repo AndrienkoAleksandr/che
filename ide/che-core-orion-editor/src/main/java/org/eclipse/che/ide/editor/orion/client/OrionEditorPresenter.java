@@ -12,6 +12,7 @@ package org.eclipse.che.ide.editor.orion.client;
 
 import static java.lang.Boolean.parseBoolean;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -92,7 +93,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
     initializerPromise
         .catchError(
             arg -> {
-              displayErrorPanel(constant.editorInitErrorMessage());
+              GWT.log("initialization failed 0");
               callback.onInitializationFailed();
             })
         .thenPromise(arg -> documentStorage.getDocument(input.getFile()))
@@ -102,7 +103,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
             })
         .catchError(
             arg -> {
-              displayErrorPanel(constant.editorFileErrorMessage());
+              GWT.log("initialization failed 1");
               callback.onInitializationFailed();
             });
   }
@@ -115,10 +116,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
   @Override
   public void updateDirtyState(boolean dirty) {}
-
-  private void displayErrorPanel(final String message) {
-    this.editorView.showPlaceHolder(new Label(message));
-  }
 
   @Override
   public void storeState() {
