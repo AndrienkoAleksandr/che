@@ -52,7 +52,7 @@ public abstract class AbstractTextEditorProvider implements EditorProvider {
     }
 
     final TextEditor editor = editorBuilder.buildEditor();
-    editor.initialize(getEditorConfiguration());
+//    editor.initialize(getEditorConfiguration());
     return editor;
   }
 }

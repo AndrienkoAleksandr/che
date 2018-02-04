@@ -50,8 +50,8 @@ public class JsJavaEditorProvider extends AbstractTextEditorProvider {
 
     if (textEditor instanceof OrionEditorPresenter) {
       final OrionEditorPresenter editor = (OrionEditorPresenter) textEditor;
-      final TextEditorConfiguration configuration = configurationFactory.create(editor);
-      editor.initialize(configuration);
+//      final TextEditorConfiguration configuration = configurationFactory.create(editor);
+//      editor.initialize(configuration);
     }
 
     watcher.editorOpened(textEditor);

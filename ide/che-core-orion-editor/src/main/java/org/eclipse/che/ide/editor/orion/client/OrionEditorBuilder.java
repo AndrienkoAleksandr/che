@@ -33,7 +33,7 @@ public class OrionEditorBuilder implements EditorBuilder {
   @Override
   public TextEditor buildEditor() {
     final OrionEditorPresenter editor = orionTextEditorProvider.get();
-    editor.initialize(new DefaultTextEditorConfiguration());
+//    editor.initialize(new DefaultTextEditorConfiguration());
     return editor;
   }
 }

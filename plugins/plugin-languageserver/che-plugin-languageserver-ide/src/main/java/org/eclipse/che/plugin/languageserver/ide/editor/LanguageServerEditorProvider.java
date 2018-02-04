@@ -66,7 +66,7 @@ public class LanguageServerEditorProvider implements AsyncEditorProvider, Editor
     }
 
     final TextEditor editor = editorBuilder.buildEditor();
-    editor.initialize(new DefaultTextEditorConfiguration());
+//    editor.initialize(new DefaultTextEditorConfiguration());
     return editor;
   }
 
@@ -90,11 +90,11 @@ public class LanguageServerEditorProvider implements AsyncEditorProvider, Editor
               }
 
               final TextEditor editor = editorBuilder.buildEditor();
-              TextEditorConfiguration configuration =
-                  capabilities == null
-                      ? new DefaultTextEditorConfiguration()
-                      : editorConfigurationFactory.build(editor, capabilities);
-              editor.initialize(configuration);
+//              TextEditorConfiguration configuration =
+//                  capabilities == null
+//                      ? new DefaultTextEditorConfiguration()
+//                      : editorConfigurationFactory.build(editor, capabilities);
+//              editor.initialize(configuration);
               return editor;
             }
           });
