@@ -18,7 +18,6 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,6 @@ import org.eclipse.che.ide.api.editor.EditorLocalizationConstants;
 import org.eclipse.che.ide.api.editor.document.Document;
 import org.eclipse.che.ide.api.editor.document.DocumentStorage;
 import org.eclipse.che.ide.api.editor.editorconfig.TextEditorConfiguration;
-import org.eclipse.che.ide.api.editor.events.DocumentReadyEvent;
 import org.eclipse.che.ide.api.editor.filetype.FileTypeIdentifier;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidget;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidgetFactory;
@@ -40,7 +38,6 @@ import org.eclipse.che.ide.api.editor.texteditor.TextEditor;
 import org.eclipse.che.ide.api.editor.texteditor.TextEditorPartView;
 import org.eclipse.che.ide.api.parts.WorkspaceAgent;
 import org.eclipse.che.ide.api.preferences.PreferencesManager;
-import org.eclipse.che.ide.api.resources.File;
 import org.eclipse.che.ide.api.resources.VirtualFile;
 import org.eclipse.che.ide.api.selection.Selection;
 import org.eclipse.che.ide.editor.EditorFileStatusNotificationOperation;
@@ -62,7 +59,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   private final EditorWidgetFactory<OrionEditorWidget> editorWidgetFactory;
   private final EditorInitializePromiseHolder editorModule;
   private final TextEditorPartView editorView;
-  private final EventBus generalEventBus;
   private final FileTypeIdentifier fileTypeIdentifier;
   private final WorkspaceAgent workspaceAgent;
   private final EditorFileStatusNotificationOperation editorFileStatusNotificationOperation;
@@ -83,7 +79,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
       final EditorWidgetFactory<OrionEditorWidget> editorWigetFactory,
       final EditorInitializePromiseHolder editorModule,
       final TextEditorPartView editorView,
-      final EventBus eventBus,
       final FileTypeIdentifier fileTypeIdentifier,
       final WorkspaceAgent workspaceAgent,
       final EditorFileStatusNotificationOperation editorFileStatusNotificationOperation) {
@@ -93,7 +88,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
     this.editorWidgetFactory = editorWigetFactory;
     this.editorModule = editorModule;
     this.editorView = editorView;
-    this.generalEventBus = eventBus;
     this.fileTypeIdentifier = fileTypeIdentifier;
     this.workspaceAgent = workspaceAgent;
     this.editorFileStatusNotificationOperation = editorFileStatusNotificationOperation;
@@ -312,10 +306,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
       final VirtualFile file = input.getFile();
       document.setFile(file);
 
-      if (file instanceof File) {
-        ((File) file).updateModificationStamp(content);
-      }
-
       // TODO: delayed activation
       // handle delayed focus (initialization editor widget)
       // should also check if I am visible, but how ?
@@ -332,7 +322,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
               return;
             }
 
-            generalEventBus.fireEvent(new DocumentReadyEvent(document));
             firePropertyChange(PROP_INPUT);
 
             isInitialized = true;
