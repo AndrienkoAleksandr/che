@@ -41,18 +41,12 @@ import org.eclipse.che.api.promises.client.Operation;
 import org.eclipse.che.api.promises.client.OperationException;
 import org.eclipse.che.ide.api.editor.events.CursorActivityEvent;
 import org.eclipse.che.ide.api.editor.events.CursorActivityHandler;
-import org.eclipse.che.ide.api.editor.events.GutterClickEvent;
-import org.eclipse.che.ide.api.editor.events.GutterClickHandler;
 import org.eclipse.che.ide.api.editor.events.HasCursorActivityHandlers;
 import org.eclipse.che.ide.api.editor.gutter.Gutter;
-import org.eclipse.che.ide.api.editor.gutter.Gutters;
 import org.eclipse.che.ide.api.editor.gutter.HasGutter;
-import org.eclipse.che.ide.api.editor.position.PositionConverter;
 import org.eclipse.che.ide.api.editor.text.Region;
 import org.eclipse.che.ide.api.editor.texteditor.ContentInitializedHandler;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidget;
-import org.eclipse.che.ide.api.editor.texteditor.HandlesUndoRedo;
-import org.eclipse.che.ide.api.editor.texteditor.LineStyler;
 import org.eclipse.che.ide.api.selection.SelectionChangedEvent;
 import org.eclipse.che.ide.api.selection.SelectionChangedHandler;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionAnnotationModelOverlay;
@@ -65,7 +59,6 @@ import org.eclipse.che.ide.editor.orion.client.jso.OrionEventTargetOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionExtRulerOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionInputChangedEventOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionKeyModeOverlay;
-import org.eclipse.che.ide.editor.orion.client.jso.OrionRulerClickEventOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionTextViewOverlay;
 import org.eclipse.che.ide.util.loging.Log;
 import org.eclipse.che.requirejs.ModuleHolder;
@@ -99,7 +92,6 @@ public class OrionEditorWidget extends Composite
   private String modeName;
   private OrionExtRulerOverlay orionLineNumberRuler;
   /** Component that handles undo/redo. */
-  private HandlesUndoRedo undoRedo;
 
   private OrionDocument embeddedDocument;
   private Gutter gutter;
@@ -108,10 +100,6 @@ public class OrionEditorWidget extends Composite
   private boolean focusHandlerAdded = false;
   private boolean blurHandlerAdded = false;
   private boolean cursorHandlerAdded = false;
-  private boolean gutterClickHandlerAdded = false;
-
-  /** Component that handles line styling. */
-  private LineStyler lineStyler;
 
   @AssistedInject
   public OrionEditorWidget(
@@ -195,11 +183,6 @@ public class OrionEditorWidget extends Composite
   @Override
   public boolean isDirty() {
     return this.editorOverlay.isDirty();
-  }
-
-  @Override
-  public void markClean() {
-    this.editorOverlay.setDirty(false);
   }
 
   @Override
@@ -305,11 +288,6 @@ public class OrionEditorWidget extends Composite
   }
 
   @Override
-  public PositionConverter getPositionConverter() {
-    return embeddedDocument.getPositionConverter();
-  }
-
-  @Override
   public void setFocus() {
     this.editorOverlay.focus();
   }
@@ -334,40 +312,6 @@ public class OrionEditorWidget extends Composite
     this.editorOverlay.getTextView().redraw();
   }
 
-  @Override
-  public HandlesUndoRedo getUndoRedo() {
-    return this.undoRedo;
-  }
-
-  @Override
-  public LineStyler getLineStyler() {
-    return lineStyler;
-  }
-
-  @Override
-  public HandlerRegistration addGutterClickHandler(final GutterClickHandler handler) {
-    if (!gutterClickHandlerAdded) {
-      gutterClickHandlerAdded = true;
-      orionLineNumberRuler.addEventListener(
-          OrionEventConstants.RULER_CLICK_EVENT,
-          new OrionExtRulerOverlay.EventHandler<OrionRulerClickEventOverlay>() {
-            @Override
-            public void onEvent(OrionRulerClickEventOverlay parameter) {
-              final int lineIndex = parameter.getLineIndex();
-              fireGutterClickEvent(lineIndex);
-            }
-          },
-          false);
-    }
-    return addHandler(handler, GutterClickEvent.TYPE);
-  }
-
-  private void fireGutterClickEvent(final int line) {
-    final GutterClickEvent gutterEvent =
-        new GutterClickEvent(line, Gutters.BREAKPOINTS_GUTTER, null);
-    fireEvent(gutterEvent);
-    this.embeddedDocument.getDocEventBus().fireEvent(gutterEvent);
-  }
 
   @Override
   public void refresh() {
@@ -435,8 +379,6 @@ public class OrionEditorWidget extends Composite
             }
           });
 
-      lineStyler = new OrionLineStyler(editorOverlay);
-
       final OrionTextViewOverlay textView = editorOverlay.getTextView();
       keyModeInstances.add(
           VI, OrionKeyModeOverlay.getViKeyMode(moduleHolder.getModule("OrionVi"), textView));
@@ -444,7 +386,6 @@ public class OrionEditorWidget extends Composite
           EMACS,
           OrionKeyModeOverlay.getEmacsKeyMode(moduleHolder.getModule("OrionEmacs"), textView));
 
-      undoRedo = new OrionUndoRedo(editorOverlay.getUndoStack());
       editorOverlay.setZoomRulerVisible(true);
       editorOverlay.getAnnotationStyler().addAnnotationType("che-marker", 100);
       //

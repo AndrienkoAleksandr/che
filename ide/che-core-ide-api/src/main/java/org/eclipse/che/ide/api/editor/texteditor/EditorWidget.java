@@ -17,8 +17,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.eclipse.che.ide.api.editor.document.Document;
 import org.eclipse.che.ide.api.editor.events.DocumentChangedEvent;
-import org.eclipse.che.ide.api.editor.events.HasGutterClickHandlers;
-import org.eclipse.che.ide.api.editor.position.PositionConverter;
 import org.eclipse.che.ide.api.editor.text.Region;
 
 /** An interface for editor widget implementations. */
@@ -27,10 +25,7 @@ public interface EditorWidget
         RequiresResize,
         HasBlurHandlers,
         HasChangeHandlers,
-        HasFocusHandlers,
-        HasGutterClickHandlers,
-        LineStyler.HasLineStyler,
-        UndoableEditor
+        HasFocusHandlers
 {
 
   /**
@@ -69,9 +64,6 @@ public interface EditorWidget
    */
   boolean isDirty();
 
-  /** Marks the editor as clean i.e change the dirty state to false. */
-  void markClean();
-
   /**
    * The instance of {@link org.eclipse.che.ide.api.editor.document.Document}.
    *
@@ -89,14 +81,6 @@ public interface EditorWidget
    * @param show whether the editor should be scrolled to show the range
    */
   void setSelectedRange(Region selection, boolean show);
-
-  /**
-   * Returns a position converter relative to this editor (pixel coordinates <-> line char
-   * positions).
-   *
-   * @return a position converter
-   */
-  PositionConverter getPositionConverter();
 
   /** Refresh the editor widget. */
   void refresh();
