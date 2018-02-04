@@ -114,19 +114,8 @@ public interface TextEditor extends EditorPartPresenter {
    */
   int getTopVisibleLine();
 
-
-  /**
-   * Returns focus state of the text editor
-   *
-   * @return <code>true</code> if the text editor is focused or <code>false</code> otherwise
-   */
-  boolean isFocused();
-
   /** Give the focus to the editor. */
   void setFocus();
-
-  /** Calls all editor update actions for this editor. */
-  void refreshEditor();
 
   /**
    * Get word position under offset.

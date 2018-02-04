@@ -29,10 +29,8 @@ import org.eclipse.che.ide.api.editor.AbstractEditorPresenter;
 import org.eclipse.che.ide.api.editor.EditorAgent.OpenEditorCallback;
 import org.eclipse.che.ide.api.editor.EditorInput;
 import org.eclipse.che.ide.api.editor.EditorLocalizationConstants;
-import org.eclipse.che.ide.api.editor.autosave.AutoSaveMode;
 import org.eclipse.che.ide.api.editor.document.Document;
 import org.eclipse.che.ide.api.editor.document.DocumentStorage;
-import org.eclipse.che.ide.api.editor.editorconfig.EditorUpdateAction;
 import org.eclipse.che.ide.api.editor.editorconfig.TextEditorConfiguration;
 import org.eclipse.che.ide.api.editor.events.DocumentReadyEvent;
 import org.eclipse.che.ide.api.editor.filetype.FileTypeIdentifier;
@@ -72,11 +70,9 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   private final EventBus generalEventBus;
   private final FileTypeIdentifier fileTypeIdentifier;
   private final WorkspaceAgent workspaceAgent;
-  private final AutoSaveMode autoSaveMode;
   private final EditorFileStatusNotificationOperation editorFileStatusNotificationOperation;
   private final WordDetectionUtil wordDetectionUtil;
 
-  private List<EditorUpdateAction> updateActions;
   private TextEditorConfiguration configuration;
   private OrionEditorWidget editorWidget;
   private Document document;
@@ -85,7 +81,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   private EditorState errorState;
 
   private boolean delayedFocus;
-  private boolean isFocused;
   private List<String> fileTypes;
   private TextPosition cursorPosition;
   private HandlerRegistration resourceChangeHandler;
@@ -101,7 +96,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
       final EventBus eventBus,
       final FileTypeIdentifier fileTypeIdentifier,
       final WorkspaceAgent workspaceAgent,
-      final AutoSaveMode autoSaveMode,
       final EditorFileStatusNotificationOperation editorFileStatusNotificationOperation,
       final WordDetectionUtil wordDetectionUtil) {
     this.preferencesManager = preferencesManager;
@@ -113,7 +107,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
     this.generalEventBus = eventBus;
     this.fileTypeIdentifier = fileTypeIdentifier;
     this.workspaceAgent = workspaceAgent;
-    this.autoSaveMode = autoSaveMode;
     this.editorFileStatusNotificationOperation = editorFileStatusNotificationOperation;
     this.wordDetectionUtil = wordDetectionUtil;
 
@@ -312,15 +305,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   }
 
   @Override
-  public void refreshEditor() {
-    if (this.updateActions != null) {
-      for (final EditorUpdateAction action : this.updateActions) {
-        action.doRefresh();
-      }
-    }
-  }
-
-  @Override
   public Position getWordAtOffset(int offset) {
     return wordDetectionUtil.getWordAtOffset(getDocument(), offset);
   }
@@ -361,11 +345,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   @Override
   public EditorWidget getEditorWidget() {
     return this.editorWidget;
-  }
-
-  @Override
-  public boolean isFocused() {
-    return this.isFocused;
   }
 
   /** {@inheritDoc} */

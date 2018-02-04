@@ -79,8 +79,8 @@ public class FileWatcher {
   }
 
   private void reParseEditor(TextEditor editor) {
-    editor.refreshEditor();
-    editor2reconcile.remove(editor);
+//    editor.refreshEditor();
+//    editor2reconcile.remove(editor);
   }
 
   public void editorOpened(final EditorPartPresenter editor) {
@@ -104,7 +104,7 @@ public class FileWatcher {
     for (EditorPartPresenter editorPartPresenter : editorAgent.getOpenedEditors()) {
       if (editorPartPresenter instanceof TextEditor) {
         final TextEditor editor = (TextEditor) editorPartPresenter;
-        editor.refreshEditor();
+//        editor.refreshEditor();
       }
     }
   }
