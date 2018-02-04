@@ -253,14 +253,6 @@ public class CommandEditor extends AbstractEditorPresenter
   }
 
   @Override
-  public void doSaveAs() {}
-
-  @Override
-  public void close(boolean save) {
-    workspaceAgent.removePart(this);
-  }
-
-  @Override
   public void onClosing(AsyncCallback<Void> callback) {
     if (!isDirty()) {
       callback.onSuccess(null);
@@ -293,7 +285,6 @@ public class CommandEditor extends AbstractEditorPresenter
 
   @Override
   public void onCommandCancel() {
-    close(false);
   }
 
   @Override

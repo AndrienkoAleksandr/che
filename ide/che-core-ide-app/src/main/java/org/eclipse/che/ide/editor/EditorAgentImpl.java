@@ -238,27 +238,6 @@ public class EditorAgentImpl
   }
 
   private void doCloseEditor(EditorTab tab) {
-    checkArgument(tab != null, "Null editor tab occurred");
-
-    EditorPartPresenter editor = tab.getRelativeEditorPart();
-    if (editor == null) {
-      return;
-    }
-
-    openedEditors.remove(editor);
-    openedEditorsToProviders.remove(editor);
-
-    editor.close(false);
-
-    if (editor instanceof TextEditor) {
-      editorContentSynchronizer.unTrackEditor(editor);
-    }
-
-    if (activeEditor != null && activeEditor == editor) {
-      activeEditor = null;
-    }
-
-    eventBus.fireEvent(FileEvent.createFileClosedEvent(tab));
   }
 
   @Override

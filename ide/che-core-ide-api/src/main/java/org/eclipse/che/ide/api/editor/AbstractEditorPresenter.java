@@ -85,12 +85,6 @@ public abstract class AbstractEditorPresenter extends AbstractPartPresenter
     }
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public void onFileChanged() {
-    firePropertyChange(TITLE_PROPERTY);
-  }
-
   @Override
   public void onClosing(AsyncCallback<Void> callback) {
     callback.onSuccess(null);

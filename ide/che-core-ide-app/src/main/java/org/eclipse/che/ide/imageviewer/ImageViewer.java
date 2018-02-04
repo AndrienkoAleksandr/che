@@ -77,10 +77,6 @@ public class ImageViewer extends AbstractEditorPresenter implements FileEventHan
   public void doSave(AsyncCallback<EditorInput> callback) {}
 
   /** {@inheritDoc} */
-  @Override
-  public void doSaveAs() {}
-
-  /** {@inheritDoc} */
   @NotNull
   @Override
   public String getTitle() {
@@ -158,12 +154,6 @@ public class ImageViewer extends AbstractEditorPresenter implements FileEventHan
   @Override
   protected void initializeEditor(OpenEditorCallback callback) {
     callback.onEditorOpened(this);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void close(final boolean save) {
-    // nothing to do
   }
 
   /** {@inheritDoc} */

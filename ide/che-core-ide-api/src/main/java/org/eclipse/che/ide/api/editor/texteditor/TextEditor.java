@@ -10,32 +10,14 @@
  */
 package org.eclipse.che.ide.api.editor.texteditor;
 
-import javax.validation.constraints.NotNull;
 import org.eclipse.che.ide.api.editor.EditorPartPresenter;
-import org.eclipse.che.ide.api.editor.editorconfig.TextEditorConfiguration;
 
 /** Public view on the editor component. */
 public interface TextEditor extends EditorPartPresenter {
 
-  /**
-   * Initializes this editor with the configuration and document provider.
-   *
-   * @param configuration the configuration of this editor.
-   */
-  void initialize(@NotNull TextEditorConfiguration configuration);
-
   /** @return the text editor view implementation */
   @Override
   TextEditorPartView getView();
-
-  /**
-   * Closes this text editor after optionally saving changes.
-   *
-   * @param save <code>true</code> if unsaved changed should be saved, and <code>false</code> if
-   *     unsaved changed should be discarded
-   */
-  @Override
-  void close(boolean save);
 
   /**
    * Return the content type of the editor content.<br>

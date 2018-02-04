@@ -99,10 +99,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   public void restoreState() {
   }
 
-  @Override
-  public void close(boolean save) {
-  }
-
   protected Widget getWidget() {
     return this.editorView.asWidget();
   }
@@ -123,11 +119,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   @Override
   public TextEditorPartView getView() {
     return this.editorView;
-  }
-
-  @Override
-  public void initialize(@NotNull TextEditorConfiguration configuration) {
-
   }
 
   @Override
@@ -156,9 +147,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
   @Override
   public void doSave(final AsyncCallback<EditorInput> callback) {}
-
-  @Override
-  public void doSaveAs() {}
 
   @Override
   public String getContentType() {

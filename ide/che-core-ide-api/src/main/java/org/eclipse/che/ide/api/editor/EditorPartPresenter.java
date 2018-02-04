@@ -70,12 +70,6 @@ public interface EditorPartPresenter extends PartPresenter {
    */
   void doSave(@NotNull AsyncCallback<EditorInput> callback);
 
-  /** Saves the contents of this part to another object. */
-  void doSaveAs();
-
-  /** Perform action on file changed (e.g. renamed). */
-  void onFileChanged();
-
   /**
    * Returns whether the contents of this part have changed since the last save operation.
    *
@@ -90,14 +84,6 @@ public interface EditorPartPresenter extends PartPresenter {
    * @param closeHandler the instance of CloseHandler
    */
   void addCloseHandler(@NotNull EditorPartCloseHandler closeHandler);
-
-  /**
-   * Closes this text editor after optionally saving changes.
-   *
-   * @param save <code>true</code> if unsaved changed should be saved, and <code>false</code> if
-   *     unsaved changed should be discarded
-   */
-  void close(boolean save);
 
   /**
    * Called when part is going to closing. Part can deny closing, by calling {@code
