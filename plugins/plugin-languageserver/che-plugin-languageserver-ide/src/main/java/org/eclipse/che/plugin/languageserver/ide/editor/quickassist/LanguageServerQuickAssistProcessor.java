@@ -64,65 +64,65 @@ public class LanguageServerQuickAssistProcessor implements QuickAssistProcessor 
   @Override
   public void computeQuickAssistProposals(
       QuickAssistInvocationContext invocationContext, CodeAssistCallback callback) {
-    LinearRange range = invocationContext.getTextEditor().getSelectedLinearRange();
-    Document document = invocationContext.getTextEditor().getDocument();
-    QueryAnnotationsEvent.QueryCallback annotationCallback =
-        new QueryAnnotationsEvent.QueryCallback() {
-
-          @SuppressWarnings("ReturnValueIgnored")
-          @Override
-          public void respond(
-              Map<Annotation, org.eclipse.che.ide.api.editor.text.Position> annotations) {
-            // iteration with range never returns anything; need to filter ourselves.
-            // https://github.com/eclipse/che/issues/4338
-            List<Diagnostic> diagnostics =
-                annotations
-                    .entrySet()
-                    .stream()
-                    .filter(
-                        (e) -> e.getValue().overlapsWith(range.getStartOffset(), range.getLength()))
-                    .map(Entry::getKey)
-                    .map(a -> (DiagnosticAnnotation) a)
-                    .map(DiagnosticAnnotation::getDiagnostic)
-                    .collect(Collectors.toList());
-
-            CodeActionContext context = new CodeActionContext(diagnostics);
-
-            TextPosition start = document.getPositionFromIndex(range.getStartOffset());
-            TextPosition end =
-                document.getPositionFromIndex(range.getStartOffset() + range.getLength());
-            Position rangeStart = new Position(start.getLine(), start.getCharacter());
-            Position rangeEnd = new Position(end.getLine(), end.getCharacter());
-            Range rangeParam = new Range(rangeStart, rangeEnd);
-            rangeParam.setEnd(rangeEnd);
-
-            TextDocumentIdentifier textDocumentIdentifier =
-                new TextDocumentIdentifier(document.getFile().getLocation().toString());
-            CodeActionParams params =
-                new CodeActionParams(textDocumentIdentifier, rangeParam, context);
-
-            Promise<List<Command>> codeAction =
-                textDocumentService.codeAction(new CodeActionParamsDto(params));
-            List<CompletionProposal> proposals = new ArrayList<>();
-            codeAction.then(
-                (commands) -> {
-                  for (Command command : commands) {
-                    Action action = actionManager.getAction(command.getCommand());
-                    if (action != null) {
-                      proposals.add(new ActionCompletionProposal(command, action));
-                    }
-                  }
-                  ;
-                  callback.proposalComputed(proposals);
-                });
-          }
-        };
-    QueryAnnotationsEvent event =
-        new QueryAnnotationsEvent.Builder()
-            .withFilter(a -> a instanceof DiagnosticAnnotation)
-            .withCallback(annotationCallback)
-            .build();
-    document.getDocumentHandle().getDocEventBus().fireEvent(event);
+//    LinearRange range = invocationContext.getTextEditor().getSelectedLinearRange();
+//    Document document = invocationContext.getTextEditor().getDocument();
+//    QueryAnnotationsEvent.QueryCallback annotationCallback =
+//        new QueryAnnotationsEvent.QueryCallback() {
+//
+//          @SuppressWarnings("ReturnValueIgnored")
+//          @Override
+//          public void respond(
+//              Map<Annotation, org.eclipse.che.ide.api.editor.text.Position> annotations) {
+//            // iteration with range never returns anything; need to filter ourselves.
+//            // https://github.com/eclipse/che/issues/4338
+//            List<Diagnostic> diagnostics =
+//                annotations
+//                    .entrySet()
+//                    .stream()
+//                    .filter(
+//                        (e) -> e.getValue().overlapsWith(range.getStartOffset(), range.getLength()))
+//                    .map(Entry::getKey)
+//                    .map(a -> (DiagnosticAnnotation) a)
+//                    .map(DiagnosticAnnotation::getDiagnostic)
+//                    .collect(Collectors.toList());
+//
+//            CodeActionContext context = new CodeActionContext(diagnostics);
+//
+//            TextPosition start = document.getPositionFromIndex(range.getStartOffset());
+//            TextPosition end =
+//                document.getPositionFromIndex(range.getStartOffset() + range.getLength());
+//            Position rangeStart = new Position(start.getLine(), start.getCharacter());
+//            Position rangeEnd = new Position(end.getLine(), end.getCharacter());
+//            Range rangeParam = new Range(rangeStart, rangeEnd);
+//            rangeParam.setEnd(rangeEnd);
+//
+//            TextDocumentIdentifier textDocumentIdentifier =
+//                new TextDocumentIdentifier(document.getFile().getLocation().toString());
+//            CodeActionParams params =
+//                new CodeActionParams(textDocumentIdentifier, rangeParam, context);
+//
+//            Promise<List<Command>> codeAction =
+//                textDocumentService.codeAction(new CodeActionParamsDto(params));
+//            List<CompletionProposal> proposals = new ArrayList<>();
+//            codeAction.then(
+//                (commands) -> {
+//                  for (Command command : commands) {
+//                    Action action = actionManager.getAction(command.getCommand());
+//                    if (action != null) {
+//                      proposals.add(new ActionCompletionProposal(command, action));
+//                    }
+//                  }
+//                  ;
+//                  callback.proposalComputed(proposals);
+//                });
+//          }
+//        };
+//    QueryAnnotationsEvent event =
+//        new QueryAnnotationsEvent.Builder()
+//            .withFilter(a -> a instanceof DiagnosticAnnotation)
+//            .withCallback(annotationCallback)
+//            .build();
+//    document.getDocumentHandle().getDocEventBus().fireEvent(event);
   }
 
   private final class ActionCompletionProposal implements CompletionProposal {

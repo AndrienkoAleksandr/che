@@ -272,11 +272,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
     }
   }
 
-  @Override
-  public LinearRange getSelectedLinearRange() {
-    return getDocument().getSelectedLinearRange();
-  }
-
   private List<String> detectFileType(final VirtualFile file) {
     final List<String> result = new ArrayList<>();
     if (file != null) {
@@ -291,11 +286,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
     result.add(DEFAULT_CONTENT_TYPE);
 
     return result;
-  }
-
-  @Override
-  public CursorModelWithHandler getCursorModel() {
-    return this.cursorModel;
   }
 
   @Override

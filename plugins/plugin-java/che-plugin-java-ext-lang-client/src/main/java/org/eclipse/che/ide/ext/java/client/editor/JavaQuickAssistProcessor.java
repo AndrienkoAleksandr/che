@@ -80,49 +80,49 @@ public class JavaQuickAssistProcessor implements QuickAssistProcessor {
   @Override
   public void computeQuickAssistProposals(
       final QuickAssistInvocationContext quickAssistContext, final CodeAssistCallback callback) {
-    final TextEditor textEditor = quickAssistContext.getTextEditor();
-    final Document document = textEditor.getDocument();
-
-    LinearRange tempRange;
-
-    tempRange = textEditor.getSelectedLinearRange();
-
-    final LinearRange range = tempRange;
-
-    final boolean goToClosest = (range.getLength() == 0);
-
-    final QueryAnnotationsEvent.AnnotationFilter filter =
-        new QueryAnnotationsEvent.AnnotationFilter() {
-          @Override
-          public boolean accept(final Annotation annotation) {
-            if (!(annotation instanceof JavaAnnotation)) {
-              return false;
-            } else {
-              JavaAnnotation javaAnnotation = (JavaAnnotation) annotation;
-              return (!javaAnnotation
-                  .isMarkedDeleted()) /*&& JavaAnnotationUtil.hasCorrections(annotation)*/;
-            }
-          }
-        };
-    final QueryAnnotationsEvent.QueryCallback queryCallback =
-        new QueryAnnotationsEvent.QueryCallback() {
-          @Override
-          public void respond(final Map<Annotation, Position> annotations) {
-            List<Problem> problems = new ArrayList<>();
-            /*final Map<Annotation, Position> problems =*/
-            int offset =
-                collectQuickFixableAnnotations(range, document, annotations, goToClosest, problems);
-            if (offset != range.getStartOffset()) {
-              TextEditor presenter = ((TextEditor) textEditor);
-              presenter.getCursorModel().setCursorPosition(offset);
-            }
-
-            setupProposals(callback, textEditor, offset, problems);
-          }
-        };
-    final QueryAnnotationsEvent event =
-        new QueryAnnotationsEvent.Builder().withFilter(filter).withCallback(queryCallback).build();
-    document.getDocumentHandle().getDocEventBus().fireEvent(event);
+//    final TextEditor textEditor = quickAssistContext.getTextEditor();
+//    final Document document = textEditor.getDocument();
+//
+//    LinearRange tempRange;
+//
+//    tempRange = textEditor.getSelectedLinearRange();
+//
+//    final LinearRange range = tempRange;
+//
+//    final boolean goToClosest = (range.getLength() == 0);
+//
+//    final QueryAnnotationsEvent.AnnotationFilter filter =
+//        new QueryAnnotationsEvent.AnnotationFilter() {
+//          @Override
+//          public boolean accept(final Annotation annotation) {
+//            if (!(annotation instanceof JavaAnnotation)) {
+//              return false;
+//            } else {
+//              JavaAnnotation javaAnnotation = (JavaAnnotation) annotation;
+//              return (!javaAnnotation
+//                  .isMarkedDeleted()) /*&& JavaAnnotationUtil.hasCorrections(annotation)*/;
+//            }
+//          }
+//        };
+//    final QueryAnnotationsEvent.QueryCallback queryCallback =
+//        new QueryAnnotationsEvent.QueryCallback() {
+//          @Override
+//          public void respond(final Map<Annotation, Position> annotations) {
+//            List<Problem> problems = new ArrayList<>();
+//            /*final Map<Annotation, Position> problems =*/
+//            int offset =
+//                collectQuickFixableAnnotations(range, document, annotations, goToClosest, problems);
+//            if (offset != range.getStartOffset()) {
+//              TextEditor presenter = ((TextEditor) textEditor);
+//              presenter.getCursorModel().setCursorPosition(offset);
+//            }
+//
+//            setupProposals(callback, textEditor, offset, problems);
+//          }
+//        };
+//    final QueryAnnotationsEvent event =
+//        new QueryAnnotationsEvent.Builder().withFilter(filter).withCallback(queryCallback).build();
+//    document.getDocumentHandle().getDocEventBus().fireEvent(event);
   }
 
   private void showProposals(

@@ -14,8 +14,6 @@ import javax.validation.constraints.NotNull;
 import org.eclipse.che.ide.api.editor.EditorPartPresenter;
 import org.eclipse.che.ide.api.editor.document.Document;
 import org.eclipse.che.ide.api.editor.editorconfig.TextEditorConfiguration;
-import org.eclipse.che.ide.api.editor.text.LinearRange;
-import org.eclipse.che.ide.api.editor.text.TextPosition;
 
 /** Public view on the editor component. */
 public interface TextEditor extends EditorPartPresenter {
@@ -66,21 +64,6 @@ public interface TextEditor extends EditorPartPresenter {
    * @return the content type
    */
   String getContentType();
-
-
-  /**
-   * Returns the selection range as a {@link LinearRange} (ie.e a start offset and a length).
-   *
-   * @return the selection range
-   */
-  LinearRange getSelectedLinearRange();
-
-  /**
-   * Returns the cursor model for the editor.
-   *
-   * @return the cursor model
-   */
-  CursorModelWithHandler getCursorModel();
 
   /** Give the focus to the editor. */
   void setFocus();
