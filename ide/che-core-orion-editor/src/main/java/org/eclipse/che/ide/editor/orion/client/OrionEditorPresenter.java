@@ -23,12 +23,10 @@ import org.eclipse.che.ide.api.editor.EditorAgent.OpenEditorCallback;
 import org.eclipse.che.ide.api.editor.EditorInput;
 import org.eclipse.che.ide.api.editor.document.DocumentStorage;
 import org.eclipse.che.ide.api.editor.editorconfig.TextEditorConfiguration;
-import org.eclipse.che.ide.api.editor.filetype.FileTypeIdentifier;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidget;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidgetFactory;
 import org.eclipse.che.ide.api.editor.texteditor.TextEditor;
 import org.eclipse.che.ide.api.editor.texteditor.TextEditorPartView;
-import org.eclipse.che.ide.editor.EditorFileStatusNotificationOperation;
 import org.eclipse.che.ide.util.loging.Log;
 import org.vectomatic.dom.svg.ui.SVGResource;
 
@@ -45,7 +43,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   private final EditorWidgetFactory<OrionEditorWidget> editorWidgetFactory;
   private final EditorInitializePromiseHolder editorModule;
   private final TextEditorPartView editorView;
-  private final EditorFileStatusNotificationOperation editorFileStatusNotificationOperation;
 
   private TextEditorConfiguration configuration;
   private OrionEditorWidget editorWidget;
@@ -57,13 +54,11 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
       final DocumentStorage documentStorage,
       final EditorWidgetFactory<OrionEditorWidget> editorWigetFactory,
       final EditorInitializePromiseHolder editorModule,
-      final TextEditorPartView editorView,
-      final EditorFileStatusNotificationOperation editorFileStatusNotificationOperation) {
+      final TextEditorPartView editorView) {
     this.documentStorage = documentStorage;
     this.editorWidgetFactory = editorWigetFactory;
     this.editorModule = editorModule;
     this.editorView = editorView;
-    this.editorFileStatusNotificationOperation = editorFileStatusNotificationOperation;
 
     this.editorView.setDelegate(this);
   }
@@ -167,17 +162,14 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
   @Override
   public void doSave() {
-    editorFileStatusNotificationOperation.suspend();
     doSave(
         new AsyncCallback<EditorInput>() {
           @Override
           public void onSuccess(final EditorInput result) {
-            editorFileStatusNotificationOperation.resume();
           }
 
           @Override
           public void onFailure(final Throwable caught) {
-            editorFileStatusNotificationOperation.resume();
           }
         });
   }

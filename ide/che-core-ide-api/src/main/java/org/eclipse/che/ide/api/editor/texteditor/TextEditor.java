@@ -38,7 +38,6 @@ public interface TextEditor extends EditorPartPresenter {
   /** @return the text editor widget */
   EditorWidget getEditorWidget();
 
-
   /**
    * Closes this text editor after optionally saving changes.
    *
