@@ -54,7 +54,4 @@ public interface TextEditor extends EditorPartPresenter {
    * @return the content type
    */
   String getContentType();
-
-  /** Give the focus to the editor. */
-  void setFocus();
 }

@@ -197,16 +197,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
     return this.editorWidget;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public void setFocus() {
-    EditorWidget editorWidget = getEditorWidget();
-    if (editorWidget != null) {
-      OrionEditorWidget orion = ((OrionEditorWidget) editorWidget);
-      orion.setFocus();
-    }
-  }
-
   private class EditorWidgetInitializedCallback implements EditorWidget.WidgetInitializedCallback {
     private String content;
     private boolean isInitialized;
