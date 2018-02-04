@@ -18,7 +18,6 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import com.google.web.bindery.event.shared.HandlerRegistration;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotNull;
@@ -28,7 +27,6 @@ import org.eclipse.che.ide.api.editor.AbstractEditorPresenter;
 import org.eclipse.che.ide.api.editor.EditorAgent.OpenEditorCallback;
 import org.eclipse.che.ide.api.editor.EditorInput;
 import org.eclipse.che.ide.api.editor.EditorLocalizationConstants;
-import org.eclipse.che.ide.api.editor.document.Document;
 import org.eclipse.che.ide.api.editor.document.DocumentStorage;
 import org.eclipse.che.ide.api.editor.editorconfig.TextEditorConfiguration;
 import org.eclipse.che.ide.api.editor.filetype.FileTypeIdentifier;
@@ -36,7 +34,6 @@ import org.eclipse.che.ide.api.editor.texteditor.EditorWidget;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidgetFactory;
 import org.eclipse.che.ide.api.editor.texteditor.TextEditor;
 import org.eclipse.che.ide.api.editor.texteditor.TextEditorPartView;
-import org.eclipse.che.ide.api.parts.WorkspaceAgent;
 import org.eclipse.che.ide.api.preferences.PreferencesManager;
 import org.eclipse.che.ide.api.resources.VirtualFile;
 import org.eclipse.che.ide.api.selection.Selection;
@@ -53,14 +50,12 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   /** File type used when we have no idea of the actual content type. */
   public static final String DEFAULT_CONTENT_TYPE = "text/plain";
 
-  private final PreferencesManager preferencesManager;
   private final DocumentStorage documentStorage;
   private final EditorLocalizationConstants constant;
   private final EditorWidgetFactory<OrionEditorWidget> editorWidgetFactory;
   private final EditorInitializePromiseHolder editorModule;
   private final TextEditorPartView editorView;
   private final FileTypeIdentifier fileTypeIdentifier;
-  private final WorkspaceAgent workspaceAgent;
   private final EditorFileStatusNotificationOperation editorFileStatusNotificationOperation;
 
   private TextEditorConfiguration configuration;
@@ -69,27 +64,22 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
   private boolean delayedFocus;
   private List<String> fileTypes;
-  private HandlerRegistration resourceChangeHandler;
 
   @Inject
   public OrionEditorPresenter(
-      final PreferencesManager preferencesManager,
       final DocumentStorage documentStorage,
       final EditorLocalizationConstants constant,
       final EditorWidgetFactory<OrionEditorWidget> editorWigetFactory,
       final EditorInitializePromiseHolder editorModule,
       final TextEditorPartView editorView,
       final FileTypeIdentifier fileTypeIdentifier,
-      final WorkspaceAgent workspaceAgent,
       final EditorFileStatusNotificationOperation editorFileStatusNotificationOperation) {
-    this.preferencesManager = preferencesManager;
     this.documentStorage = documentStorage;
     this.constant = constant;
     this.editorWidgetFactory = editorWigetFactory;
     this.editorModule = editorModule;
     this.editorView = editorView;
     this.fileTypeIdentifier = fileTypeIdentifier;
-    this.workspaceAgent = workspaceAgent;
     this.editorFileStatusNotificationOperation = editorFileStatusNotificationOperation;
 
     this.editorView.setDelegate(this);
@@ -173,11 +163,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
                 editorWidget.refresh();
                 editorWidget.setFocus();
               });
-      final String isLinkedWithEditor =
-          preferencesManager.getValue(LinkWithEditorAction.LINK_WITH_EDITOR);
-      if (!parseBoolean(isLinkedWithEditor)) {
-        setSelection(new Selection<>(input.getFile()));
-      }
     } else {
       this.delayedFocus = true;
     }
