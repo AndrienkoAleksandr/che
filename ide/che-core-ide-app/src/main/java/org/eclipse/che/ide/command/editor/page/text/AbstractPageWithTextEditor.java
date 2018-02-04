@@ -85,8 +85,8 @@ public abstract class AbstractPageWithTextEditor extends AbstractCommandEditorPa
 
               break;
             case PROP_DIRTY:
-              updateCommandPropertyValue(editor.getDocument().getContents());
-              notifyDirtyStateChanged();
+//              updateCommandPropertyValue(editor.getDocument().getContents());
+//              notifyDirtyStateChanged();
 
               break;
             default:
@@ -151,8 +151,8 @@ public abstract class AbstractPageWithTextEditor extends AbstractCommandEditorPa
   public void onExploreMacros() {
     macroChooser.show(
         macro -> {
-          Document document = editor.getDocument();
-          document.replace(document.getCursorOffset(), 0, macro.getName());
+//          Document document = editor.getDocument();
+//          document.replace(document.getCursorOffset(), 0, macro.getName());
         });
   }
 }

@@ -236,21 +236,21 @@ public class OpenImplementationPresenter {
   }
 
   private void setCursor(final Region region) {
-    if (!(editorAgent.getActiveEditor() instanceof TextEditor)) {
-      return;
-    }
-    Scheduler.get()
-        .scheduleDeferred(
-            new Scheduler.ScheduledCommand() {
-              @Override
-              public void execute() {
-                TextEditor editor = (TextEditor) editorAgent.getActiveEditor();
-                editor.setFocus();
-                editor
-                    .getDocument()
-                    .setSelectedRange(
-                        LinearRange.createWithStart(region.getOffset()).andLength(0), true);
-              }
-            });
+//    if (!(editorAgent.getActiveEditor() instanceof TextEditor)) {
+//      return;
+//    }
+//    Scheduler.get()
+//        .scheduleDeferred(
+//            new Scheduler.ScheduledCommand() {
+//              @Override
+//              public void execute() {
+//                TextEditor editor = (TextEditor) editorAgent.getActiveEditor();
+//                editor.setFocus();
+//                editor
+//                    .getDocument()
+//                    .setSelectedRange(
+//                        LinearRange.createWithStart(region.getOffset()).andLength(0), true);
+//              }
+//            });
   }
 }

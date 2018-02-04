@@ -77,16 +77,16 @@ class SymbolEntry extends QuickOpenEntryGroup {
   }
 
   private boolean runPreview() {
-    editor.getDocument().setSelectedRange(range, true);
+//    editor.getDocument().setSelectedRange(range, true);
     return false;
   }
 
   private boolean runOpen() {
-    editor
-        .getDocument()
-        .setCursorPosition(
-            new TextPosition(range.getFrom().getLine(), range.getFrom().getCharacter()));
-    editor.setFocus();
+//    editor
+//        .getDocument()
+//        .setCursorPosition(
+//            new TextPosition(range.getFrom().getLine(), range.getFrom().getCharacter()));
+//    editor.setFocus();
     return true;
   }
 }

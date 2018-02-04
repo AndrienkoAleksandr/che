@@ -167,22 +167,22 @@ public class JavaCodeAssistProcessor implements CodeAssistProcessor {
     if (file instanceof Resource) {
       final Optional<Project> project = ((Resource) file).getRelatedProject();
       Unmarshallable<Proposals> unmarshaller = unmarshallerFactory.newUnmarshaller(Proposals.class);
-      client.computeProposals(
-          project.get().getLocation().toString(),
-          resolveFQN(file),
-          offset,
-          textEditor.getDocument().getContents(),
-          new AsyncRequestCallback<Proposals>(unmarshaller) {
-            @Override
-            protected void onSuccess(Proposals proposals) {
-              showProposals(callback, proposals);
-            }
-
-            @Override
-            protected void onFailure(Throwable throwable) {
-              Log.error(JavaCodeAssistProcessor.class, throwable);
-            }
-          });
+//      client.computeProposals(
+//          project.get().getLocation().toString(),
+//          resolveFQN(file),
+//          offset,
+//          textEditor.getDocument().getContents(),
+//          new AsyncRequestCallback<Proposals>(unmarshaller) {
+//            @Override
+//            protected void onSuccess(Proposals proposals) {
+//              showProposals(callback, proposals);
+//            }
+//
+//            @Override
+//            protected void onFailure(Throwable throwable) {
+//              Log.error(JavaCodeAssistProcessor.class, throwable);
+//            }
+//          });
     }
   }
 

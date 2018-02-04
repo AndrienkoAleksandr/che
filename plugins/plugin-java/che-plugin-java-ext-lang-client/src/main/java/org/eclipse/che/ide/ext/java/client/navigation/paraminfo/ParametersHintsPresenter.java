@@ -95,22 +95,22 @@ public class ParametersHintsPresenter {
 //    }
   }
 
-  private boolean isCursorInRightPlace(TextEditor activeEditor, int offset) {
-    Document document = activeEditor.getDocument();
-
-    int lineIndex = document.getLineAtOffset(offset);
-    int nextLineIndex = lineIndex + 1;
-
-    int nextLineStart = document.getLineStart(nextLineIndex);
-    String contentRange =
-        activeEditor.getDocument().getContentRange(offset, nextLineStart - offset);
-
-    return contentRange.contains(")");
-  }
-
-  private int getLineStartOffset(TextEditor activeEditor, int offset) {
-    Document document = activeEditor.getDocument();
-    int lineIndex = document.getLineAtOffset(offset);
-    return document.getLineStart(lineIndex);
-  }
+//  private boolean isCursorInRightPlace(TextEditor activeEditor, int offset) {
+//    Document document = activeEditor.getDocument();
+//
+//    int lineIndex = document.getLineAtOffset(offset);
+//    int nextLineIndex = lineIndex + 1;
+//
+//    int nextLineStart = document.getLineStart(nextLineIndex);
+//    String contentRange =
+//        activeEditor.getDocument().getContentRange(offset, nextLineStart - offset);
+//
+//    return contentRange.contains(")");
+//  }
+//
+//  private int getLineStartOffset(TextEditor activeEditor, int offset) {
+//    Document document = activeEditor.getDocument();
+//    int lineIndex = document.getLineAtOffset(offset);
+//    return document.getLineStart(lineIndex);
+//  }
 }

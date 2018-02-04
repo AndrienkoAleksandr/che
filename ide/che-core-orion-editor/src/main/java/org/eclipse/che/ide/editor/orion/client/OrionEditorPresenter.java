@@ -65,7 +65,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
   private TextEditorConfiguration configuration;
   private OrionEditorWidget editorWidget;
-  private Document document;
+//  private Document document;
 
   private boolean delayedFocus;
   private List<String> fileTypes;
@@ -140,13 +140,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
   @Override
   public void close(boolean save) {
-    if (resourceChangeHandler != null) {
-      resourceChangeHandler.removeHandler();
-      resourceChangeHandler = null;
-    }
-
-    this.documentStorage.documentClosed(this.document);
-    workspaceAgent.removePart(this);
   }
 
   protected Widget getWidget() {
@@ -234,11 +227,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   public void doSaveAs() {}
 
   @Override
-  public Document getDocument() {
-    return this.document;
-  }
-
-  @Override
   public String getContentType() {
     // Before the editor content is ready, the content type is not defined
     if (this.fileTypes == null || this.fileTypes.isEmpty()) {
@@ -301,10 +289,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
       Log.info(getClass(), "content ^)---------" + content + "");
       editorWidget = (OrionEditorWidget) widget;
       editorView.setEditorWidget(editorWidget);
-
-      document = editorWidget.getDocument();
-      final VirtualFile file = input.getFile();
-      document.setFile(file);
 
       // TODO: delayed activation
       // handle delayed focus (initialization editor widget)

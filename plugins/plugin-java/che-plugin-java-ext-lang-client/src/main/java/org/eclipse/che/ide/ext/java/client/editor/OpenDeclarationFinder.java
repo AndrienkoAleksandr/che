@@ -130,117 +130,117 @@ public class OpenDeclarationFinder {
     new DelayedTask() {
       @Override
       public void onExecute() {
-        if (editor instanceof TextEditor) {
-          ((TextEditor) editor)
-              .getDocument()
-              .setSelectedRange(LinearRange.createWithStart(offset).andLength(0), true);
-          editor.activate(); // force set focus to the editor
-        }
+//        if (editor instanceof TextEditor) {
+//          ((TextEditor) editor)
+//              .getDocument()
+//              .setSelectedRange(LinearRange.createWithStart(offset).andLength(0), true);
+//          editor.activate(); // force set focus to the editor
+//        }
       }
     }.delay(1);
   }
 
-  private void handleDescriptor(
-      final Path projectPath, final OpenDeclarationDescriptor descriptor) {
-    final EditorPartPresenter openedEditor =
-        editorAgent.getOpenedEditor(Path.valueOf(descriptor.getPath()));
-    if (openedEditor != null) {
-      editorAgent.openEditor(
-          openedEditor.getEditorInput().getFile(),
-          new OpenEditorCallbackImpl() {
-            @Override
-            public void onEditorOpened(EditorPartPresenter editor) {
-              setCursorAndActivateEditor(editor, descriptor.getOffset());
-            }
+//  private void handleDescriptor(
+//      final Path projectPath, final OpenDeclarationDescriptor descriptor) {
+//    final EditorPartPresenter openedEditor =
+//        editorAgent.getOpenedEditor(Path.valueOf(descriptor.getPath()));
+//    if (openedEditor != null) {
+//      editorAgent.openEditor(
+//          openedEditor.getEditorInput().getFile(),
+//          new OpenEditorCallbackImpl() {
+//            @Override
+//            public void onEditorOpened(EditorPartPresenter editor) {
+//              setCursorAndActivateEditor(editor, descriptor.getOffset());
+//            }
+//
+//            @Override
+//            public void onEditorActivated(EditorPartPresenter editor) {
+//              setCursorAndActivateEditor(editor, descriptor.getOffset());
+//            }
+//          });
+//      return;
+//    }
 
-            @Override
-            public void onEditorActivated(EditorPartPresenter editor) {
-              setCursorAndActivateEditor(editor, descriptor.getOffset());
-            }
-          });
-      return;
-    }
-
-    if (descriptor.isBinary()) {
-      navigationService
-          .getEntry(projectPath, descriptor.getLibId(), descriptor.getPath())
-          .then(
-              new Operation<JarEntry>() {
-                @Override
-                public void apply(final JarEntry entry) throws OperationException {
-                  navigationService
-                      .getContent(projectPath, descriptor.getLibId(), Path.valueOf(entry.getPath()))
-                      .then(
-                          new Operation<ClassContent>() {
-                            @Override
-                            public void apply(ClassContent content) throws OperationException {
-                              final VirtualFile file =
-                                  javaNodeFactory.newJarFileNode(
-                                      entry, descriptor.getLibId(), projectPath, null);
-                              editorAgent.openEditor(
-                                  file,
-                                  new OpenEditorCallbackImpl() {
-                                    @Override
-                                    public void onEditorOpened(final EditorPartPresenter editor) {
-                                      Scheduler.get()
-                                          .scheduleDeferred(
-                                              new Scheduler.ScheduledCommand() {
-                                                @Override
-                                                public void execute() {
-                                                  if (editor instanceof TextEditor) {
-                                                    ((TextEditor) editor)
-                                                        .getDocument()
-                                                        .setSelectedRange(
-                                                            LinearRange.createWithStart(
-                                                                    descriptor.getOffset())
-                                                                .andLength(0),
-                                                            true);
-                                                    editor.activate();
-                                                  }
-                                                }
-                                              });
-                                    }
-                                  });
-                            }
-                          });
-                }
-              });
-    } else {
-      appContext
-          .getWorkspaceRoot()
-          .getFile(descriptor.getPath())
-          .then(
-              new Operation<Optional<File>>() {
-                @Override
-                public void apply(Optional<File> file) throws OperationException {
-                  if (file.isPresent()) {
-                    editorAgent.openEditor(
-                        file.get(),
-                        new OpenEditorCallbackImpl() {
-                          @Override
-                          public void onEditorOpened(final EditorPartPresenter editor) {
-                            Scheduler.get()
-                                .scheduleDeferred(
-                                    new Scheduler.ScheduledCommand() {
-                                      @Override
-                                      public void execute() {
-                                        if (editor instanceof TextEditor) {
-                                          ((TextEditor) editor)
-                                              .getDocument()
-                                              .setSelectedRange(
-                                                  LinearRange.createWithStart(
-                                                          descriptor.getOffset())
-                                                      .andLength(0),
-                                                  true);
-                                          editor.activate();
-                                        }
-                                      }
-                                    });
-                          }
-                        });
-                  }
-                }
-              });
-    }
-  }
+//    if (descriptor.isBinary()) {
+//      navigationService
+//          .getEntry(projectPath, descriptor.getLibId(), descriptor.getPath())
+//          .then(
+//              new Operation<JarEntry>() {
+//                @Override
+//                public void apply(final JarEntry entry) throws OperationException {
+//                  navigationService
+//                      .getContent(projectPath, descriptor.getLibId(), Path.valueOf(entry.getPath()))
+//                      .then(
+//                          new Operation<ClassContent>() {
+//                            @Override
+//                            public void apply(ClassContent content) throws OperationException {
+//                              final VirtualFile file =
+//                                  javaNodeFactory.newJarFileNode(
+//                                      entry, descriptor.getLibId(), projectPath, null);
+//                              editorAgent.openEditor(
+//                                  file,
+//                                  new OpenEditorCallbackImpl() {
+//                                    @Override
+//                                    public void onEditorOpened(final EditorPartPresenter editor) {
+//                                      Scheduler.get()
+//                                          .scheduleDeferred(
+//                                              new Scheduler.ScheduledCommand() {
+//                                                @Override
+//                                                public void execute() {
+//                                                  if (editor instanceof TextEditor) {
+//                                                    ((TextEditor) editor)
+//                                                        .getDocument()
+//                                                        .setSelectedRange(
+//                                                            LinearRange.createWithStart(
+//                                                                    descriptor.getOffset())
+//                                                                .andLength(0),
+//                                                            true);
+//                                                    editor.activate();
+//                                                  }
+//                                                }
+//                                              });
+//                                    }
+//                                  });
+//                            }
+//                          });
+//                }
+//              });
+//    } else {
+//      appContext
+//          .getWorkspaceRoot()
+//          .getFile(descriptor.getPath())
+//          .then(
+//              new Operation<Optional<File>>() {
+//                @Override
+//                public void apply(Optional<File> file) throws OperationException {
+//                  if (file.isPresent()) {
+//                    editorAgent.openEditor(
+//                        file.get(),
+//                        new OpenEditorCallbackImpl() {
+//                          @Override
+//                          public void onEditorOpened(final EditorPartPresenter editor) {
+//                            Scheduler.get()
+//                                .scheduleDeferred(
+//                                    new Scheduler.ScheduledCommand() {
+//                                      @Override
+//                                      public void execute() {
+//                                        if (editor instanceof TextEditor) {
+//                                          ((TextEditor) editor)
+//                                              .getDocument()
+//                                              .setSelectedRange(
+//                                                  LinearRange.createWithStart(
+//                                                          descriptor.getOffset())
+//                                                      .andLength(0),
+//                                                  true);
+//                                          editor.activate();
+//                                        }
+//                                      }
+//                                    });
+//                          }
+//                        });
+//                  }
+//                }
+//              });
+//    }
+//  }
 }

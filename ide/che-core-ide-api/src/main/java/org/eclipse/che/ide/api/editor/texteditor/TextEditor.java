@@ -12,7 +12,6 @@ package org.eclipse.che.ide.api.editor.texteditor;
 
 import javax.validation.constraints.NotNull;
 import org.eclipse.che.ide.api.editor.EditorPartPresenter;
-import org.eclipse.che.ide.api.editor.document.Document;
 import org.eclipse.che.ide.api.editor.editorconfig.TextEditorConfiguration;
 
 /** Public view on the editor component. */
@@ -48,14 +47,6 @@ public interface TextEditor extends EditorPartPresenter {
    */
   @Override
   void close(boolean save);
-
-
-  /**
-   * Returns the document backing the text content.
-   *
-   * @return the document
-   */
-  Document getDocument();
 
   /**
    * Return the content type of the editor content.<br>

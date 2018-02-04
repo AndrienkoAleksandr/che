@@ -45,39 +45,39 @@ public class MacroCodeAssistProcessor implements CodeAssistProcessor {
   @Override
   public void computeCompletionProposals(
       TextEditor editor, int offset, boolean triggered, CodeAssistCallback callback) {
-    Document document = editor.getDocument();
-    TextPosition position = document.getPositionFromIndex(offset);
-
-    String currentLine = editor.getDocument().getLineContent(position.getLine());
-    final String currentWord = getCurrentWord(currentLine, position.getCharacter());
-
-    List<CompletionProposal> result = new ArrayList<>();
-    if (triggered && !lastCompletion.isGoodFor(currentWord, offset)) {
-      lastCompletion.offset = offset;
-      lastCompletion.wordStartOffset = offset - currentWord.length(); // start completion word
-      lastCompletion.word = currentWord;
-    }
-
-    List<Macro> macros = registry.getMacros();
-    for (Macro macro : macros) {
-      List<Match> matches = fuzzyMatches.fuzzyMatch(currentWord, macro.getName());
-      if (matches != null) {
-        MacroCompletionProposal proposal =
-            new MacroCompletionProposal(
-                macro, matches, resources, lastCompletion.wordStartOffset, currentWord.length());
-        result.add(proposal);
-      }
-    }
-
-    result.sort(
-        (o1, o2) -> {
-          MacroCompletionProposal p1 = ((MacroCompletionProposal) o1);
-          MacroCompletionProposal p2 = ((MacroCompletionProposal) o2);
-
-          return p1.getMacro().getName().compareTo(p2.getMacro().getName());
-        });
-
-    callback.proposalComputed(result);
+//    Document document = editor.getDocument();
+//    TextPosition position = document.getPositionFromIndex(offset);
+//
+//    String currentLine = editor.getDocument().getLineContent(position.getLine());
+//    final String currentWord = getCurrentWord(currentLine, position.getCharacter());
+//
+//    List<CompletionProposal> result = new ArrayList<>();
+//    if (triggered && !lastCompletion.isGoodFor(currentWord, offset)) {
+//      lastCompletion.offset = offset;
+//      lastCompletion.wordStartOffset = offset - currentWord.length(); // start completion word
+//      lastCompletion.word = currentWord;
+//    }
+//
+//    List<Macro> macros = registry.getMacros();
+//    for (Macro macro : macros) {
+//      List<Match> matches = fuzzyMatches.fuzzyMatch(currentWord, macro.getName());
+//      if (matches != null) {
+//        MacroCompletionProposal proposal =
+//            new MacroCompletionProposal(
+//                macro, matches, resources, lastCompletion.wordStartOffset, currentWord.length());
+//        result.add(proposal);
+//      }
+//    }
+//
+//    result.sort(
+//        (o1, o2) -> {
+//          MacroCompletionProposal p1 = ((MacroCompletionProposal) o1);
+//          MacroCompletionProposal p2 = ((MacroCompletionProposal) o2);
+//
+//          return p1.getMacro().getName().compareTo(p2.getMacro().getName());
+//        });
+//
+//    callback.proposalComputed(result);
   }
 
   private String getCurrentWord(String text, int offset) {

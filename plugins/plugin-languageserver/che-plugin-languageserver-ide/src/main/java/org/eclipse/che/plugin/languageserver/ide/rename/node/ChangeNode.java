@@ -135,15 +135,15 @@ public class ChangeNode extends AbstractPresentationNode implements HasAction {
   }
 
   private void selectRange(EditorPartPresenter editor) {
-    if (editor instanceof TextEditor) {
-      Range range = change.getTextEdit().getRange();
-      ((TextEditor) editor)
-          .getDocument()
-          .setSelectedRange(
-              new TextRange(
-                  new TextPosition(range.getStart().getLine(), range.getStart().getCharacter()),
-                  new TextPosition(range.getEnd().getLine(), range.getEnd().getCharacter())),
-              true);
-    }
+//    if (editor instanceof TextEditor) {
+//      Range range = change.getTextEdit().getRange();
+//      ((TextEditor) editor)
+//          .getDocument()
+//          .setSelectedRange(
+//              new TextRange(
+//                  new TextPosition(range.getStart().getLine(), range.getStart().getCharacter()),
+//                  new TextPosition(range.getEnd().getLine(), range.getEnd().getCharacter())),
+//              true);
+//    }
   }
 }

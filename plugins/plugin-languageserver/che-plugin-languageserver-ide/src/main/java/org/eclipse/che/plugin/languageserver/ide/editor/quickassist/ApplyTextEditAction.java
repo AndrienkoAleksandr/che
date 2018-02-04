@@ -48,29 +48,29 @@ public class ApplyTextEditAction extends BaseAction {
 
   @Override
   public void actionPerformed(ActionEvent evt) {
-    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
-    if (!(activeEditor instanceof TextEditor)) {
-      return;
-    }
-    Document document = ((TextEditor) activeEditor).getDocument();
-    // We expect the arguments to be of the correct type: static misconfiguration is
-    // a programming error.
-    List<Object> arguments = ((QuickassistActionEvent) evt).getArguments();
-    arguments
-        .stream()
-        .map(arg -> dtoFactory.createDtoFromJson(arg.toString(), TextEdit.class))
-        .sorted(COMPARATOR)
-        .forEach(
-            e -> {
-              Range r = e.getRange();
-              Position start = r.getStart();
-              Position end = r.getEnd();
-              document.replace(
-                  start.getLine(),
-                  start.getCharacter(),
-                  end.getLine(),
-                  end.getCharacter(),
-                  e.getNewText());
-            });
+//    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
+//    if (!(activeEditor instanceof TextEditor)) {
+//      return;
+//    }
+//    Document document = ((TextEditor) activeEditor).getDocument();
+//    // We expect the arguments to be of the correct type: static misconfiguration is
+//    // a programming error.
+//    List<Object> arguments = ((QuickassistActionEvent) evt).getArguments();
+//    arguments
+//        .stream()
+//        .map(arg -> dtoFactory.createDtoFromJson(arg.toString(), TextEdit.class))
+//        .sorted(COMPARATOR)
+//        .forEach(
+//            e -> {
+//              Range r = e.getRange();
+//              Position start = r.getStart();
+//              Position end = r.getEnd();
+//              document.replace(
+//                  start.getLine(),
+//                  start.getCharacter(),
+//                  end.getLine(),
+//                  end.getCharacter(),
+//                  e.getNewText());
+//            });
   }
 }

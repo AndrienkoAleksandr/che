@@ -99,14 +99,14 @@ public class FoundOccurrenceNode extends AbstractTreeNode implements HasPresenta
   }
 
   private void selectRange(EditorPartPresenter editor) {
-    if (editor instanceof TextEditor) {
-      ((TextEditor) editor)
-          .getDocument()
-          .setSelectedRange(
-              LinearRange.createWithStart(searchOccurrence.getStartOffset())
-                  .andEnd(searchOccurrence.getEndOffset()),
-              true);
-    }
+//    if (editor instanceof TextEditor) {
+//      ((TextEditor) editor)
+//          .getDocument()
+//          .setSelectedRange(
+//              LinearRange.createWithStart(searchOccurrence.getStartOffset())
+//                  .andEnd(searchOccurrence.getEndOffset()),
+//              true);
+//    }
   }
 
   /** {@inheritDoc} */

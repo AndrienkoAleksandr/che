@@ -141,12 +141,6 @@ public class BreakpointManagerImpl
 
   /** Indicates if line of code to add breakpoint at is executable. */
   private boolean isLineEmpty(final VirtualFile activeFile, int lineNumber) {
-    EditorPartPresenter editor = getEditorForFile(activeFile.getLocation().toString());
-    if (editor instanceof TextEditor) {
-      Document document = ((TextEditor) editor).getDocument();
-      return document.getLineContent(lineNumber - 1).trim().isEmpty();
-    }
-
     return false;
   }
 
@@ -396,48 +390,48 @@ public class BreakpointManagerImpl
    * have to wait {@link DocumentChangedEvent} to know when {@link TextEditor} will be updated.
    */
   private void onFileContentUpdate(FileContentUpdateEvent event) {
-    String filePath = event.getFilePath();
-    if (suspendedLocation != null && suspendedLocation.getTarget().equals(filePath)) {
-
-      EditorPartPresenter editor = getEditorForFile(filePath);
-      if (editor instanceof TextEditor) {
-
-        final TextEditor textEditor = (TextEditor) editor;
-        textEditor
-            .getDocument()
-            .getDocumentHandle()
-            .getDocEventBus()
-            .addHandler(
-                DocumentChangedEvent.TYPE,
-                docChangedEvent -> {
-                  String changedFilePath =
-                      docChangedEvent
-                          .getDocument()
-                          .getDocument()
-                          .getFile()
-                          .getLocation()
-                          .toString();
-                  if (suspendedLocation == null
-                      || !suspendedLocation.getTarget().equals(changedFilePath)) {
-                    return;
-                  }
-
-                  BreakpointRenderer breakpointRenderer = getBreakpointRendererForEditor(editor);
-                  if (breakpointRenderer != null) {
-                    new Timer() {
-                      @Override
-                      public void run() {
-                        breakpointRenderer.setLineActive(
-                            suspendedLocation.getLineNumber() - 1, true);
-                        //                        textEditor.setCursorPosition(
-                        //                            new
-                        // TextPosition(suspendedLocation.getLineNumber(), 0));
-                      }
-                    }.schedule(300);
-                  }
-                });
-      }
-    }
+//    String filePath = event.getFilePath();
+//    if (suspendedLocation != null && suspendedLocation.getTarget().equals(filePath)) {
+//
+//      EditorPartPresenter editor = getEditorForFile(filePath);
+//      if (editor instanceof TextEditor) {
+//
+//        final TextEditor textEditor = (TextEditor) editor;
+//        textEditor
+//            .getDocument()
+//            .getDocumentHandle()
+//            .getDocEventBus()
+//            .addHandler(
+//                DocumentChangedEvent.TYPE,
+//                docChangedEvent -> {
+//                  String changedFilePath =
+//                      docChangedEvent
+//                          .getDocument()
+//                          .getDocument()
+//                          .getFile()
+//                          .getLocation()
+//                          .toString();
+//                  if (suspendedLocation == null
+//                      || !suspendedLocation.getTarget().equals(changedFilePath)) {
+//                    return;
+//                  }
+//
+//                  BreakpointRenderer breakpointRenderer = getBreakpointRendererForEditor(editor);
+//                  if (breakpointRenderer != null) {
+//                    new Timer() {
+//                      @Override
+//                      public void run() {
+//                        breakpointRenderer.setLineActive(
+//                            suspendedLocation.getLineNumber() - 1, true);
+//                        //                        textEditor.setCursorPosition(
+//                        //                            new
+//                        // TextPosition(suspendedLocation.getLineNumber(), 0));
+//                      }
+//                    }.schedule(300);
+//                  }
+//                });
+//      }
+//    }
   }
 
   /** The new file has been opened in the editor. Method reads breakpoints. */

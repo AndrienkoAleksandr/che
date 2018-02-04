@@ -17,7 +17,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.eclipse.che.ide.api.editor.document.Document;
 import org.eclipse.che.ide.api.editor.events.DocumentChangedEvent;
-import org.eclipse.che.ide.api.editor.text.Region;
 
 /** An interface for editor widget implementations. */
 public interface EditorWidget
@@ -29,13 +28,6 @@ public interface EditorWidget
 {
 
   /**
-   * Returns the contents of the editor.
-   *
-   * @return
-   */
-  String getValue();
-
-  /**
    * Sets the content of the editor.<br>
    * The operation <em>must</em> send a {@link DocumentChangedEvent} on the document private event
    * bus.
@@ -44,32 +36,6 @@ public interface EditorWidget
    * @param initializationHandler must be called when content injected in the Editor Widget
    */
   void setValue(String newValue, ContentInitializedHandler initializationHandler);
-
-//  /** Sets whether the annotation ruler is visible. */
-//  void setAnnotationRulerVisible(boolean show);
-//
-//  /** Sets whether the folding ruler is visible. */
-//  void setFoldingRulerVisible(boolean show);
-//
-//  /** Sets whether the zoom ruler is visible. */
-//  void setZoomRulerVisible(boolean show);
-//
-//  /** Sets whether the overview ruler is visible. */
-//  void setOverviewRulerVisible(boolean show);
-
-  /**
-   * Returns the dirty state of the editor.
-   *
-   * @return true iff the editor is dirty (i.e. unsaved change were made)
-   */
-  boolean isDirty();
-
-  /**
-   * The instance of {@link org.eclipse.che.ide.api.editor.document.Document}.
-   *
-   * @return the embedded document
-   */
-  Document getDocument();
 
   /** Give the focus to the editor. */
   void setFocus();

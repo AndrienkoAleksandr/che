@@ -163,14 +163,14 @@ public abstract class AbstractOutputCustomizer implements OutputCustomizer {
     column--;
     if (line < 0) line = 0;
     if (editor instanceof TextEditor) {
-      Document document = ((TextEditor) editor).getDocument();
-      LinearRange selectionRange = document.getLinearRangeForLine(line);
-      if (column >= 0) {
-        selectionRange =
-            LinearRange.createWithStart(selectionRange.getStartOffset() + column).andLength(0);
-      }
-      document.setSelectedRange(selectionRange, true);
-      document.setCursorPosition(new TextPosition(line, column >= 0 ? column : 0));
+//      Document document = ((TextEditor) editor).getDocument();
+//      LinearRange selectionRange = document.getLinearRangeForLine(line);
+//      if (column >= 0) {
+//        selectionRange =
+//            LinearRange.createWithStart(selectionRange.getStartOffset() + column).andLength(0);
+//      }
+//      document.setSelectedRange(selectionRange, true);
+//      document.setCursorPosition(new TextPosition(line, column >= 0 ? column : 0));
     }
   }
 }

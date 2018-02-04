@@ -134,8 +134,8 @@ public class OpenFileAction extends BaseAction implements PromisableAction {
       public void run() {
         try {
           int lineNumber = parseInt(lineParam);
-          TextEditor textEditor = (TextEditor) editor;
-          textEditor.getDocument().setCursorPosition(new TextPosition(lineNumber - 1, 0));
+//          TextEditor textEditor = (TextEditor) editor;
+//          textEditor.getDocument().setCursorPosition(new TextPosition(lineNumber - 1, 0));
         } catch (NumberFormatException e) {
           Log.error(getClass(), localization.fileToOpenLineIsNotANumber());
         }

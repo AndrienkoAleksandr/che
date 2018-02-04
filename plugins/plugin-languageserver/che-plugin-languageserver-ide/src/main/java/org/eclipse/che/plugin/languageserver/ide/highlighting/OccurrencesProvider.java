@@ -61,50 +61,51 @@ public class OccurrencesProvider implements OrionOccurrencesHandler {
   @Override
   public JsPromise<OrionOccurrenceOverlay[]> computeOccurrences(
       OrionOccurrenceContextOverlay context) {
-    final EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
-    if (activeEditor == null || !(activeEditor instanceof TextEditor)) {
-      return null;
-    }
-    final TextEditor editor = ((TextEditor) activeEditor);
-    if (!(editor.getConfiguration() instanceof LanguageServerEditorConfiguration)) {
-      return null;
-    }
-    final LanguageServerEditorConfiguration configuration =
-        (LanguageServerEditorConfiguration) editor.getConfiguration();
-    if (configuration.getServerCapabilities().getDocumentHighlightProvider() == null
-        || !configuration.getServerCapabilities().getDocumentHighlightProvider()) {
-      return null;
-    }
-    final Document document = editor.getDocument();
-    final TextDocumentPositionParams paramsDTO = helper.createTDPP(document, context.getStart());
-    Promise<List<DocumentHighlight>> promise = client.documentHighlight(paramsDTO);
-    Promise<OrionOccurrenceOverlay[]> then =
-        promise.then(
-            new Function<List<DocumentHighlight>, OrionOccurrenceOverlay[]>() {
-              @Override
-              public OrionOccurrenceOverlay[] apply(List<DocumentHighlight> highlights)
-                  throws FunctionException {
-                final OrionOccurrenceOverlay[] occurrences =
-                    new OrionOccurrenceOverlay[highlights.size()];
-                for (int i = 0; i < occurrences.length; i++) {
-                  DocumentHighlight highlight = highlights.get(i);
-                  final OrionOccurrenceOverlay occurrence = OrionOccurrenceOverlay.create();
-                  Position start = highlight.getRange().getStart();
-                  Position end = highlight.getRange().getEnd();
-                  int startIndex =
-                      document.getIndexFromPosition(
-                          new TextPosition(start.getLine(), start.getCharacter()));
-                  int endIndex =
-                      document.getIndexFromPosition(
-                          new TextPosition(end.getLine(), end.getCharacter()));
-
-                  occurrence.setStart(startIndex);
-                  occurrence.setEnd(endIndex + 1);
-                  occurrences[i] = occurrence;
-                }
-                return occurrences;
-              }
-            });
-    return (JsPromise<OrionOccurrenceOverlay[]>) then;
+//    final EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
+//    if (activeEditor == null || !(activeEditor instanceof TextEditor)) {
+//      return null;
+//    }
+//    final TextEditor editor = ((TextEditor) activeEditor);
+//    if (!(editor.getConfiguration() instanceof LanguageServerEditorConfiguration)) {
+//      return null;
+//    }
+//    final LanguageServerEditorConfiguration configuration =
+//        (LanguageServerEditorConfiguration) editor.getConfiguration();
+//    if (configuration.getServerCapabilities().getDocumentHighlightProvider() == null
+//        || !configuration.getServerCapabilities().getDocumentHighlightProvider()) {
+//      return null;
+//    }
+//    final Document document = editor.getDocument();
+//    final TextDocumentPositionParams paramsDTO = helper.createTDPP(document, context.getStart());
+//    Promise<List<DocumentHighlight>> promise = client.documentHighlight(paramsDTO);
+//    Promise<OrionOccurrenceOverlay[]> then =
+//        promise.then(
+//            new Function<List<DocumentHighlight>, OrionOccurrenceOverlay[]>() {
+//              @Override
+//              public OrionOccurrenceOverlay[] apply(List<DocumentHighlight> highlights)
+//                  throws FunctionException {
+//                final OrionOccurrenceOverlay[] occurrences =
+//                    new OrionOccurrenceOverlay[highlights.size()];
+//                for (int i = 0; i < occurrences.length; i++) {
+//                  DocumentHighlight highlight = highlights.get(i);
+//                  final OrionOccurrenceOverlay occurrence = OrionOccurrenceOverlay.create();
+//                  Position start = highlight.getRange().getStart();
+//                  Position end = highlight.getRange().getEnd();
+//                  int startIndex =
+//                      document.getIndexFromPosition(
+//                          new TextPosition(start.getLine(), start.getCharacter()));
+//                  int endIndex =
+//                      document.getIndexFromPosition(
+//                          new TextPosition(end.getLine(), end.getCharacter()));
+//
+//                  occurrence.setStart(startIndex);
+//                  occurrence.setEnd(endIndex + 1);
+//                  occurrences[i] = occurrence;
+//                }
+//                return occurrences;
+//              }
+//            });
+//    return (JsPromise<OrionOccurrenceOverlay[]>) then;
+    return null;
   }
 }

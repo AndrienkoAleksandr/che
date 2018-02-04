@@ -102,15 +102,15 @@ public class OpenFileInEditorHelper {
   }
 
   private void fileOpened(final EditorPartPresenter editor, final TextRange selectionRange) {
-    if (editor instanceof TextEditor && selectionRange != null) {
-      Scheduler.get()
-          .scheduleDeferred(
-              new Scheduler.ScheduledCommand() {
-                @Override
-                public void execute() {
-                  ((TextEditor) editor).getDocument().setSelectedRange(selectionRange, true);
-                }
-              });
-    }
+//    if (editor instanceof TextEditor && selectionRange != null) {
+//      Scheduler.get()
+//          .scheduleDeferred(
+//              new Scheduler.ScheduledCommand() {
+//                @Override
+//                public void execute() {
+//                  ((TextEditor) editor).getDocument().setSelectedRange(selectionRange, true);
+//                }
+//              });
+//    }
   }
 }

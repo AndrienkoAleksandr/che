@@ -55,42 +55,43 @@ public class HoverProvider implements OrionHoverHandler {
 
   @Override
   public JsPromise<OrionHoverOverlay> computeHover(OrionHoverContextOverlay context) {
-    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
-    if (activeEditor == null || !(activeEditor instanceof TextEditor)) {
-      return null;
-    }
+    return null;
+    //    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
+//    if (activeEditor == null || !(activeEditor instanceof TextEditor)) {
+//      return null;
+//    }
+//
+//    TextEditor editor = ((TextEditor) activeEditor);
+//    if (!(editor.getConfiguration() instanceof LanguageServerEditorConfiguration)) {
+//      return null;
+//    }
+//
+//    LanguageServerEditorConfiguration configuration =
+//        (LanguageServerEditorConfiguration) editor.getConfiguration();
+//    if (configuration.getServerCapabilities().getHoverProvider() == null
+//        || !configuration.getServerCapabilities().getHoverProvider()) {
+//      return null;
+//    }
 
-    TextEditor editor = ((TextEditor) activeEditor);
-    if (!(editor.getConfiguration() instanceof LanguageServerEditorConfiguration)) {
-      return null;
-    }
+//    Document document = editor.getDocument();
+//    TextDocumentPositionParams paramsDTO = helper.createTDPP(document, context.getOffset());
 
-    LanguageServerEditorConfiguration configuration =
-        (LanguageServerEditorConfiguration) editor.getConfiguration();
-    if (configuration.getServerCapabilities().getHoverProvider() == null
-        || !configuration.getServerCapabilities().getHoverProvider()) {
-      return null;
-    }
-
-    Document document = editor.getDocument();
-    TextDocumentPositionParams paramsDTO = helper.createTDPP(document, context.getOffset());
-
-    Promise<Hover> promise = client.hover(paramsDTO);
-    Promise<OrionHoverOverlay> then =
-        promise.then(
-            (Hover arg) -> {
-              OrionHoverOverlay hover = OrionHoverOverlay.create();
-              hover.setType("markdown");
-              String content = renderContent(arg);
-              // do not show hover with only white spaces
-              if (StringUtils.isNullOrWhitespace(content)) {
-                return null;
-              }
-              hover.setContent(content);
-
-              return hover;
-            });
-    return (JsPromise<OrionHoverOverlay>) then;
+//    Promise<Hover> promise = client.hover(paramsDTO);
+//    Promise<OrionHoverOverlay> then =
+//        promise.then(
+//            (Hover arg) -> {
+//              OrionHoverOverlay hover = OrionHoverOverlay.create();
+//              hover.setType("markdown");
+//              String content = renderContent(arg);
+//              // do not show hover with only white spaces
+//              if (StringUtils.isNullOrWhitespace(content)) {
+//                return null;
+//              }
+//              hover.setContent(content);
+//
+//              return hover;
+//            });
+//    return (JsPromise<OrionHoverOverlay>) then;
   }
 
   private String renderContent(Hover hover) {

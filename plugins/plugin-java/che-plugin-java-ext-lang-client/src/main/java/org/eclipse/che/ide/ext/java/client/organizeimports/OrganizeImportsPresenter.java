@@ -91,28 +91,28 @@ public class OrganizeImportsPresenter implements OrganizeImportsView.ActionDeleg
    * @param editor current active editor
    */
   public void organizeImports(EditorPartPresenter editor) {
-    this.editor = editor;
-    this.document = ((TextEditor) editor).getDocument();
-    this.file = editor.getEditorInput().getFile();
-
-    if (file instanceof Resource) {
-      final Optional<Project> project = ((Resource) file).getRelatedProject();
-
-      final Optional<Resource> srcFolder =
-          ((Resource) file).getParentWithMarker(SourceFolderMarker.ID);
-
-      if (!srcFolder.isPresent()) {
-        return;
-      }
-
-      final String fqn = JavaUtil.resolveFQN((Container) srcFolder.get(), (Resource) file);
-      clientServerEventService
-          .sendFileTrackingSuspendEvent()
-          .then(
-              arg -> {
-                doOrganizeImports(fqn, project);
-              });
-    }
+//    this.editor = editor;
+//    this.document = ((TextEditor) editor).getDocument();
+//    this.file = editor.getEditorInput().getFile();
+//
+//    if (file instanceof Resource) {
+//      final Optional<Project> project = ((Resource) file).getRelatedProject();
+//
+//      final Optional<Resource> srcFolder =
+//          ((Resource) file).getParentWithMarker(SourceFolderMarker.ID);
+//
+//      if (!srcFolder.isPresent()) {
+//        return;
+//      }
+//
+//      final String fqn = JavaUtil.resolveFQN((Container) srcFolder.get(), (Resource) file);
+//      clientServerEventService
+//          .sendFileTrackingSuspendEvent()
+//          .then(
+//              arg -> {
+//                doOrganizeImports(fqn, project);
+//              });
+//    }
   }
 
   private Promise<OrganizeImportResult> doOrganizeImports(String fqn, Optional<Project> project) {
@@ -173,27 +173,27 @@ public class OrganizeImportsPresenter implements OrganizeImportsView.ActionDeleg
     if (file instanceof Resource) {
       final Optional<Project> project = ((Resource) file).getRelatedProject();
 
-      javaCodeAssistClient
-          .applyChosenImports(
-              project.get().getLocation().toString(), JavaUtil.resolveFQN(file), result)
-          .then(
-              new Operation<List<Change>>() {
-                @Override
-                public void apply(List<Change> result) throws OperationException {
-                  applyChanges(((TextEditor) editor).getDocument(), result);
-                  view.hide();
-                  ((TextEditor) editor).setFocus();
-                }
-              })
-          .catchError(
-              new Operation<PromiseError>() {
-                @Override
-                public void apply(PromiseError arg) throws OperationException {
-                  String title = locale.failedToProcessOrganizeImports();
-                  String message = arg.getMessage();
-                  notificationManager.notify(title, message, FAIL, FLOAT_MODE);
-                }
-              });
+//      javaCodeAssistClient
+//          .applyChosenImports(
+//              project.get().getLocation().toString(), JavaUtil.resolveFQN(file), result)
+//          .then(
+//              new Operation<List<Change>>() {
+//                @Override
+//                public void apply(List<Change> result) throws OperationException {
+//                  applyChanges(((TextEditor) editor).getDocument(), result);
+//                  view.hide();
+//                  ((TextEditor) editor).setFocus();
+//                }
+//              })
+//          .catchError(
+//              new Operation<PromiseError>() {
+//                @Override
+//                public void apply(PromiseError arg) throws OperationException {
+//                  String title = locale.failedToProcessOrganizeImports();
+//                  String message = arg.getMessage();
+//                  notificationManager.notify(title, message, FAIL, FLOAT_MODE);
+//                }
+//              });
     }
   }
 

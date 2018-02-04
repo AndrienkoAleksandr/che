@@ -90,11 +90,11 @@ public class ContentAssistWidget implements EventListener {
       new Timer() {
         @Override
         public void run() {
-          textEditor
-              .getDocument()
-              .getDocumentHandle()
-              .getDocEventBus()
-              .fireEvent(new CompletionRequestEvent());
+//          textEditor
+//              .getDocument()
+//              .getDocumentHandle()
+//              .getDocEventBus()
+//              .fireEvent(new CompletionRequestEvent());
         }
       };
   private Timer showDocTimer =
@@ -738,37 +738,37 @@ public class ContentAssistWidget implements EventListener {
   }
 
   private void applyCompletion(Completion completion) {
-    textEditor.setFocus();
-    UndoableEditor undoableEditor = textEditor;
-    HandlesUndoRedo undoRedo = undoableEditor.getUndoRedo();
-
-    try {
-      if (undoRedo != null) {
-        undoRedo.beginCompoundChange();
-      }
-      completion.apply(textEditor.getDocument());
-      final LinearRange selection = completion.getSelection(textEditor.getDocument());
-      if (selection != null) {
-        selectInEditor(selection);
-      }
-    } catch (final Exception e) {
-      Log.error(getClass(), e);
-    } finally {
-      if (undoRedo != null) {
-        undoRedo.endCompoundChange();
-      }
-    }
+//    textEditor.setFocus();
+//    UndoableEditor undoableEditor = textEditor;
+//    HandlesUndoRedo undoRedo = undoableEditor.getUndoRedo();
+//
+//    try {
+//      if (undoRedo != null) {
+//        undoRedo.beginCompoundChange();
+//      }
+//      completion.apply(textEditor.getDocument());
+//      final LinearRange selection = completion.getSelection(textEditor.getDocument());
+//      if (selection != null) {
+//        selectInEditor(selection);
+//      }
+//    } catch (final Exception e) {
+//      Log.error(getClass(), e);
+//    } finally {
+//      if (undoRedo != null) {
+//        undoRedo.endCompoundChange();
+//      }
+//    }
   }
 
-  private void selectInEditor(LinearRange selection) {
-    int lineAtOffset = textEditor.getDocument().getLineAtOffset(selection.getStartOffset());
-    boolean scroll = false;
-    if (lineAtOffset < textEditor.getTextView().getTopIndex()
-        || lineAtOffset > textEditor.getTextView().getBottomIndex()) {
-      scroll = true;
-    }
-    textEditor.getDocument().setSelectedRange(selection, scroll);
-  }
+//  private void selectInEditor(LinearRange selection) {
+//    int lineAtOffset = textEditor.getDocument().getLineAtOffset(selection.getStartOffset());
+//    boolean scroll = false;
+//    if (lineAtOffset < textEditor.getTextView().getTopIndex()
+//        || lineAtOffset > textEditor.getTextView().getBottomIndex()) {
+//      scroll = true;
+//    }
+//    textEditor.getDocument().setSelectedRange(selection, scroll);
+//  }
 
   private Element getExtraTopRow() {
     return (listElement == null) ? null : listElement.getFirstElementChild();

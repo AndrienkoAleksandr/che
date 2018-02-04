@@ -67,37 +67,37 @@ public class LanguageServerCodeAssistProcessor implements CodeAssistProcessor {
       final int offset,
       final boolean triggered,
       final CodeAssistCallback callback) {
-    this.lastErrorMessage = null;
-
-    TextDocumentPositionParams documentPosition =
-        dtoBuildHelper.createTDPP(editor.getDocument(), offset);
-    final TextDocumentIdentifier documentId = documentPosition.getTextDocument();
-    String currentLine =
-        editor.getDocument().getLineContent(documentPosition.getPosition().getLine());
-    final String currentWord =
-        getCurrentWord(currentLine, documentPosition.getPosition().getCharacter());
-
-    if (!triggered && latestCompletionResult.isGoodFor(documentId, offset, currentWord)) {
-      // no need to send new completion request
-      computeProposals(
-          (HasLinkedMode) editor,
-          currentWord,
-          offset - latestCompletionResult.getOffset(),
-          callback);
-    } else {
-      documentServiceClient
-          .completion(documentPosition)
-          .then(
-              list -> {
-                latestCompletionResult =
-                    new LatestCompletionResult(documentId, offset, currentWord, list);
-                computeProposals((HasLinkedMode) editor, currentWord, 0, callback);
-              })
-          .catchError(
-              error -> {
-                lastErrorMessage = error.getMessage();
-              });
-    }
+//    this.lastErrorMessage = null;
+//
+//    TextDocumentPositionParams documentPosition =
+//        dtoBuildHelper.createTDPP(editor.getDocument(), offset);
+//    final TextDocumentIdentifier documentId = documentPosition.getTextDocument();
+//    String currentLine =
+//        editor.getDocument().getLineContent(documentPosition.getPosition().getLine());
+//    final String currentWord =
+//        getCurrentWord(currentLine, documentPosition.getPosition().getCharacter());
+//
+//    if (!triggered && latestCompletionResult.isGoodFor(documentId, offset, currentWord)) {
+//      // no need to send new completion request
+//      computeProposals(
+//          (HasLinkedMode) editor,
+//          currentWord,
+//          offset - latestCompletionResult.getOffset(),
+//          callback);
+//    } else {
+//      documentServiceClient
+//          .completion(documentPosition)
+//          .then(
+//              list -> {
+//                latestCompletionResult =
+//                    new LatestCompletionResult(documentId, offset, currentWord, list);
+//                computeProposals((HasLinkedMode) editor, currentWord, 0, callback);
+//              })
+//          .catchError(
+//              error -> {
+//                lastErrorMessage = error.getMessage();
+//              });
+//    }
   }
 
   @Override

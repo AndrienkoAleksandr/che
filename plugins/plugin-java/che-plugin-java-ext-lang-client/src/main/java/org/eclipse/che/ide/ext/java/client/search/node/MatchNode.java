@@ -209,13 +209,13 @@ public class MatchNode extends AbstractPresentationNode implements HasAction {
   }
 
   private void selectRange(EditorPartPresenter editor) {
-    if (editor instanceof TextEditor) {
-      ((TextEditor) editor)
-          .getDocument()
-          .setSelectedRange(
-              LinearRange.createWithStart(match.getFileMatchRegion().getOffset())
-                  .andLength(match.getFileMatchRegion().getLength()),
-              true);
-    }
+//    if (editor instanceof TextEditor) {
+//      ((TextEditor) editor)
+//          .getDocument()
+//          .setSelectedRange(
+//              LinearRange.createWithStart(match.getFileMatchRegion().getOffset())
+//                  .andLength(match.getFileMatchRegion().getLength()),
+//              true);
+//    }
   }
 }

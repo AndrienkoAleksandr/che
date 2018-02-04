@@ -99,28 +99,28 @@ public class GoToSymbolAction extends AbstractPerspectiveAction
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    DocumentSymbolParams paramsDTO = dtoFactory.createDto(DocumentSymbolParams.class);
-    TextDocumentIdentifier identifierDTO = dtoFactory.createDto(TextDocumentIdentifier.class);
-    identifierDTO.setUri(
-        editorAgent.getActiveEditor().getEditorInput().getFile().getLocation().toString());
-    paramsDTO.setTextDocument(identifierDTO);
-    activeEditor = (TextEditor) editorAgent.getActiveEditor();
-    cursorPosition = activeEditor.getDocument().getCursorPosition();
-    client
-        .documentSymbol(paramsDTO)
-        .then(
-            arg -> {
-              cachedItems = arg;
-              presenter.run(GoToSymbolAction.this);
-            })
-        .catchError(
-            arg -> {
-              notificationManager.notify(
-                  "Can't fetch document symbols.",
-                  arg.getMessage(),
-                  StatusNotification.Status.FAIL,
-                  StatusNotification.DisplayMode.FLOAT_MODE);
-            });
+//    DocumentSymbolParams paramsDTO = dtoFactory.createDto(DocumentSymbolParams.class);
+//    TextDocumentIdentifier identifierDTO = dtoFactory.createDto(TextDocumentIdentifier.class);
+//    identifierDTO.setUri(
+//        editorAgent.getActiveEditor().getEditorInput().getFile().getLocation().toString());
+//    paramsDTO.setTextDocument(identifierDTO);
+//    activeEditor = (TextEditor) editorAgent.getActiveEditor();
+//    cursorPosition = activeEditor.getDocument().getCursorPosition();
+//    client
+//        .documentSymbol(paramsDTO)
+//        .then(
+//            arg -> {
+//              cachedItems = arg;
+//              presenter.run(GoToSymbolAction.this);
+//            })
+//        .catchError(
+//            arg -> {
+//              notificationManager.notify(
+//                  "Can't fetch document symbols.",
+//                  arg.getMessage(),
+//                  StatusNotification.Status.FAIL,
+//                  StatusNotification.DisplayMode.FLOAT_MODE);
+//            });
   }
 
   @Override
@@ -288,12 +288,12 @@ public class GoToSymbolAction extends AbstractPerspectiveAction
 
   @Override
   public void onClose(boolean canceled) {
-    if (canceled) {
-      activeEditor.getDocument().setCursorPosition(cursorPosition);
-      activeEditor.setFocus();
-    }
-    cachedItems = null;
-    selectedLinearRange = null;
-    activeEditor = null;
+//    if (canceled) {
+//      activeEditor.getDocument().setCursorPosition(cursorPosition);
+//      activeEditor.setFocus();
+//    }
+//    cachedItems = null;
+//    selectedLinearRange = null;
+//    activeEditor = null;
   }
 }

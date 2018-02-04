@@ -210,17 +210,17 @@ public class FileStructurePresenter implements FileStructure.ActionDelegate {
   }
 
   private void setCursorPosition(Region region) {
-    LinearRange linearRange =
-        LinearRange.createWithStart(region.getOffset()).andLength(region.getLength());
-    activeEditor.setFocus();
-    activeEditor.getDocument().setSelectedRange(linearRange, true);
+//    LinearRange linearRange =
+//        LinearRange.createWithStart(region.getOffset()).andLength(region.getLength());
+//    activeEditor.setFocus();
+//    activeEditor.getDocument().setSelectedRange(linearRange, true);
   }
 
   private void setCursor(EditorPartPresenter editor, int offset) {
-    if (editor instanceof TextEditor) {
-      ((TextEditor) editor)
-          .getDocument()
-          .setSelectedRange(LinearRange.createWithStart(offset).andLength(0), true);
-    }
+//    if (editor instanceof TextEditor) {
+//      ((TextEditor) editor)
+//          .getDocument()
+//          .setSelectedRange(LinearRange.createWithStart(offset).andLength(0), true);
+//    }
   }
 }

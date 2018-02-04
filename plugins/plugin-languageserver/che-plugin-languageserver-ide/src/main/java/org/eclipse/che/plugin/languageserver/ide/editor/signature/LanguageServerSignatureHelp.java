@@ -91,27 +91,27 @@ public class LanguageServerSignatureHelp implements SignatureHelpProvider {
 
   @Override
   public void install(final TextEditor editor) {
-    if (capabilities.getSignatureHelpProvider() != null
-        && capabilities.getSignatureHelpProvider().getTriggerCharacters() != null) {
-      final List<String> triggerCharacters =
-          capabilities.getSignatureHelpProvider().getTriggerCharacters();
-      handlerRegistration =
-          editor
-              .getDocument()
-              .getDocumentHandle()
-              .getDocEventBus()
-              .addHandler(
-                  DocumentChangedEvent.TYPE,
-                  new DocumentChangedHandler() {
-                    @Override
-                    public void onDocumentChanged(DocumentChangedEvent event) {
-                      if (triggerCharacters.contains(event.getText())) {
-                        ((HandlesTextOperations) editor)
-                            .doOperation(TextEditorOperations.SIGNATURE_HELP);
-                      }
-                    }
-                  });
-    }
+//    if (capabilities.getSignatureHelpProvider() != null
+//        && capabilities.getSignatureHelpProvider().getTriggerCharacters() != null) {
+//      final List<String> triggerCharacters =
+//          capabilities.getSignatureHelpProvider().getTriggerCharacters();
+//      handlerRegistration =
+//          editor
+//              .getDocument()
+//              .getDocumentHandle()
+//              .getDocEventBus()
+//              .addHandler(
+//                  DocumentChangedEvent.TYPE,
+//                  new DocumentChangedHandler() {
+//                    @Override
+//                    public void onDocumentChanged(DocumentChangedEvent event) {
+//                      if (triggerCharacters.contains(event.getText())) {
+//                        ((HandlesTextOperations) editor)
+//                            .doOperation(TextEditorOperations.SIGNATURE_HELP);
+//                      }
+//                    }
+//                  });
+//    }
   }
 
   @Override

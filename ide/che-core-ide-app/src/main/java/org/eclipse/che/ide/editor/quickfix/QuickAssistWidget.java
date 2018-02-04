@@ -78,12 +78,12 @@ public class QuickAssistWidget extends PopupWidget<CompletionProposal> {
                       if (undoRedo != null) {
                         undoRedo.beginCompoundChange();
                       }
-                      completion.apply(textEditor.getDocument());
-                      final LinearRange selection =
-                          completion.getSelection(textEditor.getDocument());
-                      if (selection != null) {
-                        textEditor.getDocument().setSelectedRange(selection, true);
-                      }
+//                      completion.apply(textEditor.getDocument());
+//                      final LinearRange selection =
+//                          completion.getSelection(textEditor.getDocument());
+//                      if (selection != null) {
+//                        textEditor.getDocument().setSelectedRange(selection, true);
+//                      }
                     } catch (final Exception e) {
                       Log.error(getClass(), e);
                     } finally {

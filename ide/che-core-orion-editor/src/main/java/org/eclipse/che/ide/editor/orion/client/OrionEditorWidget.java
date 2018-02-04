@@ -36,7 +36,6 @@ import org.eclipse.che.api.promises.client.Operation;
 import org.eclipse.che.api.promises.client.OperationException;
 import org.eclipse.che.ide.api.editor.texteditor.ContentInitializedHandler;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidget;
-import org.eclipse.che.ide.editor.orion.client.jso.OrionAnnotationModelOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionCodeEditWidgetOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionEditorOptionsOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionEditorOverlay;
@@ -104,11 +103,6 @@ public class OrionEditorWidget extends Composite
   }
 
   @Override
-  public String getValue() {
-    return editorOverlay.getText();
-  }
-
-  @Override
   public void setValue(String newValue, final ContentInitializedHandler initializationHandler) {
     editorOverlay.addEventListener(
         OrionInputChangedEventOverlay.TYPE,
@@ -122,20 +116,6 @@ public class OrionEditorWidget extends Composite
         true);
 
     this.editorViewOverlay.setContents(newValue, modeName);
-  }
-
-  @Override
-  public boolean isDirty() {
-    return this.editorOverlay.isDirty();
-  }
-
-  @Override
-  public org.eclipse.che.ide.api.editor.document.Document getDocument() {
-    if (this.embeddedDocument == null) {
-      this.embeddedDocument =
-          new OrionDocument(this.editorOverlay.getTextView(),  editorOverlay);
-    }
-    return this.embeddedDocument;
   }
 
   @Override
@@ -237,15 +217,6 @@ public class OrionEditorWidget extends Composite
 
   public OrionTextViewOverlay getTextView() {
     return editorOverlay.getTextView();
-  }
-
-  public OrionAnnotationModelOverlay getAnnotationModel() {
-    return editorOverlay.getAnnotationModel();
-  }
-
-  /** Returns {@link OrionEditorOverlay}. */
-  public OrionEditorOverlay getEditor() {
-    return editorOverlay;
   }
 
   /**

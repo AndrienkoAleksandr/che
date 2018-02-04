@@ -84,46 +84,46 @@ public class LanguageServerFormatter implements ContentFormatter {
 
   @Override
   public void install(TextEditor editor) {
-    this.editor = editor;
-    if (capabilities.getDocumentOnTypeFormattingProvider() != null
-        && capabilities.getDocumentOnTypeFormattingProvider().getFirstTriggerCharacter() != null) {
-      editor
-          .getDocument()
-          .getDocumentHandle()
-          .getDocEventBus()
-          .addHandler(
-              DocumentChangedEvent.TYPE,
-              new DocumentChangedHandler() {
-                @Override
-                public void onDocumentChanged(DocumentChangedEvent event) {
-                  if (capabilities
-                      .getDocumentOnTypeFormattingProvider()
-                      .getFirstTriggerCharacter()
-                      .equals(event.getText())) {
-                    Document document = event.getDocument().getDocument();
-
-                    DocumentOnTypeFormattingParams params =
-                        dtoFactory.createDto(DocumentOnTypeFormattingParams.class);
-                    TextDocumentIdentifier identifier =
-                        dtoFactory.createDto(TextDocumentIdentifier.class);
-                    identifier.setUri(document.getFile().getLocation().toString());
-                    params.setTextDocument(identifier);
-                    params.setOptions(getFormattingOptions());
-                    params.setCh(event.getText());
-
-                    TextPosition position = document.getPositionFromIndex(event.getOffset());
-
-                    Position start = dtoFactory.createDto(Position.class);
-                    start.setLine(position.getLine());
-                    start.setCharacter(position.getCharacter());
-                    params.setPosition(start);
-
-                    Promise<List<TextEdit>> promise = client.onTypeFormatting(params);
-                    handleFormatting(promise, document);
-                  }
-                }
-              });
-    }
+//    this.editor = editor;
+//    if (capabilities.getDocumentOnTypeFormattingProvider() != null
+//        && capabilities.getDocumentOnTypeFormattingProvider().getFirstTriggerCharacter() != null) {
+//      editor
+//          .getDocument()
+//          .getDocumentHandle()
+//          .getDocEventBus()
+//          .addHandler(
+//              DocumentChangedEvent.TYPE,
+//              new DocumentChangedHandler() {
+//                @Override
+//                public void onDocumentChanged(DocumentChangedEvent event) {
+//                  if (capabilities
+//                      .getDocumentOnTypeFormattingProvider()
+//                      .getFirstTriggerCharacter()
+//                      .equals(event.getText())) {
+//                    Document document = event.getDocument().getDocument();
+//
+//                    DocumentOnTypeFormattingParams params =
+//                        dtoFactory.createDto(DocumentOnTypeFormattingParams.class);
+//                    TextDocumentIdentifier identifier =
+//                        dtoFactory.createDto(TextDocumentIdentifier.class);
+//                    identifier.setUri(document.getFile().getLocation().toString());
+//                    params.setTextDocument(identifier);
+//                    params.setOptions(getFormattingOptions());
+//                    params.setCh(event.getText());
+//
+//                    TextPosition position = document.getPositionFromIndex(event.getOffset());
+//
+//                    Position start = dtoFactory.createDto(Position.class);
+//                    start.setLine(position.getLine());
+//                    start.setCharacter(position.getCharacter());
+//                    params.setPosition(start);
+//
+//                    Promise<List<TextEdit>> promise = client.onTypeFormatting(params);
+//                    handleFormatting(promise, document);
+//                  }
+//                }
+//              });
+//    }
   }
 
   private void formatFullDocument(Document document) {
