@@ -42,8 +42,6 @@ import org.eclipse.che.api.promises.client.OperationException;
 import org.eclipse.che.ide.api.editor.events.CursorActivityEvent;
 import org.eclipse.che.ide.api.editor.events.CursorActivityHandler;
 import org.eclipse.che.ide.api.editor.events.HasCursorActivityHandlers;
-import org.eclipse.che.ide.api.editor.gutter.Gutter;
-import org.eclipse.che.ide.api.editor.gutter.HasGutter;
 import org.eclipse.che.ide.api.editor.text.Region;
 import org.eclipse.che.ide.api.editor.texteditor.ContentInitializedHandler;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidget;
@@ -55,8 +53,6 @@ import org.eclipse.che.ide.editor.orion.client.jso.OrionContentAssistOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionEditorOptionsOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionEditorOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionEditorViewOverlay;
-import org.eclipse.che.ide.editor.orion.client.jso.OrionEventTargetOverlay;
-import org.eclipse.che.ide.editor.orion.client.jso.OrionExtRulerOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionInputChangedEventOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionKeyModeOverlay;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionTextViewOverlay;
@@ -69,7 +65,7 @@ import org.eclipse.che.requirejs.ModuleHolder;
  * @author "Mickaël Leduque"
  */
 public class OrionEditorWidget extends Composite
-    implements EditorWidget, HasChangeHandlers, HasCursorActivityHandlers, HasGutter {
+    implements EditorWidget, HasChangeHandlers, HasCursorActivityHandlers {
 
   /** The UI binder instance. */
   private static final OrionEditorWidgetUiBinder UIBINDER =
@@ -90,11 +86,10 @@ public class OrionEditorWidget extends Composite
   private OrionEditorViewOverlay editorViewOverlay;
   private OrionEditorOverlay editorOverlay;
   private String modeName;
-  private OrionExtRulerOverlay orionLineNumberRuler;
   /** Component that handles undo/redo. */
 
   private OrionDocument embeddedDocument;
-  private Gutter gutter;
+//  private Gutter gutter;
 
   private boolean changeHandlerAdded = false;
   private boolean focusHandlerAdded = false;
@@ -127,16 +122,6 @@ public class OrionEditorWidget extends Composite
         .get()
         .createEditorView(panel.getElement(), editorOptionsProvider.get())
         .then(new EditorViewCreatedOperation(widgetInitializedCallback));
-  }
-
-  private Gutter initBreakpointRuler(ModuleHolder moduleHolder) {
-    JavaScriptObject orionEventTargetModule = moduleHolder.getModule("OrionEventTarget");
-
-    orionLineNumberRuler = editorOverlay.getTextView().getRulers()[1];
-    orionLineNumberRuler.overrideOnClickEvent();
-    OrionEventTargetOverlay.addMixin(orionEventTargetModule, orionLineNumberRuler);
-
-    return new OrionBreakpointRuler(orionLineNumberRuler, editorOverlay);
   }
 
   @Override
@@ -331,11 +316,6 @@ public class OrionEditorWidget extends Composite
     return editorOverlay;
   }
 
-  @Override
-  public Gutter getGutter() {
-    return gutter;
-  }
-
   /**
    * UI binder interface for this component.
    *
@@ -388,8 +368,6 @@ public class OrionEditorWidget extends Composite
 
       editorOverlay.setZoomRulerVisible(true);
       editorOverlay.getAnnotationStyler().addAnnotationType("che-marker", 100);
-      //
-      gutter = initBreakpointRuler(moduleHolder);
 
       orionSettingsController.updateSettings();
       widgetInitializedCallback.initialized(OrionEditorWidget.this);
