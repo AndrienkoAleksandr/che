@@ -30,7 +30,8 @@ public interface EditorWidget
         HasFocusHandlers,
         HasGutterClickHandlers,
         LineStyler.HasLineStyler,
-        UndoableEditor {
+        UndoableEditor
+{
 
   /**
    * Returns the contents of the editor.
