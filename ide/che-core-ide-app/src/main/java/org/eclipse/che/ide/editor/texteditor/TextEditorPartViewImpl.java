@@ -62,30 +62,6 @@ public class TextEditorPartViewImpl extends Composite implements TextEditorPartV
   }
 
   @Override
-  public void showCompletionProposals(
-      final EditorWidget editorWidget, final CompletionsSource source) {
-    //    editorWidget.showCompletionProposals(
-    //        source,
-    //        new AdditionalInfoCallback() {
-    //
-    //          @Override
-    //          public Element onAdditionalInfoNeeded(
-    //              final float pixelX, final float pixelY, final Element infoWidget) {
-    //            final AdditionalInformationWidget popup =
-    //                new AdditionalInformationWidget(popupResources);
-    //            popup.addItem(infoWidget);
-    //            popup.show(pixelX, pixelY);
-    //            return popup.asElement();
-    //          }
-    //        });
-  }
-
-  @Override
-  public void showCompletionProposals(final EditorWidget editorWidget) {
-    //    editorWidget.showCompletionProposals();
-  }
-
-  @Override
   public void setDelegate(final Delegate delegate) {
     this.delegate = delegate;
   }
@@ -143,14 +119,6 @@ public class TextEditorPartViewImpl extends Composite implements TextEditorPartV
   public void setInfoPanelVisible(boolean visible) {
     infoPanel.setVisible(visible);
   }
-
-  @Override
-  public void updateInfoPanelPosition(final TextPosition position) {
-    this.infoPanel.updateCursorPosition(position);
-  }
-
-  @Override
-  public void updateInfoPanelUnfocused(final int lineCount) {}
 
   @Override
   public NotificationRemover addNotification(final com.google.gwt.dom.client.Element element) {

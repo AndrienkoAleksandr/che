@@ -70,8 +70,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   private TextEditorConfiguration configuration;
   private OrionEditorWidget editorWidget;
   private Document document;
-  /** The editor's error state. */
-  private EditorState errorState;
 
   private boolean delayedFocus;
   private List<String> fileTypes;
@@ -240,17 +238,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
   @Override
   public void doSaveAs() {}
-
-  @Override
-  public EditorState getErrorState() {
-    return this.errorState;
-  }
-
-  @Override
-  public void setErrorState(EditorState errorState) {
-    this.errorState = errorState;
-    firePropertyChange(ERROR_STATE);
-  }
 
   @Override
   public Document getDocument() {

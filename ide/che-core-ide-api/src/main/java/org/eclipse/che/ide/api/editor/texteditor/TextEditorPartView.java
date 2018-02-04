@@ -25,21 +25,6 @@ import org.eclipse.che.ide.api.editor.text.TextPosition;
 public interface TextEditorPartView extends RequiresResize, IsWidget, HasNotificationPanel {
 
   /**
-   * Invoke the code complete dialog.
-   *
-   * @param editorWidget the editor widget
-   * @param completionsSource the completion source
-   */
-  void showCompletionProposals(EditorWidget editorWidget, CompletionsSource completionsSource);
-
-  /**
-   * Invoke the code complete dialog with default completion.
-   *
-   * @param editorWidget the editor widget
-   */
-  void showCompletionProposals(EditorWidget editorWidget);
-
-  /**
    * Sets the view delegate.
    *
    * @param delegate the delegate
@@ -67,21 +52,7 @@ public interface TextEditorPartView extends RequiresResize, IsWidget, HasNotific
    */
   void setInfoPanelVisible(boolean visible);
 
-  /**
-   * Update the location displayed in the info panel.
-   *
-   * @param position the new position
-   */
-  void updateInfoPanelPosition(TextPosition position);
-
-  /**
-   * Update the values in the info panel for when the editor is not focused (i.e. show line count
-   * and not char part).
-   *
-   * @param lineCount the number of lines in the file
-   */
-  void updateInfoPanelUnfocused(int lineCount);
 
   /** Delegate interface for this view. */
-  interface Delegate extends EditorWithErrors, RequiresResize {}
+  interface Delegate extends RequiresResize {}
 }

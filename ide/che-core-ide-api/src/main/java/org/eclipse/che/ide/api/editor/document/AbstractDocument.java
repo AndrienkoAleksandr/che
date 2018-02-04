@@ -59,11 +59,6 @@ public abstract class AbstractDocument implements Document, DocumentHandle {
   }
 
   @Override
-  public ReadOnlyDocument getReadOnlyDocument() {
-    return this;
-  }
-
-  @Override
   public void setSelectedRange(final TextRange range) {
     setSelectedRange(range, false);
   }
