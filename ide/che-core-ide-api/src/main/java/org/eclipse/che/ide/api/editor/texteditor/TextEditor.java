@@ -14,14 +14,11 @@ import javax.validation.constraints.NotNull;
 import org.eclipse.che.commons.annotation.Nullable;
 import org.eclipse.che.ide.api.editor.EditorPartPresenter;
 import org.eclipse.che.ide.api.editor.document.Document;
-import org.eclipse.che.ide.api.editor.editorconfig.EditorUpdateAction;
 import org.eclipse.che.ide.api.editor.editorconfig.TextEditorConfiguration;
-import org.eclipse.che.ide.api.editor.keymap.KeyBinding;
 import org.eclipse.che.ide.api.editor.position.PositionConverter;
 import org.eclipse.che.ide.api.editor.text.LinearRange;
 import org.eclipse.che.ide.api.editor.text.Position;
 import org.eclipse.che.ide.api.editor.text.TextPosition;
-import org.eclipse.che.ide.api.editor.text.TextRange;
 
 /** Public view on the editor component. */
 public interface TextEditor extends EditorPartPresenter {
@@ -47,12 +44,6 @@ public interface TextEditor extends EditorPartPresenter {
   /** @return the text editor widget */
   EditorWidget getEditorWidget();
 
-  /**
-   * Add an editor-specific key binding.
-   *
-   * @param keyBinding the key binding
-   */
-  void addKeybinding(KeyBinding keyBinding);
 
   /**
    * Closes this text editor after optionally saving changes.
@@ -63,18 +54,6 @@ public interface TextEditor extends EditorPartPresenter {
   @Override
   void close(boolean save);
 
-  /**
-   * Returns whether the text in this text editor can be changed by the user.
-   *
-   * @return <code>true</code> if it can be edited, and <code>false</code> if it is read-only
-   */
-  boolean isEditable();
-
-  /**
-   * Abandons all modifications applied to this text editor's input element's textual presentation
-   * since the last save operation.
-   */
-  void doRevertToSaved();
 
   /**
    * Returns the document backing the text content.
@@ -91,12 +70,6 @@ public interface TextEditor extends EditorPartPresenter {
    */
   String getContentType();
 
-  /**
-   * Returns the selection range as a {@link TextRange} (i.e. two line, char objects: start en end).
-   *
-   * @return the selection range
-   */
-  TextRange getSelectedTextRange();
 
   /**
    * Returns the selection range as a {@link LinearRange} (ie.e a start offset and a length).
@@ -141,19 +114,6 @@ public interface TextEditor extends EditorPartPresenter {
    */
   int getTopVisibleLine();
 
-  /**
-   * Set (scroll) top visible line
-   *
-   * @param line the top line
-   */
-  void setTopLine(int line);
-
-  /**
-   * Displays a message to the user.
-   *
-   * @param message message
-   */
-  //  void showMessage(String message);
 
   /**
    * Returns focus state of the text editor
@@ -167,13 +127,6 @@ public interface TextEditor extends EditorPartPresenter {
 
   /** Calls all editor update actions for this editor. */
   void refreshEditor();
-
-  /**
-   * Adds an editor update action for this editor.
-   *
-   * @param action the action to add
-   */
-  void addEditorUpdateAction(EditorUpdateAction action);
 
   /**
    * Get word position under offset.

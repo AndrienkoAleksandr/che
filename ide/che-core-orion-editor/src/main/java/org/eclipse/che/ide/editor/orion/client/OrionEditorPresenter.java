@@ -36,12 +36,10 @@ import org.eclipse.che.ide.api.editor.editorconfig.EditorUpdateAction;
 import org.eclipse.che.ide.api.editor.editorconfig.TextEditorConfiguration;
 import org.eclipse.che.ide.api.editor.events.DocumentReadyEvent;
 import org.eclipse.che.ide.api.editor.filetype.FileTypeIdentifier;
-import org.eclipse.che.ide.api.editor.keymap.KeyBinding;
 import org.eclipse.che.ide.api.editor.position.PositionConverter;
 import org.eclipse.che.ide.api.editor.text.LinearRange;
 import org.eclipse.che.ide.api.editor.text.Position;
 import org.eclipse.che.ide.api.editor.text.TextPosition;
-import org.eclipse.che.ide.api.editor.text.TextRange;
 import org.eclipse.che.ide.api.editor.texteditor.CursorModelWithHandler;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidget;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidgetFactory;
@@ -182,16 +180,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
     workspaceAgent.removePart(this);
   }
 
-  @Override
-  public boolean isEditable() {
-    return true;
-  }
-
-  @Override
-  public void doRevertToSaved() {
-    // do nothing
-  }
-
   protected Widget getWidget() {
     return this.editorView.asWidget();
   }
@@ -303,11 +291,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   }
 
   @Override
-  public TextRange getSelectedTextRange() {
-    return getDocument().getSelectedTextRange();
-  }
-
-  @Override
   public LinearRange getSelectedLinearRange() {
     return getDocument().getSelectedLinearRange();
   }
@@ -329,11 +312,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   }
 
   @Override
-  public void setTopLine(int line) {
-    editorWidget.setTopLine(line);
-  }
-
-  @Override
   public void refreshEditor() {
     if (this.updateActions != null) {
       for (final EditorUpdateAction action : this.updateActions) {
@@ -343,23 +321,9 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   }
 
   @Override
-  public void addEditorUpdateAction(EditorUpdateAction action) {
-    if (action == null) {
-      return;
-    }
-    if (this.updateActions == null) {
-      this.updateActions = new ArrayList<>();
-    }
-    this.updateActions.add(action);
-  }
-
-  @Override
   public Position getWordAtOffset(int offset) {
     return wordDetectionUtil.getWordAtOffset(getDocument(), offset);
   }
-
-  @Override
-  public void addKeybinding(KeyBinding keyBinding) {}
 
   private List<String> detectFileType(final VirtualFile file) {
     final List<String> result = new ArrayList<>();
