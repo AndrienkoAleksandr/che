@@ -45,17 +45,17 @@ public interface EditorWidget
    */
   void setValue(String newValue, ContentInitializedHandler initializationHandler);
 
-  /** Sets whether the annotation ruler is visible. */
-  void setAnnotationRulerVisible(boolean show);
-
-  /** Sets whether the folding ruler is visible. */
-  void setFoldingRulerVisible(boolean show);
-
-  /** Sets whether the zoom ruler is visible. */
-  void setZoomRulerVisible(boolean show);
-
-  /** Sets whether the overview ruler is visible. */
-  void setOverviewRulerVisible(boolean show);
+//  /** Sets whether the annotation ruler is visible. */
+//  void setAnnotationRulerVisible(boolean show);
+//
+//  /** Sets whether the folding ruler is visible. */
+//  void setFoldingRulerVisible(boolean show);
+//
+//  /** Sets whether the zoom ruler is visible. */
+//  void setZoomRulerVisible(boolean show);
+//
+//  /** Sets whether the overview ruler is visible. */
+//  void setOverviewRulerVisible(boolean show);
 
   /**
    * Returns the dirty state of the editor.

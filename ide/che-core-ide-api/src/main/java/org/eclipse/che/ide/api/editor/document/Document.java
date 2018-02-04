@@ -10,8 +10,6 @@
  */
 package org.eclipse.che.ide.api.editor.document;
 
-import com.google.web.bindery.event.shared.HandlerRegistration;
-import org.eclipse.che.ide.api.editor.events.CursorActivityHandler;
 import org.eclipse.che.ide.api.editor.text.LinearRange;
 import org.eclipse.che.ide.api.editor.text.TextPosition;
 import org.eclipse.che.ide.api.editor.text.TextRange;
@@ -112,11 +110,4 @@ public interface Document extends ReadOnlyDocument {
   void setFile(VirtualFile file);
 
   VirtualFile getFile();
-
-  /**
-   * Returns a {@link ReadOnlyDocument} that refers to the same document.
-   *
-   * @return a read-only document
-   */
-  ReadOnlyDocument getReadOnlyDocument();
 }

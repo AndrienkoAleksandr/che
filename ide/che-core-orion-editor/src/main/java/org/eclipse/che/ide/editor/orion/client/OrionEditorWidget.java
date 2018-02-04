@@ -10,11 +10,7 @@
  */
 package org.eclipse.che.ide.editor.orion.client;
 
-import static org.eclipse.che.ide.editor.orion.client.KeyMode.EMACS;
-import static org.eclipse.che.ide.editor.orion.client.KeyMode.VI;
-
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -34,14 +30,10 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.inject.Provider;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import com.google.web.bindery.event.shared.EventBus;
 import java.util.List;
 import java.util.logging.Logger;
 import org.eclipse.che.api.promises.client.Operation;
 import org.eclipse.che.api.promises.client.OperationException;
-import org.eclipse.che.ide.api.editor.events.CursorActivityEvent;
-import org.eclipse.che.ide.api.editor.events.CursorActivityHandler;
-import org.eclipse.che.ide.api.editor.events.HasCursorActivityHandlers;
 import org.eclipse.che.ide.api.editor.texteditor.ContentInitializedHandler;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidget;
 import org.eclipse.che.ide.editor.orion.client.jso.OrionAnnotationModelOverlay;
@@ -86,7 +78,6 @@ public class OrionEditorWidget extends Composite
   private boolean changeHandlerAdded = false;
   private boolean focusHandlerAdded = false;
   private boolean blurHandlerAdded = false;
-  private boolean cursorHandlerAdded = false;
 
   @AssistedInject
   public OrionEditorWidget(
@@ -134,26 +125,6 @@ public class OrionEditorWidget extends Composite
   }
 
   @Override
-  public void setAnnotationRulerVisible(boolean show) {
-    editorOverlay.setAnnotationRulerVisible(show);
-  }
-
-  @Override
-  public void setFoldingRulerVisible(boolean show) {
-    editorOverlay.setFoldingRulerVisible(show);
-  }
-
-  @Override
-  public void setZoomRulerVisible(boolean show) {
-    editorOverlay.setZoomRulerVisible(show);
-  }
-
-  @Override
-  public void setOverviewRulerVisible(boolean show) {
-    editorOverlay.setOverviewRulerVisible(show);
-  }
-
-  @Override
   public boolean isDirty() {
     return this.editorOverlay.isDirty();
   }
@@ -187,10 +158,6 @@ public class OrionEditorWidget extends Composite
 
   private void fireChangeEvent() {
     DomEvent.fireNativeEvent(Document.get().createChangeEvent(), this);
-  }
-
-  private void fireCursorActivityEvent() {
-    fireEvent(new CursorActivityEvent());
   }
 
   @Override

@@ -34,9 +34,6 @@ import org.eclipse.che.ide.api.editor.document.DocumentStorage;
 import org.eclipse.che.ide.api.editor.editorconfig.TextEditorConfiguration;
 import org.eclipse.che.ide.api.editor.events.DocumentReadyEvent;
 import org.eclipse.che.ide.api.editor.filetype.FileTypeIdentifier;
-import org.eclipse.che.ide.api.editor.text.LinearRange;
-import org.eclipse.che.ide.api.editor.text.TextPosition;
-import org.eclipse.che.ide.api.editor.texteditor.CursorModelWithHandler;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidget;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidgetFactory;
 import org.eclipse.che.ide.api.editor.texteditor.TextEditor;
@@ -73,13 +70,11 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   private TextEditorConfiguration configuration;
   private OrionEditorWidget editorWidget;
   private Document document;
-  private CursorModelWithHandler cursorModel;
   /** The editor's error state. */
   private EditorState errorState;
 
   private boolean delayedFocus;
   private List<String> fileTypes;
-  private TextPosition cursorPosition;
   private HandlerRegistration resourceChangeHandler;
 
   @Inject
@@ -333,8 +328,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
       if (file instanceof File) {
         ((File) file).updateModificationStamp(content);
       }
-
-      cursorModel = new OrionCursorModel(document);
 
       // TODO: delayed activation
       // handle delayed focus (initialization editor widget)
