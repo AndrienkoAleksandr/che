@@ -11,13 +11,10 @@
 package org.eclipse.che.ide.api.editor.texteditor;
 
 import javax.validation.constraints.NotNull;
-import org.eclipse.che.commons.annotation.Nullable;
 import org.eclipse.che.ide.api.editor.EditorPartPresenter;
 import org.eclipse.che.ide.api.editor.document.Document;
 import org.eclipse.che.ide.api.editor.editorconfig.TextEditorConfiguration;
-import org.eclipse.che.ide.api.editor.position.PositionConverter;
 import org.eclipse.che.ide.api.editor.text.LinearRange;
-import org.eclipse.che.ide.api.editor.text.Position;
 import org.eclipse.che.ide.api.editor.text.TextPosition;
 
 /** Public view on the editor component. */
@@ -92,39 +89,8 @@ public interface TextEditor extends EditorPartPresenter {
    */
   CursorModelWithHandler getCursorModel();
 
-  /**
-   * Returns a position converter relative to this editor (pixel coordinates <-> line char
-   * positions).
-   *
-   * @return a position converter
-   */
-  PositionConverter getPositionConverter();
-
-  /**
-   * Returns the cursor position as an offset from the start.
-   *
-   * @return the cursor position
-   */
-  int getCursorOffset();
-
-  /**
-   * Returns the top visible line. Used to determine editor vertical scroll position
-   *
-   * @return the top visible line
-   */
-  int getTopVisibleLine();
-
   /** Give the focus to the editor. */
   void setFocus();
-
-  /**
-   * Get word position under offset.
-   *
-   * @param offset the offset for look for a word
-   * @return the word position
-   */
-  @Nullable
-  Position getWordAtOffset(int offset);
 
   /**
    * Update 'dirty' state of editor when state of editor content is changed

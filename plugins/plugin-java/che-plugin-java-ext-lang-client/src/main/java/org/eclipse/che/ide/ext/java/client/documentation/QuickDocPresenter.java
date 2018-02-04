@@ -49,45 +49,45 @@ public class QuickDocPresenter implements QuickDocumentation, QuickDocView.Actio
 
   @Override
   public void showDocumentation() {
-    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
-    if (activeEditor == null) {
-      return;
-    }
-
-    if (!(activeEditor instanceof TextEditor)) {
-      Log.error(getClass(), "Quick Document support only TextEditor as editor");
-      return;
-    }
-
-    TextEditor editor = ((TextEditor) activeEditor);
-    int offset = editor.getCursorOffset();
-    final PositionConverter.PixelCoordinates coordinates =
-        editor.getPositionConverter().offsetToPixel(offset);
-
-    final Resource resource = appContext.getResource();
-
-    if (resource != null) {
-      final Optional<Project> project = resource.getRelatedProject();
-
-      final Optional<Resource> srcFolder = resource.getParentWithMarker(SourceFolderMarker.ID);
-
-      if (!srcFolder.isPresent()) {
-        return;
-      }
-
-      final String fqn = JavaUtil.resolveFQN((Container) srcFolder.get(), resource);
-
-      final String docUrl =
-          appContext.getWsAgentServerApiEndpoint()
-              + "/java/javadoc/find?fqn="
-              + fqn
-              + "&projectpath="
-              + project.get().getLocation()
-              + "&offset="
-              + offset;
-
-      view.show(agentURLDecorator.modify(docUrl), coordinates.getX(), coordinates.getY());
-    }
+//    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
+//    if (activeEditor == null) {
+//      return;
+//    }
+//
+//    if (!(activeEditor instanceof TextEditor)) {
+//      Log.error(getClass(), "Quick Document support only TextEditor as editor");
+//      return;
+//    }
+//
+//    TextEditor editor = ((TextEditor) activeEditor);
+//    int offset = editor.getCursorOffset();
+//    final PositionConverter.PixelCoordinates coordinates =
+//        editor.getPositionConverter().offsetToPixel(offset);
+//
+//    final Resource resource = appContext.getResource();
+//
+//    if (resource != null) {
+//      final Optional<Project> project = resource.getRelatedProject();
+//
+//      final Optional<Resource> srcFolder = resource.getParentWithMarker(SourceFolderMarker.ID);
+//
+//      if (!srcFolder.isPresent()) {
+//        return;
+//      }
+//
+//      final String fqn = JavaUtil.resolveFQN((Container) srcFolder.get(), resource);
+//
+//      final String docUrl =
+//          appContext.getWsAgentServerApiEndpoint()
+//              + "/java/javadoc/find?fqn="
+//              + fqn
+//              + "&projectpath="
+//              + project.get().getLocation()
+//              + "&offset="
+//              + offset;
+//
+//      view.show(agentURLDecorator.modify(docUrl), coordinates.getX(), coordinates.getY());
+//    }
   }
 
   @Override

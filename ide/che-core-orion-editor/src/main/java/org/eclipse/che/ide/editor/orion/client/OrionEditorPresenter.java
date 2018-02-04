@@ -34,9 +34,7 @@ import org.eclipse.che.ide.api.editor.document.DocumentStorage;
 import org.eclipse.che.ide.api.editor.editorconfig.TextEditorConfiguration;
 import org.eclipse.che.ide.api.editor.events.DocumentReadyEvent;
 import org.eclipse.che.ide.api.editor.filetype.FileTypeIdentifier;
-import org.eclipse.che.ide.api.editor.position.PositionConverter;
 import org.eclipse.che.ide.api.editor.text.LinearRange;
-import org.eclipse.che.ide.api.editor.text.Position;
 import org.eclipse.che.ide.api.editor.text.TextPosition;
 import org.eclipse.che.ide.api.editor.texteditor.CursorModelWithHandler;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidget;
@@ -71,7 +69,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   private final FileTypeIdentifier fileTypeIdentifier;
   private final WorkspaceAgent workspaceAgent;
   private final EditorFileStatusNotificationOperation editorFileStatusNotificationOperation;
-  private final WordDetectionUtil wordDetectionUtil;
 
   private TextEditorConfiguration configuration;
   private OrionEditorWidget editorWidget;
@@ -96,8 +93,7 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
       final EventBus eventBus,
       final FileTypeIdentifier fileTypeIdentifier,
       final WorkspaceAgent workspaceAgent,
-      final EditorFileStatusNotificationOperation editorFileStatusNotificationOperation,
-      final WordDetectionUtil wordDetectionUtil) {
+      final EditorFileStatusNotificationOperation editorFileStatusNotificationOperation) {
     this.preferencesManager = preferencesManager;
     this.documentStorage = documentStorage;
     this.constant = constant;
@@ -108,7 +104,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
     this.fileTypeIdentifier = fileTypeIdentifier;
     this.workspaceAgent = workspaceAgent;
     this.editorFileStatusNotificationOperation = editorFileStatusNotificationOperation;
-    this.wordDetectionUtil = wordDetectionUtil;
 
     this.editorView.setDelegate(this);
   }
@@ -293,22 +288,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
     return getDocument().getCursorPosition();
   }
 
-  @Override
-  public int getCursorOffset() {
-    final TextPosition textPosition = getDocument().getCursorPosition();
-    return getDocument().getIndexFromPosition(textPosition);
-  }
-
-  @Override
-  public int getTopVisibleLine() {
-    return editorWidget.getTopVisibleLine();
-  }
-
-  @Override
-  public Position getWordAtOffset(int offset) {
-    return wordDetectionUtil.getWordAtOffset(getDocument(), offset);
-  }
-
   private List<String> detectFileType(final VirtualFile file) {
     final List<String> result = new ArrayList<>();
     if (file != null) {
@@ -328,11 +307,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   @Override
   public CursorModelWithHandler getCursorModel() {
     return this.cursorModel;
-  }
-
-  @Override
-  public PositionConverter getPositionConverter() {
-    return this.editorWidget.getPositionConverter();
   }
 
   @Override

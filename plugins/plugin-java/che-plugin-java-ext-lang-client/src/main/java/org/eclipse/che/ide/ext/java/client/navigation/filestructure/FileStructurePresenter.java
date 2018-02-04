@@ -81,50 +81,50 @@ public class FileStructurePresenter implements FileStructure.ActionDelegate {
    * @param editorPartPresenter the active editor
    */
   public void show(EditorPartPresenter editorPartPresenter) {
-    loader.show();
-    view.setTitle(editorPartPresenter.getEditorInput().getFile().getName());
-
-    if (!(editorPartPresenter instanceof TextEditor)) {
-      Log.error(getClass(), "Open Declaration support only TextEditor as editor");
-      return;
-    }
-    activeEditor = ((TextEditor) editorPartPresenter);
-    cursorOffset = activeEditor.getCursorOffset();
-    VirtualFile file = activeEditor.getEditorInput().getFile();
-
-    if (file instanceof Resource) {
-      final Optional<Project> project = ((Resource) file).getRelatedProject();
-
-      final Optional<Resource> srcFolder =
-          ((Resource) file).getParentWithMarker(SourceFolderMarker.ID);
-
-      if (!srcFolder.isPresent()) {
-        return;
-      }
-
-      final String fqn = JavaUtil.resolveFQN((Container) srcFolder.get(), (Resource) file);
-
-      javaNavigationService
-          .getCompilationUnit(project.get().getLocation(), fqn, showInheritedMembers)
-          .then(
-              new Operation<CompilationUnit>() {
-                @Override
-                public void apply(CompilationUnit unit) throws OperationException {
-                  view.setStructure(unit, showInheritedMembers);
-                  showInheritedMembers = !showInheritedMembers;
-                  loader.hide();
-                  view.show();
-                }
-              })
-          .catchError(
-              new Operation<PromiseError>() {
-                @Override
-                public void apply(PromiseError arg) throws OperationException {
-                  Log.error(FileStructurePresenter.class, arg.getMessage());
-                  loader.hide();
-                }
-              });
-    }
+//    loader.show();
+//    view.setTitle(editorPartPresenter.getEditorInput().getFile().getName());
+//
+//    if (!(editorPartPresenter instanceof TextEditor)) {
+//      Log.error(getClass(), "Open Declaration support only TextEditor as editor");
+//      return;
+//    }
+//    activeEditor = ((TextEditor) editorPartPresenter);
+//    cursorOffset = activeEditor.getCursorOffset();
+//    VirtualFile file = activeEditor.getEditorInput().getFile();
+//
+//    if (file instanceof Resource) {
+//      final Optional<Project> project = ((Resource) file).getRelatedProject();
+//
+//      final Optional<Resource> srcFolder =
+//          ((Resource) file).getParentWithMarker(SourceFolderMarker.ID);
+//
+//      if (!srcFolder.isPresent()) {
+//        return;
+//      }
+//
+//      final String fqn = JavaUtil.resolveFQN((Container) srcFolder.get(), (Resource) file);
+//
+//      javaNavigationService
+//          .getCompilationUnit(project.get().getLocation(), fqn, showInheritedMembers)
+//          .then(
+//              new Operation<CompilationUnit>() {
+//                @Override
+//                public void apply(CompilationUnit unit) throws OperationException {
+//                  view.setStructure(unit, showInheritedMembers);
+//                  showInheritedMembers = !showInheritedMembers;
+//                  loader.hide();
+//                  view.show();
+//                }
+//              })
+//          .catchError(
+//              new Operation<PromiseError>() {
+//                @Override
+//                public void apply(PromiseError arg) throws OperationException {
+//                  Log.error(FileStructurePresenter.class, arg.getMessage());
+//                  loader.hide();
+//                }
+//              });
+//    }
   }
 
   /** {@inheritDoc} */

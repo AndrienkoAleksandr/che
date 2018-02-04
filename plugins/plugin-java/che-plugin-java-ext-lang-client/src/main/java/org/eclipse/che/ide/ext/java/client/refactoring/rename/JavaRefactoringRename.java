@@ -394,20 +394,20 @@ public class JavaRefactoringRename implements FileEventHandler {
       TextEditor editor, boolean isActiveLinkedMode) {
     CreateRenameRefactoring dto = dtoFactory.createDto(CreateRenameRefactoring.class);
 
-    dto.setOffset(editor.getCursorOffset());
-    dto.setRefactorLightweight(isActiveLinkedMode);
-
-    final VirtualFile file = editor.getEditorInput().getFile();
-
-    dto.setPath(JavaUtil.resolveFQN(file));
-
-    if (file instanceof Resource) {
-      final Optional<Project> project = ((Resource) file).getRelatedProject();
-
-      dto.setProjectPath(project.get().getLocation().toString());
-    }
-
-    dto.setType(JAVA_ELEMENT);
+//    dto.setOffset(editor.getCursorOffset());
+//    dto.setRefactorLightweight(isActiveLinkedMode);
+//
+//    final VirtualFile file = editor.getEditorInput().getFile();
+//
+//    dto.setPath(JavaUtil.resolveFQN(file));
+//
+//    if (file instanceof Resource) {
+//      final Optional<Project> project = ((Resource) file).getRelatedProject();
+//
+//      dto.setProjectPath(project.get().getLocation().toString());
+//    }
+//
+//    dto.setType(JAVA_ELEMENT);
 
     return dto;
   }

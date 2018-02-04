@@ -64,59 +64,59 @@ public class OpenDeclarationFinder {
   }
 
   public void openDeclaration() {
-    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
-    if (activeEditor == null) {
-      return;
-    }
-
-    if (!(activeEditor instanceof TextEditor)) {
-      Log.error(getClass(), "Open Declaration support only TextEditor as editor");
-      return;
-    }
-    TextEditor editor = ((TextEditor) activeEditor);
-    int offset = editor.getCursorOffset();
-    final VirtualFile file = editor.getEditorInput().getFile();
-
-    if (file instanceof Resource) {
-      final Optional<Project> project = ((Resource) file).getRelatedProject();
-
-      final Optional<Resource> srcFolder =
-          ((Resource) file).getParentWithMarker(SourceFolderMarker.ID);
-
-      if (!srcFolder.isPresent()) {
-        return;
-      }
-
-      final String fqn = JavaUtil.resolveFQN((Container) srcFolder.get(), (Resource) file);
-
-      navigationService
-          .findDeclaration(project.get().getLocation(), fqn, offset)
-          .then(
-              new Operation<OpenDeclarationDescriptor>() {
-                @Override
-                public void apply(OpenDeclarationDescriptor result) throws OperationException {
-                  if (result != null) {
-                    handleDescriptor(project.get().getLocation(), result);
-                  }
-                }
-              });
-
-    } else if (file instanceof JarFileNode) {
-      navigationService
-          .findDeclaration(
-              ((JarFileNode) file).getProjectLocation(),
-              file.getLocation().toString().replace('/', '.'),
-              offset)
-          .then(
-              new Operation<OpenDeclarationDescriptor>() {
-                @Override
-                public void apply(OpenDeclarationDescriptor result) throws OperationException {
-                  if (result != null) {
-                    handleDescriptor(((JarFileNode) file).getProject(), result);
-                  }
-                }
-              });
-    }
+//    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
+//    if (activeEditor == null) {
+//      return;
+//    }
+//
+//    if (!(activeEditor instanceof TextEditor)) {
+//      Log.error(getClass(), "Open Declaration support only TextEditor as editor");
+//      return;
+//    }
+//    TextEditor editor = ((TextEditor) activeEditor);
+//    int offset = editor.getCursorOffset();
+//    final VirtualFile file = editor.getEditorInput().getFile();
+//
+//    if (file instanceof Resource) {
+//      final Optional<Project> project = ((Resource) file).getRelatedProject();
+//
+//      final Optional<Resource> srcFolder =
+//          ((Resource) file).getParentWithMarker(SourceFolderMarker.ID);
+//
+//      if (!srcFolder.isPresent()) {
+//        return;
+//      }
+//
+//      final String fqn = JavaUtil.resolveFQN((Container) srcFolder.get(), (Resource) file);
+//
+//      navigationService
+//          .findDeclaration(project.get().getLocation(), fqn, offset)
+//          .then(
+//              new Operation<OpenDeclarationDescriptor>() {
+//                @Override
+//                public void apply(OpenDeclarationDescriptor result) throws OperationException {
+//                  if (result != null) {
+//                    handleDescriptor(project.get().getLocation(), result);
+//                  }
+//                }
+//              });
+//
+//    } else if (file instanceof JarFileNode) {
+//      navigationService
+//          .findDeclaration(
+//              ((JarFileNode) file).getProjectLocation(),
+//              file.getLocation().toString().replace('/', '.'),
+//              offset)
+//          .then(
+//              new Operation<OpenDeclarationDescriptor>() {
+//                @Override
+//                public void apply(OpenDeclarationDescriptor result) throws OperationException {
+//                  if (result != null) {
+//                    handleDescriptor(((JarFileNode) file).getProject(), result);
+//                  }
+//                }
+//              });
+//    }
   }
 
   private void setCursorAndActivateEditor(final EditorPartPresenter editor, final int offset) {

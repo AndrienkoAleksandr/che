@@ -379,10 +379,6 @@ public class OrionEditorWidget extends Composite
     return editorOverlay.getTextView();
   }
 
-  public LinkedMode getLinkedMode() {
-    return editorOverlay.getLinkedMode(editorOverlay.getAnnotationModel());
-  }
-
   public OrionAnnotationModelOverlay getAnnotationModel() {
     return editorOverlay.getAnnotationModel();
   }
@@ -395,14 +391,6 @@ public class OrionEditorWidget extends Composite
   @Override
   public Gutter getGutter() {
     return gutter;
-  }
-
-  public int getTopVisibleLine() {
-    return editorOverlay.getTextView().getTopIndex();
-  }
-
-  public void setTopLine(int line) {
-    editorOverlay.getTextView().setTopIndex(line);
   }
 
   /**
@@ -467,62 +455,4 @@ public class OrionEditorWidget extends Composite
       widgetInitializedCallback.initialized(OrionEditorWidget.this);
     }
   }
-
-  /**
-   * Registers global prompt function to be accessible directly from JavaScript.
-   *
-   * <p>Function promptIDE(title, text, defaultValue, callback) title Dialog title text The text to
-   * display in the dialog box defaultValue The default value callback function(value) clicking "OK"
-   * will return input value clicking "Cancel" will return null
-   */
-  //  private native void registerPromptFunction() /*-{
-  //        if (!$wnd["promptIDE"]) {
-  //            var instance = this;
-  //            $wnd["promptIDE"] = function (title, text, defaultValue, callback) {
-  //
-  // instance.@org.eclipse.che.ide.editor.orion.client.OrionEditorWidget::askLineNumber(*)(title,
-  // text, defaultValue, callback);
-  //            };
-  //        }
-  //    }-*/;
-
-  /** Custom callback to pass given value to native javascript function. */
-  //  private class InputCallback implements org.eclipse.che.ide.ui.dialogs.input.InputCallback {
-  //
-  //    private JavaScriptObject callback;
-  //
-  //    public InputCallback(JavaScriptObject callback) {
-  //      this.callback = callback;
-  //    }
-  //
-  //    @Override
-  //    public void accepted(String value) {
-  //      acceptedNative(value);
-  //      editorAgent.activateEditor(editorAgent.getActiveEditor());
-  //    }
-  //
-  //    private native void acceptedNative(String value) /*-{
-  //            var callback =
-  // this.@org.eclipse.che.ide.editor.orion.client.OrionEditorWidget.InputCallback::callback;
-  //            callback(value);
-  //        }-*/;
-  //  }
-  //
-  //  private void askLineNumber(
-  //      String title, String text, String defaultValue, final JavaScriptObject callback) {
-  //    if (defaultValue == null) {
-  //      defaultValue = "";
-  //    } else {
-  //      // It's strange situation defaultValue.length() returns 'undefined' but must return a
-  // number.
-  //      // Reinitialise the variable resolves the problem.
-  //      defaultValue = "" + defaultValue;
-  //    }
-  //
-  //    dialogFactory
-  //        .createInputDialog(
-  //            title, text, defaultValue, 0, defaultValue.length(), new InputCallback(callback),
-  // null)
-  //        .show();
-  //  }
 }

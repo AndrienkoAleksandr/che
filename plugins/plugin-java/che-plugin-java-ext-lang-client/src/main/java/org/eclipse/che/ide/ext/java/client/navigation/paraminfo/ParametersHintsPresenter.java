@@ -56,43 +56,43 @@ public class ParametersHintsPresenter {
    *     will be displayed
    */
   public void show(final TextEditor activeEditor) {
-    final int offset = activeEditor.getCursorOffset();
-
-    if (!isCursorInRightPlace(activeEditor, offset)) {
-      return;
-    }
-
-    VirtualFile file = activeEditor.getEditorInput().getFile();
-
-    if (file instanceof Resource) {
-      final Optional<Project> project = ((Resource) file).getRelatedProject();
-      final int lineStartOffset = getLineStartOffset(activeEditor, offset);
-
-      navigationService
-          .getMethodParametersHints(
-              project.get().getLocation(), JavaUtil.resolveFQN(file), offset, lineStartOffset)
-          .then(
-              new Operation<List<MethodParameters>>() {
-                @Override
-                public void apply(List<MethodParameters> parameters) throws OperationException {
-                  if (parameters.isEmpty()) {
-                    return;
-                  }
-
-                  PositionConverter.PixelCoordinates coordinates =
-                      activeEditor.getPositionConverter().offsetToPixel(offset);
-
-                  view.show(parameters, coordinates.getX(), coordinates.getY());
-                }
-              })
-          .catchError(
-              new Operation<PromiseError>() {
-                @Override
-                public void apply(PromiseError error) throws OperationException {
-                  Log.error(getClass(), error.getMessage());
-                }
-              });
-    }
+//    final int offset = activeEditor.getCursorOffset();
+//
+//    if (!isCursorInRightPlace(activeEditor, offset)) {
+//      return;
+//    }
+//
+//    VirtualFile file = activeEditor.getEditorInput().getFile();
+//
+//    if (file instanceof Resource) {
+//      final Optional<Project> project = ((Resource) file).getRelatedProject();
+//      final int lineStartOffset = getLineStartOffset(activeEditor, offset);
+//
+//      navigationService
+//          .getMethodParametersHints(
+//              project.get().getLocation(), JavaUtil.resolveFQN(file), offset, lineStartOffset)
+//          .then(
+//              new Operation<List<MethodParameters>>() {
+//                @Override
+//                public void apply(List<MethodParameters> parameters) throws OperationException {
+//                  if (parameters.isEmpty()) {
+//                    return;
+//                  }
+//
+//                  PositionConverter.PixelCoordinates coordinates =
+//                      activeEditor.getPositionConverter().offsetToPixel(offset);
+//
+//                  view.show(parameters, coordinates.getX(), coordinates.getY());
+//                }
+//              })
+//          .catchError(
+//              new Operation<PromiseError>() {
+//                @Override
+//                public void apply(PromiseError error) throws OperationException {
+//                  Log.error(getClass(), error.getMessage());
+//                }
+//              });
+//    }
   }
 
   private boolean isCursorInRightPlace(TextEditor activeEditor, int offset) {

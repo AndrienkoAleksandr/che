@@ -135,7 +135,7 @@ public class TestDetector {
     this.currentEditor = editor;
     TestDetectionContext context = dtoFactory.createDto(TestDetectionContext.class);
     context.setFilePath(currentEditor.getEditorInput().getFile().getLocation().toString());
-    context.setOffset(currentEditor.getCursorOffset());
+//    context.setOffset(currentEditor.getCursorOffset());
     Resource resource = appContext.getResource();
     Project project =
         (resource == null || resource.getProject() == null)

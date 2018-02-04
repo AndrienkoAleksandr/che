@@ -521,19 +521,19 @@ public class EditorAgentImpl
     JsonArray result = Json.createArray();
     int i = 0;
     List<EditorPartPresenter> parts = partStack.getParts();
-    for (EditorPartPresenter part : parts) {
-      JsonObject file = Json.createObject();
-      file.put("PATH", part.getEditorInput().getFile().getLocation().toString());
-      file.put("EDITOR_PROVIDER", openedEditorsToProviders.get(part));
-      if (part instanceof TextEditor) {
-        file.put("CURSOR_OFFSET", ((TextEditor) part).getCursorOffset());
-        file.put("TOP_VISIBLE_LINE", ((TextEditor) part).getTopVisibleLine());
-      }
-      if (partStack.getActivePart().equals(part)) {
-        file.put("ACTIVE", true);
-      }
-      result.set(i++, file);
-    }
+//    for (EditorPartPresenter part : parts) {
+//      JsonObject file = Json.createObject();
+//      file.put("PATH", part.getEditorInput().getFile().getLocation().toString());
+//      file.put("EDITOR_PROVIDER", openedEditorsToProviders.get(part));
+//      if (part instanceof TextEditor) {
+//        file.put("CURSOR_OFFSET", ((TextEditor) part).getCursorOffset());
+//        file.put("TOP_VISIBLE_LINE", ((TextEditor) part).getTopVisibleLine());
+//      }
+//      if (partStack.getActivePart().equals(part)) {
+//        file.put("ACTIVE", true);
+//      }
+//      result.set(i++, file);
+//    }
     return result;
   }
 

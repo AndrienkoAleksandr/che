@@ -116,47 +116,47 @@ public class RenamePresenter extends BasePresenter implements ActionDelegate {
   }
 
   public void rename(TextEditor editor) {
-    textEditor = editor;
-    TextPosition cursorPosition = textEditor.getCursorPosition();
-    int cursorOffset = editor.getCursorOffset();
-    Position wordAtOffset = editor.getWordAtOffset(cursorOffset);
-    if (wordAtOffset == null) {
-      LOG.debug("Can't find word to rename");
-      return;
-    }
-    PixelCoordinates pixelCoordinates =
-        editor.getPositionConverter().offsetToPixel(wordAtOffset.offset);
-    String oldName = editor.getDocument().getContentRange(wordAtOffset.offset, wordAtOffset.length);
-
-    if (inputBox != null) {
-      showWindow(cursorPosition, editor, oldName);
-      return;
-    }
-    projectCache.clear();
-
-    inputBox = renameInputBoxProvider.get();
-    inputBox
-        .setPositionAndShow(
-            pixelCoordinates.getX(),
-            pixelCoordinates.getY(),
-            oldName,
-            () -> showWindow(cursorPosition, editor, oldName))
-        .then(
-            newName -> {
-              editor.setFocus();
-              inputBox = null;
-              if (!oldName.equals(newName)) {
-                callRename(newName, cursorPosition, editor);
-              }
-            })
-        .catchError(
-            err -> {
-              editor.setFocus();
-              inputBox = null;
-              if (!(err.getCause() instanceof OperationCanceledException)) {
-                LOG.error(err.getMessage());
-              }
-            });
+//    textEditor = editor;
+//    TextPosition cursorPosition = textEditor.getCursorPosition();
+//    int cursorOffset = editor.getCursorOffset();
+//    Position wordAtOffset = editor.getWordAtOffset(cursorOffset);
+//    if (wordAtOffset == null) {
+//      LOG.debug("Can't find word to rename");
+//      return;
+//    }
+//    PixelCoordinates pixelCoordinates =
+//        editor.getPositionConverter().offsetToPixel(wordAtOffset.offset);
+//    String oldName = editor.getDocument().getContentRange(wordAtOffset.offset, wordAtOffset.length);
+//
+//    if (inputBox != null) {
+//      showWindow(cursorPosition, editor, oldName);
+//      return;
+//    }
+//    projectCache.clear();
+//
+//    inputBox = renameInputBoxProvider.get();
+//    inputBox
+//        .setPositionAndShow(
+//            pixelCoordinates.getX(),
+//            pixelCoordinates.getY(),
+//            oldName,
+//            () -> showWindow(cursorPosition, editor, oldName))
+//        .then(
+//            newName -> {
+//              editor.setFocus();
+//              inputBox = null;
+//              if (!oldName.equals(newName)) {
+//                callRename(newName, cursorPosition, editor);
+//              }
+//            })
+//        .catchError(
+//            err -> {
+//              editor.setFocus();
+//              inputBox = null;
+//              if (!(err.getCause() instanceof OperationCanceledException)) {
+//                LOG.error(err.getMessage());
+//              }
+//            });
   }
 
   private void showWindow(TextPosition cursorPosition, TextEditor editor, String oldName) {

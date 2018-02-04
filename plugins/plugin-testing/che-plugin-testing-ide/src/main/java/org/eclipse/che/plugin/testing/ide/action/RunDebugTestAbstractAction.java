@@ -114,7 +114,7 @@ public abstract class RunDebugTestAbstractAction extends AbstractPerspectiveActi
     if (contextType == CURSOR_POSITION) {
       TextEditor currentEditor = testDetector.getCurrentEditor();
       context.setFilePath(currentEditor.getEditorInput().getFile().getLocation().toString());
-      context.setCursorOffset(currentEditor.getCursorOffset());
+//      context.setCursorOffset(currentEditor.getCursorOffset());
     } else {
       context.setFilePath(selectedNodePath);
     }
@@ -131,14 +131,14 @@ public abstract class RunDebugTestAbstractAction extends AbstractPerspectiveActi
   protected Pair<String, String> getTestingFrameworkAndTestName() {
     TextEditor currentEditor = testDetector.getCurrentEditor();
     List<TestPosition> testPosition = testDetector.getTestPosition();
-    int cursorOffset = currentEditor.getCursorOffset();
-    for (TestPosition position : testPosition) {
-      int testNameStartOffset = position.getTestNameStartOffset();
-      if (testNameStartOffset <= cursorOffset
-          && testNameStartOffset + position.getTestBodyLength() >= cursorOffset) {
-        return Pair.of(position.getFrameworkName(), position.getTestName());
-      }
-    }
+//    int cursorOffset = currentEditor.getCursorOffset();
+//    for (TestPosition position : testPosition) {
+//      int testNameStartOffset = position.getTestNameStartOffset();
+//      if (testNameStartOffset <= cursorOffset
+//          && testNameStartOffset + position.getTestBodyLength() >= cursorOffset) {
+//        return Pair.of(position.getFrameworkName(), position.getTestName());
+//      }
+//    }
     return Pair.of(testPosition.iterator().next().getFrameworkName(), null);
   }
 

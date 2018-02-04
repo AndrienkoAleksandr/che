@@ -130,7 +130,7 @@ public class FindUsagesPresenter extends BasePresenter implements FindUsagesView
       FindUsagesRequest request = dtoFactory.createDto(FindUsagesRequest.class);
       request.setFQN(fqn);
       request.setProjectPath(projectPath);
-      request.setOffset(activeEditor.getCursorOffset());
+//      request.setOffset(activeEditor.getCursorOffset());
 
       Promise<FindUsagesResponse> promise = searchService.findUsages(request);
       promise

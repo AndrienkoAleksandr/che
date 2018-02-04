@@ -463,7 +463,7 @@ public class RenamePresenter implements ActionDelegate {
 
       dto.setType(JAVA_ELEMENT);
       dto.setPath(JavaUtil.resolveFQN(file));
-      dto.setOffset(((TextEditor) editorAgent.getActiveEditor()).getCursorOffset());
+//      dto.setOffset(((TextEditor) editorAgent.getActiveEditor()).getCursorOffset());
 
       if (file instanceof Resource) {
         final Project project = ((Resource) file).getRelatedProject().get();

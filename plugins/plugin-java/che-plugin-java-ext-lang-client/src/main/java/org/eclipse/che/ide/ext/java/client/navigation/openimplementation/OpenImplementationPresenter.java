@@ -88,53 +88,53 @@ public class OpenImplementationPresenter {
    * @param editorPartPresenter the active editor
    */
   public void show(final EditorPartPresenter editorPartPresenter) {
-    if (!(editorPartPresenter instanceof TextEditor)) {
-      Log.error(getClass(), "Open Declaration support only TextEditor as editor");
-      return;
-    }
-    activeEditor = ((TextEditor) editorPartPresenter);
-    final VirtualFile file = activeEditor.getEditorInput().getFile();
-
-    if (file instanceof Resource) {
-      final Optional<Project> project = ((Resource) file).getRelatedProject();
-
-      final Optional<Resource> srcFolder =
-          ((Resource) file).getParentWithMarker(SourceFolderMarker.ID);
-
-      if (!srcFolder.isPresent()) {
-        return;
-      }
-
-      final String fqn = JavaUtil.resolveFQN((Container) srcFolder.get(), (Resource) file);
-
-      service
-          .getImplementations(project.get().getLocation(), fqn, activeEditor.getCursorOffset())
-          .then(
-              new Operation<ImplementationsDescriptorDTO>() {
-                @Override
-                public void apply(ImplementationsDescriptorDTO impls) throws OperationException {
-                  int overridingSize = impls.getImplementations().size();
-
-                  String title =
-                      locale.openImplementationWindowTitle(impls.getMemberName(), overridingSize);
-                  NoImplementationWidget noImplementationWidget =
-                      new NoImplementationWidget(
-                          popupResources,
-                          javaResources,
-                          locale,
-                          OpenImplementationPresenter.this,
-                          title);
-                  if (overridingSize == 1) {
-                    actionPerformed(impls.getImplementations().get(0));
-                  } else if (overridingSize > 1) {
-                    openOneImplementation(
-                        impls, noImplementationWidget, (TextEditor) editorPartPresenter);
-                  } else if (!isNullOrEmpty(impls.getMemberName()) && overridingSize == 0) {
-                    showNoImplementations(noImplementationWidget, (TextEditor) editorPartPresenter);
-                  }
-                }
-              });
-    }
+//    if (!(editorPartPresenter instanceof TextEditor)) {
+//      Log.error(getClass(), "Open Declaration support only TextEditor as editor");
+//      return;
+//    }
+//    activeEditor = ((TextEditor) editorPartPresenter);
+//    final VirtualFile file = activeEditor.getEditorInput().getFile();
+//
+//    if (file instanceof Resource) {
+//      final Optional<Project> project = ((Resource) file).getRelatedProject();
+//
+//      final Optional<Resource> srcFolder =
+//          ((Resource) file).getParentWithMarker(SourceFolderMarker.ID);
+//
+//      if (!srcFolder.isPresent()) {
+//        return;
+//      }
+//
+//      final String fqn = JavaUtil.resolveFQN((Container) srcFolder.get(), (Resource) file);
+//
+//      service
+//          .getImplementations(project.get().getLocation(), fqn, activeEditor.getCursorOffset())
+//          .then(
+//              new Operation<ImplementationsDescriptorDTO>() {
+//                @Override
+//                public void apply(ImplementationsDescriptorDTO impls) throws OperationException {
+//                  int overridingSize = impls.getImplementations().size();
+//
+//                  String title =
+//                      locale.openImplementationWindowTitle(impls.getMemberName(), overridingSize);
+//                  NoImplementationWidget noImplementationWidget =
+//                      new NoImplementationWidget(
+//                          popupResources,
+//                          javaResources,
+//                          locale,
+//                          OpenImplementationPresenter.this,
+//                          title);
+//                  if (overridingSize == 1) {
+//                    actionPerformed(impls.getImplementations().get(0));
+//                  } else if (overridingSize > 1) {
+//                    openOneImplementation(
+//                        impls, noImplementationWidget, (TextEditor) editorPartPresenter);
+//                  } else if (!isNullOrEmpty(impls.getMemberName()) && overridingSize == 0) {
+//                    showNoImplementations(noImplementationWidget, (TextEditor) editorPartPresenter);
+//                  }
+//                }
+//              });
+//    }
   }
 
   public void actionPerformed(final Member member) {
@@ -212,27 +212,27 @@ public class OpenImplementationPresenter {
 
   private void showNoImplementations(
       NoImplementationWidget noImplementationWidget, TextEditor editorPartPresenter) {
-    int offset = editorPartPresenter.getCursorOffset();
-    PositionConverter.PixelCoordinates coordinates =
-        editorPartPresenter.getPositionConverter().offsetToPixel(offset);
-    Type type = dtoFactory.createDto(Type.class);
-    type.setFlags(-1);
-    noImplementationWidget.addItem(type);
-    noImplementationWidget.show(coordinates.getX(), coordinates.getY());
+//    int offset = editorPartPresenter.getCursorOffset();
+//    PositionConverter.PixelCoordinates coordinates =
+//        editorPartPresenter.getPositionConverter().offsetToPixel(offset);
+//    Type type = dtoFactory.createDto(Type.class);
+//    type.setFlags(-1);
+//    noImplementationWidget.addItem(type);
+//    noImplementationWidget.show(coordinates.getX(), coordinates.getY());
   }
 
   private void openOneImplementation(
       ImplementationsDescriptorDTO implementationsDescriptor,
       NoImplementationWidget implementationWidget,
       TextEditor editorPartPresenter) {
-    int offset = editorPartPresenter.getCursorOffset();
-    PositionConverter.PixelCoordinates coordinates =
-        editorPartPresenter.getPositionConverter().offsetToPixel(offset);
-    for (Type type : implementationsDescriptor.getImplementations()) {
-      implementationWidget.addItem(type);
-    }
-    implementationWidget.show(coordinates.getX(), coordinates.getY());
-    implementationWidget.asElement().getStyle().setWidth(600 + "px");
+//    int offset = editorPartPresenter.getCursorOffset();
+//    PositionConverter.PixelCoordinates coordinates =
+//        editorPartPresenter.getPositionConverter().offsetToPixel(offset);
+//    for (Type type : implementationsDescriptor.getImplementations()) {
+//      implementationWidget.addItem(type);
+//    }
+//    implementationWidget.show(coordinates.getX(), coordinates.getY());
+//    implementationWidget.asElement().getStyle().setWidth(600 + "px");
   }
 
   private void setCursor(final Region region) {
