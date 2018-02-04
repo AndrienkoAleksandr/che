@@ -54,19 +54,19 @@ public class RunToCursorAction extends AbstractPerspectiveAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    Debugger debugger = debuggerManager.getActiveDebugger();
-    if (debugger != null) {
-      EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
-      if (activeEditor instanceof TextEditor) {
-        int lineNumber = ((TextEditor) activeEditor).getCursorPosition().getLine() + 1;
-
-        VirtualFile file = activeEditor.getEditorInput().getFile();
-        if (file instanceof HasLocation) {
-          Location location = ((HasLocation) file).toLocation(lineNumber);
-          debugger.runToLocation(location);
-        }
-      }
-    }
+//    Debugger debugger = debuggerManager.getActiveDebugger();
+//    if (debugger != null) {
+//      EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
+//      if (activeEditor instanceof TextEditor) {
+//        int lineNumber = ((TextEditor) activeEditor).getCursorPosition().getLine() + 1;
+//
+//        VirtualFile file = activeEditor.getEditorInput().getFile();
+//        if (file instanceof HasLocation) {
+//          Location location = ((HasLocation) file).toLocation(lineNumber);
+//          debugger.runToLocation(location);
+//        }
+//      }
+//    }
   }
 
   @Override

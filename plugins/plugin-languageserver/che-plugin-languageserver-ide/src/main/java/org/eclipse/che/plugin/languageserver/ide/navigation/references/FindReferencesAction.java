@@ -77,31 +77,31 @@ public class FindReferencesAction extends AbstractPerspectiveAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
-
-    // TODO replace this
-    if (!(activeEditor instanceof TextEditor)) {
-      return;
-    }
-    TextEditor textEditor = ((TextEditor) activeEditor);
-    String path = activeEditor.getEditorInput().getFile().getLocation().toString();
-    ReferenceParams paramsDTO = dtoFactory.createDto(ReferenceParams.class);
-
-    Position Position = dtoFactory.createDto(Position.class);
-    Position.setLine(textEditor.getCursorPosition().getLine());
-    Position.setCharacter(textEditor.getCursorPosition().getCharacter());
-
-    TextDocumentIdentifier identifierDTO = dtoFactory.createDto(TextDocumentIdentifier.class);
-    identifierDTO.setUri(path);
-
-    ReferenceContext contextDTO = dtoFactory.createDto(ReferenceContext.class);
-    contextDTO.setIncludeDeclaration(true);
-
-    paramsDTO.setUri(path);
-    paramsDTO.setPosition(Position);
-    paramsDTO.setTextDocument(identifierDTO);
-    paramsDTO.setContext(contextDTO);
-    Promise<List<Location>> promise = client.references(paramsDTO);
-    presenter.openLocation(promise);
+//    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
+//
+//    // TODO replace this
+//    if (!(activeEditor instanceof TextEditor)) {
+//      return;
+//    }
+//    TextEditor textEditor = ((TextEditor) activeEditor);
+//    String path = activeEditor.getEditorInput().getFile().getLocation().toString();
+//    ReferenceParams paramsDTO = dtoFactory.createDto(ReferenceParams.class);
+//
+//    Position Position = dtoFactory.createDto(Position.class);
+//    Position.setLine(textEditor.getCursorPosition().getLine());
+//    Position.setCharacter(textEditor.getCursorPosition().getCharacter());
+//
+//    TextDocumentIdentifier identifierDTO = dtoFactory.createDto(TextDocumentIdentifier.class);
+//    identifierDTO.setUri(path);
+//
+//    ReferenceContext contextDTO = dtoFactory.createDto(ReferenceContext.class);
+//    contextDTO.setIncludeDeclaration(true);
+//
+//    paramsDTO.setUri(path);
+//    paramsDTO.setPosition(Position);
+//    paramsDTO.setTextDocument(identifierDTO);
+//    paramsDTO.setContext(contextDTO);
+//    Promise<List<Location>> promise = client.references(paramsDTO);
+//    presenter.openLocation(promise);
   }
 }

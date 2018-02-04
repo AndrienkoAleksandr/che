@@ -76,25 +76,25 @@ public class FindDefinitionAction extends AbstractPerspectiveAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
-
-    TextEditor textEditor = ((TextEditor) activeEditor);
-    TextDocumentPositionParams paramsDTO =
-        dtoBuildHelper.createTDPP(textEditor.getDocument(), textEditor.getCursorPosition());
-
-    final Promise<List<Location>> promise = client.definition(paramsDTO);
-    promise
-        .then(
-            arg -> {
-              if (arg.size() == 1) {
-                presenter.onLocationSelected(arg.get(0));
-              } else {
-                presenter.openLocation(promise);
-              }
-            })
-        .catchError(
-            arg -> {
-              presenter.showError(arg);
-            });
+//    EditorPartPresenter activeEditor = editorAgent.getActiveEditor();
+//
+//    TextEditor textEditor = ((TextEditor) activeEditor);
+//    TextDocumentPositionParams paramsDTO =
+//        dtoBuildHelper.createTDPP(textEditor.getDocument(), textEditor.getCursorPosition());
+//
+//    final Promise<List<Location>> promise = client.definition(paramsDTO);
+//    promise
+//        .then(
+//            arg -> {
+//              if (arg.size() == 1) {
+//                presenter.onLocationSelected(arg.get(0));
+//              } else {
+//                presenter.openLocation(promise);
+//              }
+//            })
+//        .catchError(
+//            arg -> {
+//              presenter.showError(arg);
+//            });
   }
 }

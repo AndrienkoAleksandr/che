@@ -145,16 +145,10 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
   @Override
   public void storeState() {
-    cursorPosition = getCursorPosition();
   }
 
   @Override
   public void restoreState() {
-    if (cursorPosition != null) {
-      setFocus();
-
-      getDocument().setCursorPosition(cursorPosition);
-    }
   }
 
   @Override
@@ -281,11 +275,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   @Override
   public LinearRange getSelectedLinearRange() {
     return getDocument().getSelectedLinearRange();
-  }
-
-  @Override
-  public TextPosition getCursorPosition() {
-    return getDocument().getCursorPosition();
   }
 
   private List<String> detectFileType(final VirtualFile file) {

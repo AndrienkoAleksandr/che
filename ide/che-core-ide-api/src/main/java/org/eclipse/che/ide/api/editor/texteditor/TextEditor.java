@@ -76,13 +76,6 @@ public interface TextEditor extends EditorPartPresenter {
   LinearRange getSelectedLinearRange();
 
   /**
-   * Returns the cursor position as a {@link TextPosition} object (a line char position).
-   *
-   * @return the cursor position
-   */
-  TextPosition getCursorPosition();
-
-  /**
    * Returns the cursor model for the editor.
    *
    * @return the cursor model

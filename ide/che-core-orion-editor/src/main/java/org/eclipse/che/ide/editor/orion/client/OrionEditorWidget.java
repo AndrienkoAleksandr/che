@@ -47,7 +47,6 @@ import org.eclipse.che.ide.api.editor.events.HasCursorActivityHandlers;
 import org.eclipse.che.ide.api.editor.gutter.Gutter;
 import org.eclipse.che.ide.api.editor.gutter.Gutters;
 import org.eclipse.che.ide.api.editor.gutter.HasGutter;
-import org.eclipse.che.ide.api.editor.link.LinkedMode;
 import org.eclipse.che.ide.api.editor.position.PositionConverter;
 import org.eclipse.che.ide.api.editor.text.Region;
 import org.eclipse.che.ide.api.editor.texteditor.ContentInitializedHandler;
