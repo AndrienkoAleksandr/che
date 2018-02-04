@@ -206,90 +206,12 @@ public class CommandEditor extends AbstractEditorPresenter
   }
 
   @Override
-  public void doSave() {
-    doSave(
-        new AsyncCallback<EditorInput>() {
-          @Override
-          public void onFailure(Throwable caught) {}
-
-          @Override
-          public void onSuccess(EditorInput result) {}
-        });
-  }
-
-  @Override
-  public void doSave(AsyncCallback<EditorInput> callback) {
-    commandManager
-        .updateCommand(initialCommandName, editedCommand)
-        .then(
-            arg -> {
-              // according to the CommandManager#updateCommand contract
-              // command's name after updating may differ from the proposed name
-              // in order to prevent name duplication
-              editedCommand.setName(arg.getName());
-
-              if (!initialCommandName.equals(editedCommand.getName())) {
-                input.setFile(nodeFactory.newCommandFileNode(editedCommand));
-                initialCommandName = editedCommand.getName();
-                firePropertyChange(PROP_INPUT);
-              }
-
-              updateDirtyState(false);
-
-              view.setSaveEnabled(false);
-
-              callback.onSuccess(getEditorInput());
-            })
-        .catchError(
-            (Operation<PromiseError>)
-                arg -> {
-                  notificationManager.notify(
-                      messages.editorMessageUnableToSave(), arg.getMessage(), WARNING, EMERGE_MODE);
-
-                  callback.onFailure(arg.getCause());
-
-                  throw new OperationException(arg.getMessage());
-                });
-  }
-
-  @Override
-  public void onClosing(AsyncCallback<Void> callback) {
-    if (!isDirty()) {
-      callback.onSuccess(null);
-    } else {
-      dialogFactory
-          .createChoiceDialog(
-              coreMessages.askWindowCloseTitle(),
-              coreMessages.messagesSaveChanges(getEditorInput().getName()),
-              coreMessages.yesButtonTitle(),
-              coreMessages.noButtonTitle(),
-              coreMessages.cancelButton(),
-              () ->
-                  doSave(
-                      new AsyncCallback<EditorInput>() {
-                        @Override
-                        public void onSuccess(EditorInput result) {
-                          callback.onSuccess(null);
-                        }
-
-                        @Override
-                        public void onFailure(Throwable caught) {
-                          callback.onFailure(null);
-                        }
-                      }),
-              () -> callback.onSuccess(null),
-              () -> callback.onFailure(null))
-          .show();
-    }
-  }
-
-  @Override
   public void onCommandCancel() {
   }
 
   @Override
   public void onCommandSave() {
-    doSave();
+//    doSave();
   }
 
   @Override

@@ -93,24 +93,6 @@ public class ReconcilerWithAutoSave implements Reconciler {
   }
 
   private void save() {
-    if (autoSaveEnabled) {
-      if (editor.isDirty()) {
-        editor.doSave(
-            new AsyncCallback<EditorInput>() {
-              @Override
-              public void onFailure(Throwable throwable) {
-                Log.error(ReconcilerWithAutoSave.class, throwable);
-              }
-
-              @Override
-              public void onSuccess(EditorInput editorInput) {
-                processNextRegion();
-              }
-            });
-        return;
-      }
-    }
-    processNextRegion();
   }
 
   private void processNextRegion() {

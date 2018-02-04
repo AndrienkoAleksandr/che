@@ -108,8 +108,6 @@ public class AutoSaveModeImpl
 
   @Override
   public void uninstall() {
-    saveTimer.cancel();
-    handlerRegistrations.forEach(HandlerRegistration::removeHandler);
   }
 
   @Override
@@ -133,21 +131,6 @@ public class AutoSaveModeImpl
   }
 
   private void updateAutoSaveState() {
-    Boolean autoSaveValue =
-        editorPreferencesManager.getBooleanValueFor(EditorProperties.ENABLE_AUTO_SAVE);
-    if (autoSaveValue == null) {
-      return;
-    }
-
-    if (DEACTIVATED != mode && !autoSaveValue) {
-      mode = DEACTIVATED;
-      saveTimer.cancel();
-    } else if (ACTIVATED != mode && autoSaveValue) {
-      mode = ACTIVATED;
-
-      saveTimer.cancel();
-      saveTimer.schedule(DELAY);
-    }
   }
 
   @Override
@@ -169,18 +152,6 @@ public class AutoSaveModeImpl
 
   @Override
   public void onDocumentChanged(final DocumentChangedEvent event) {
-    if (documentHandle == null || !event.getDocument().isSameAs(documentHandle)) {
-      return;
-    }
-
-    if (SUSPENDED == mode && editor != activeEditor) {
-      return;
-    }
-
-    createDirtyRegion(event);
-
-    saveTimer.cancel();
-    saveTimer.schedule(DELAY);
   }
 
   /**
@@ -211,19 +182,7 @@ public class AutoSaveModeImpl
   }
 
   private void save() {
-    if (ACTIVATED == mode && editor.isDirty()) {
-      editor.doSave();
-    }
 
-    VirtualFile file = editor.getEditorInput().getFile();
-    Project project = getProject(file);
-    if (project == null) {
-      return;
-    }
-
-    String filePath = file.getLocation().toString();
-    String projectPath = project.getPath();
-    synchronizeWorkingCopy(filePath, projectPath);
   }
 
   private void synchronizeWorkingCopy(String filePath, String projectPath) {

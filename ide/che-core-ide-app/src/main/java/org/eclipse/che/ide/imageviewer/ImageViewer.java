@@ -70,13 +70,6 @@ public class ImageViewer extends AbstractEditorPresenter implements FileEventHan
   }
 
   /** {@inheritDoc} */
-  @Override
-  public void doSave() {}
-
-  @Override
-  public void doSave(AsyncCallback<EditorInput> callback) {}
-
-  /** {@inheritDoc} */
   @NotNull
   @Override
   public String getTitle() {
@@ -98,31 +91,6 @@ public class ImageViewer extends AbstractEditorPresenter implements FileEventHan
   /** {@inheritDoc} */
   @Override
   public void onClose(@NotNull final AsyncCallback<Void> callback) {
-    if (isDirty()) {
-      dialogFactory
-          .createConfirmDialog(
-              constant.askWindowCloseTitle(),
-              constant.messagesSaveChanges(getEditorInput().getName()),
-              new ConfirmCallback() {
-                @Override
-                public void accepted() {
-                  doSave();
-                  handleClose();
-                  callback.onSuccess(null);
-                }
-              },
-              new CancelCallback() {
-                @Override
-                public void cancelled() {
-                  handleClose();
-                  callback.onSuccess(null);
-                }
-              })
-          .show();
-    } else {
-      handleClose();
-      callback.onSuccess(null);
-    }
   }
 
   /** {@inheritDoc} */

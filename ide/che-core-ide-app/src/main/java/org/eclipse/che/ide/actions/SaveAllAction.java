@@ -42,32 +42,6 @@ public class SaveAllAction extends ProjectAction {
   }
 
   private void save(final List<EditorPartPresenter> editors) {
-    if (editors.isEmpty()) {
-      return;
-    }
-
-    final EditorPartPresenter editorPartPresenter = editors.get(0);
-    if (editorPartPresenter.isDirty()) {
-      editorPartPresenter.doSave(
-          new AsyncCallback<EditorInput>() {
-            @Override
-            public void onFailure(Throwable caught) {
-              Log.error(SaveAllAction.class, caught);
-              // try to save other files
-              editors.remove(editorPartPresenter);
-              save(editors);
-            }
-
-            @Override
-            public void onSuccess(EditorInput result) {
-              editors.remove(editorPartPresenter);
-              save(editors);
-            }
-          });
-    } else {
-      editors.remove(editorPartPresenter);
-      save(editors);
-    }
   }
 
   /** {@inheritDoc} */

@@ -151,7 +151,7 @@ public class CommandEditorTest {
         .thenReturn(commandPromise);
     when(commandPromise.then(any(Operation.class))).thenReturn(commandPromise);
 
-    editor.doSave();
+
 
     verify(commandManager).updateCommand(anyString(), eq(editor.editedCommand));
     verify(commandPromise).then(operationCaptor.capture());
@@ -166,7 +166,7 @@ public class CommandEditorTest {
         .thenReturn(commandPromise);
     when(commandPromise.then(any(Operation.class))).thenReturn(commandPromise);
 
-    editor.doSave();
+
 
     verify(commandPromise).catchError(errorOperationCaptor.capture());
     errorOperationCaptor.getValue().apply(mock(PromiseError.class));
@@ -176,7 +176,6 @@ public class CommandEditorTest {
 
   @Test
   public void shouldCloseEditor() throws Exception {
-    editor.close(true);
 
     verify(workspaceAgent).removePart(editor);
   }

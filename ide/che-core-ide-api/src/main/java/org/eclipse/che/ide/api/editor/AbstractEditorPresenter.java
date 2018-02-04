@@ -84,9 +84,4 @@ public abstract class AbstractEditorPresenter extends AbstractPartPresenter
       handler.onClose(this);
     }
   }
-
-  @Override
-  public void onClosing(AsyncCallback<Void> callback) {
-    callback.onSuccess(null);
-  }
 }

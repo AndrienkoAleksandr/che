@@ -223,18 +223,6 @@ public class EditorAgentImpl
     if (editorPartStack == null) {
       return;
     }
-
-    editor.onClosing(
-        new AsyncCallback<Void>() {
-          @Override
-          public void onSuccess(Void result) {
-            EditorTab editorTab = editorPartStack.getTabByPart(editor);
-            doCloseEditor(editorTab);
-          }
-
-          @Override
-          public void onFailure(Throwable caught) {}
-        });
   }
 
   private void doCloseEditor(EditorTab tab) {
@@ -429,24 +417,6 @@ public class EditorAgentImpl
   }
 
   private void doSave(final AsyncCallback<Void> callback) {
-    final EditorPartPresenter partPresenter = dirtyEditors.get(0);
-    partPresenter.doSave(
-        new AsyncCallback<EditorInput>() {
-          @Override
-          public void onFailure(Throwable caught) {
-            callback.onFailure(caught);
-          }
-
-          @Override
-          public void onSuccess(EditorInput result) {
-            dirtyEditors.remove(partPresenter);
-            if (dirtyEditors.isEmpty()) {
-              callback.onSuccess(null);
-            } else {
-              doSave(callback);
-            }
-          }
-        });
   }
 
   @Override

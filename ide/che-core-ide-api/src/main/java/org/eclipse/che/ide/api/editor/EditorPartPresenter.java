@@ -60,16 +60,6 @@ public interface EditorPartPresenter extends PartPresenter {
   @NotNull
   EditorInput getEditorInput();
 
-  /** Saves the contents of this editor. */
-  void doSave();
-
-  /**
-   * Saves the contents of this editor.
-   *
-   * @param callback the callback for save operation
-   */
-  void doSave(@NotNull AsyncCallback<EditorInput> callback);
-
   /**
    * Returns whether the contents of this part have changed since the last save operation.
    *
@@ -84,12 +74,4 @@ public interface EditorPartPresenter extends PartPresenter {
    * @param closeHandler the instance of CloseHandler
    */
   void addCloseHandler(@NotNull EditorPartCloseHandler closeHandler);
-
-  /**
-   * Called when part is going to closing. Part can deny closing, by calling {@code
-   * callback#onFailure}.
-   *
-   * @param callback callback to allow or deny closing the part
-   */
-  void onClosing(AsyncCallback<Void> callback);
 }

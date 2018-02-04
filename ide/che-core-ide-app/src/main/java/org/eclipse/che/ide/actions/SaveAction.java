@@ -37,7 +37,7 @@ public class SaveAction extends ProjectAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    editorAgent.getActiveEditor().doSave();
+//    editorAgent.getActiveEditor().doSave();
   }
 
   @Override

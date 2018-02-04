@@ -114,9 +114,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   }
 
   @Override
-  public void onClosing(@NotNull final AsyncCallback<Void> callback) {}
-
-  @Override
   public TextEditorPartView getView() {
     return this.editorView;
   }
@@ -130,23 +127,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   public String getTitle() {
     return input.getFile().getDisplayName();
   }
-
-  @Override
-  public void doSave() {
-    doSave(
-        new AsyncCallback<EditorInput>() {
-          @Override
-          public void onSuccess(final EditorInput result) {
-          }
-
-          @Override
-          public void onFailure(final Throwable caught) {
-          }
-        });
-  }
-
-  @Override
-  public void doSave(final AsyncCallback<EditorInput> callback) {}
 
   @Override
   public String getContentType() {
