@@ -256,9 +256,6 @@ public class CommandEditor extends AbstractEditorPresenter
   public void doSaveAs() {}
 
   @Override
-  public void activate() {}
-
-  @Override
   public void close(boolean save) {
     workspaceAgent.removePart(this);
   }

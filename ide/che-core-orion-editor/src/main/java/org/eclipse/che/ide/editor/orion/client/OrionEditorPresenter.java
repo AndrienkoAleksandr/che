@@ -127,20 +127,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   }
 
   @Override
-  public void activate() {
-    if (editorWidget != null) {
-      Scheduler.get()
-          .scheduleDeferred(
-              () -> {
-                editorWidget.refresh();
-                editorWidget.setFocus();
-              });
-    } else {
-      this.delayedFocus = true;
-    }
-  }
-
-  @Override
   public void initialize(@NotNull TextEditorConfiguration configuration) {
     this.configuration = configuration;
   }

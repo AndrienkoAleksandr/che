@@ -331,9 +331,9 @@ public class EditorPartStackView extends ResizeComposite
     contentPanel.showWidget(viewIndex);
     setActiveTab(partPresenter);
 
-    if (partPresenter instanceof TextEditor) {
-      ((TextEditor) partPresenter).activate();
-    }
+//    if (partPresenter instanceof TextEditor) {
+//      ((TextEditor) partPresenter).activate();
+//    }
   }
 
   /**

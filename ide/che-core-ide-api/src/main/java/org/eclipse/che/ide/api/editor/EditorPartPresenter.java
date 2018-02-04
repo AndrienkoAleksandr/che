@@ -91,9 +91,6 @@ public interface EditorPartPresenter extends PartPresenter {
    */
   void addCloseHandler(@NotNull EditorPartCloseHandler closeHandler);
 
-  /** Call this method then editor became visible */
-  void activate();
-
   /**
    * Closes this text editor after optionally saving changes.
    *

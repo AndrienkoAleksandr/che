@@ -69,7 +69,7 @@ public abstract class AbstractPageWithTextEditor extends AbstractCommandEditorPa
   private void initializeEditor(EditorBuilder editorBuilder) {
     editor = editorBuilder.buildEditor();
     editor.initialize(editorConfiguration);
-    editor.activate();
+//    editor.activate();
 
     editor.addPropertyListener(
         (source, propId) -> {

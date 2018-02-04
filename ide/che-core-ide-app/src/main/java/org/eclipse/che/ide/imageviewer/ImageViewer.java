@@ -81,10 +81,6 @@ public class ImageViewer extends AbstractEditorPresenter implements FileEventHan
   public void doSaveAs() {}
 
   /** {@inheritDoc} */
-  @Override
-  public void activate() {}
-
-  /** {@inheritDoc} */
   @NotNull
   @Override
   public String getTitle() {

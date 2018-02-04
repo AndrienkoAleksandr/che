@@ -169,7 +169,7 @@ public class EditorAgentImpl
       return;
     }
     activeEditor = (EditorPartPresenter) event.getActivePart();
-    activeEditor.activate();
+//    activeEditor.activate();
     final String isLinkedWithEditor =
         preferencesManager.getValue(LinkWithEditorAction.LINK_WITH_EDITOR);
     if (parseBoolean(isLinkedWithEditor)) {
