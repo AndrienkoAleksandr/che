@@ -61,7 +61,7 @@ public class PerspectiveManager {
   public void setPerspectiveId(@NotNull String perspectiveId) {
     Perspective currentPerspective = perspectives.get(currentPerspectiveId);
 
-    currentPerspective.storeState();
+//    currentPerspective.storeState();
 
     currentPerspectiveId = perspectiveId;
 

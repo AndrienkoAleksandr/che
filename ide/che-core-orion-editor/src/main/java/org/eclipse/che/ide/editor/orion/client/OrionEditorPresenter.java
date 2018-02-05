@@ -11,18 +11,13 @@
 package org.eclipse.che.ide.editor.orion.client;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import javax.validation.constraints.NotNull;
 import org.eclipse.che.api.promises.client.Promise;
 import org.eclipse.che.ide.api.editor.AbstractEditorPresenter;
 import org.eclipse.che.ide.api.editor.EditorAgent.OpenEditorCallback;
-import org.eclipse.che.ide.api.editor.EditorInput;
 import org.eclipse.che.ide.api.editor.document.DocumentStorage;
-import org.eclipse.che.ide.api.editor.editorconfig.TextEditorConfiguration;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidget;
 import org.eclipse.che.ide.api.editor.texteditor.EditorWidgetFactory;
 import org.eclipse.che.ide.api.editor.texteditor.TextEditor;
@@ -86,14 +81,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
   private void createEditor(final String content, OpenEditorCallback openEditorCallback) {
     editorWidgetFactory.createEditorWidget(new EditorWidgetInitializedCallback(content, openEditorCallback));
-  }
-
-  @Override
-  public void storeState() {
-  }
-
-  @Override
-  public void restoreState() {
   }
 
   protected Widget getWidget() {

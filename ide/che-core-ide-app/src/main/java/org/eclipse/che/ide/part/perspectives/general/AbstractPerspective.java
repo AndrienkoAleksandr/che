@@ -139,7 +139,7 @@ public abstract class AbstractPerspective
     activePartBeforeChangePerspective = activePart;
 
     if (activePartBeforeChangePerspective != null) {
-      activePartBeforeChangePerspective.storeState();
+//      activePartBeforeChangePerspective.storeState();
     }
   }
 
@@ -147,7 +147,7 @@ public abstract class AbstractPerspective
   public void restoreState() {
     if (activePartBeforeChangePerspective != null) {
       setActivePart(activePartBeforeChangePerspective);
-      activePartBeforeChangePerspective.restoreState();
+//      activePartBeforeChangePerspective.restoreState();
     }
   }
 

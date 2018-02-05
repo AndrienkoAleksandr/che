@@ -125,7 +125,7 @@ public class ExpandEditorAction extends BaseAction implements CustomComponentAct
       perspective.maximizeCentralPartStack();
       button.getElement().setInnerHTML(FontAwesome.COMPRESS);
     } else {
-      perspective.restore();
+//      perspective.restore();
       button.getElement().setInnerHTML(FontAwesome.EXPAND);
     }
   }

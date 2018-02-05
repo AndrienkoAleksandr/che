@@ -42,18 +42,6 @@ public abstract class AbstractPartPresenter implements PartPresenter {
     selection = new Selection.NoSelectionProvided();
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public void storeState() {
-    // default implementation is empty. Add some logic for particular part to store it's state
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void restoreState() {
-    // default implementation is empty. Add some logic for particular part to restore it's state
-  }
-
   /**
    * Set PartStack where this part added.
    *

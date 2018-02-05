@@ -36,12 +36,6 @@ public interface PartPresenter extends Presenter {
   /** The property id for <code>getSelection</code>. */
   int SELECTION_PROPERTY = 0x002;
 
-  /** Store part state before changing perspective. */
-  void storeState();
-
-  /** Restore part state after changing perspective. */
-  void restoreState();
-
   /** @return Title of the Part */
   @NotNull
   String getTitle();

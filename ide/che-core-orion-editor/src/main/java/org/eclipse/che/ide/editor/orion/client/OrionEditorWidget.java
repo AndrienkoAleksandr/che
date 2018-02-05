@@ -30,7 +30,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.inject.Provider;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
-import java.util.List;
 import java.util.logging.Logger;
 import org.eclipse.che.api.promises.client.Operation;
 import org.eclipse.che.api.promises.client.OperationException;
