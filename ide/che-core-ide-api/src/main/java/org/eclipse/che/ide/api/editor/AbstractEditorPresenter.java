@@ -41,17 +41,6 @@ public abstract class AbstractEditorPresenter extends AbstractPartPresenter
   /** Initializes this editor. */
   protected abstract void initializeEditor(final OpenEditorCallback callback);
 
-  /**
-   * Set dirty state and notify expressions
-   *
-   * @param dirty
-   */
-  protected void updateDirtyState(boolean dirty) {
-    dirtyState = dirty;
-    firePropertyChange(EditorPartPresenter.TITLE_PROPERTY);
-    firePropertyChange(PROP_DIRTY);
-  }
-
   /** {@inheritDoc} */
   @Override
   public IsWidget getView() {

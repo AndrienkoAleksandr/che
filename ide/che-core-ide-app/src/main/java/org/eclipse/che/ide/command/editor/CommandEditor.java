@@ -151,7 +151,7 @@ public class CommandEditor extends AbstractEditorPresenter
           page.edit(editedCommand);
           page.setDirtyStateListener(
               () -> {
-                updateDirtyState(isDirtyPage());
+//                updateDirtyState(isDirtyPage());
                 view.setSaveEnabled(isDirtyPage());
               });
         });

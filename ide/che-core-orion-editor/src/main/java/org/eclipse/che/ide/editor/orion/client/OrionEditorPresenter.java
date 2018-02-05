@@ -89,9 +89,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
   }
 
   @Override
-  public void updateDirtyState(boolean dirty) {}
-
-  @Override
   public void storeState() {
   }
 
