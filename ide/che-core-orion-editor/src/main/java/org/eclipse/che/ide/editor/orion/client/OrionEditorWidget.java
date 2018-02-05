@@ -61,13 +61,9 @@ public class OrionEditorWidget extends Composite
   /** The logger. */
   private static final Logger LOG = Logger.getLogger(OrionEditorWidget.class.getSimpleName());
 
-  private final ModuleHolder moduleHolder;
   private final OrionSettingsController orionSettingsController;
 
   @UiField SimplePanel panel;
-  /** The instance of the orion editor native element style. */
-  @UiField EditorElementStyle editorElementStyle;
-
   private OrionEditorViewOverlay editorViewOverlay;
   private OrionEditorOverlay editorOverlay;
   /** Component that handles undo/redo. */
@@ -78,19 +74,17 @@ public class OrionEditorWidget extends Composite
 
   @AssistedInject
   public OrionEditorWidget(
-      final ModuleHolder moduleHolder,
       final Provider<OrionCodeEditWidgetOverlay> orionCodeEditWidgetProvider,
       @Assisted final WidgetInitializedCallback widgetInitializedCallback,
       final Provider<OrionEditorOptionsOverlay> editorOptionsProvider,
       final OrionSettingsController orionSettingsController) {
 
-    this.moduleHolder = moduleHolder;
 
     this.orionSettingsController = orionSettingsController;
     initWidget(UIBINDER.createAndBindUi(this));
 
     panel.getElement().setId("orion-parent-" + Document.get().createUniqueId());
-    panel.getElement().addClassName(this.editorElementStyle.editorParent());
+//    panel.getElement().addClassName(this.editorElementStyle.editorParent());
 
     // todo
     orionCodeEditWidgetProvider
@@ -188,15 +182,16 @@ public class OrionEditorWidget extends Composite
 
   @Override
   protected void onLoad() {
+    super.onLoad();
     // fix for native editor height
-    if (panel.getElement().getChildCount() > 0) {
-      final Element child = panel.getElement().getFirstChildElement();
-      child.setId("orion-editor-" + Document.get().createUniqueId());
-      child.getStyle().clearHeight();
-
-    } else {
-      LOG.severe("Orion insertion failed.");
-    }
+//    if (panel.getElement().getChildCount() > 0) {
+//      final Element child = panel.getElement().getFirstChildElement();
+//      child.setId("orion-editor-" + Document.get().createUniqueId());
+//      child.getStyle().clearHeight();
+//
+//    } else {
+//      LOG.severe("Orion insertion failed.");
+//    }
   }
 
   @Override
@@ -223,17 +218,6 @@ public class OrionEditorWidget extends Composite
    */
   interface OrionEditorWidgetUiBinder extends UiBinder<SimplePanel, OrionEditorWidget> {}
 
-  /**
-   * CSS style for the orion native editor element.
-   *
-   * @author "Mickaël Leduque"
-   */
-  public interface EditorElementStyle extends CssResource {
-
-    @ClassName("editor-parent")
-    String editorParent();
-  }
-
   private class EditorViewCreatedOperation implements Operation<OrionEditorViewOverlay> {
     private final WidgetInitializedCallback widgetInitializedCallback;
 
@@ -248,7 +232,6 @@ public class OrionEditorWidget extends Composite
       orionSettingsController.setEditorViewOverlay(arg);
 
       editorOverlay.setZoomRulerVisible(true);
-      editorOverlay.getAnnotationStyler().addAnnotationType("che-marker", 100);
 
       orionSettingsController.updateSettings();
       widgetInitializedCallback.initialized(OrionEditorWidget.this);

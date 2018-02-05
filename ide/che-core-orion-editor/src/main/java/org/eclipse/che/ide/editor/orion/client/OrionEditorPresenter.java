@@ -41,8 +41,6 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
 
   private OrionEditorWidget editorWidget;
 
-  private boolean delayedFocus;
-
   @Inject
   public OrionEditorPresenter(
       final DocumentStorage documentStorage,
@@ -143,11 +141,8 @@ public class OrionEditorPresenter extends AbstractEditorPresenter
       // TODO: delayed activation
       // handle delayed focus (initialization editor widget)
       // should also check if I am visible, but how ?
-      if (delayedFocus) {
-        editorWidget.refresh();
-        editorWidget.setFocus();
-        delayedFocus = false;
-      }
+      editorWidget.refresh();
+      editorWidget.setFocus();
 
       editorWidget.setValue(
           content,

@@ -86,28 +86,6 @@ public class TextEditorPartViewImpl extends Composite implements TextEditorPartV
       throw new RuntimeException("Editor already set");
     }
     this.editorPanel.setWidget(editorWidget);
-
-    //    editorWidget.addCursorActivityHandler(
-    //        new CursorActivityHandler() {
-    //          @Override
-    //          public void onCursorActivity(final CursorActivityEvent event) {
-    //            delegate.editorCursorPositionChanged();
-    //          }
-    //        });
-    //    editorWidget.addBlurHandler(
-    //        new BlurHandler() {
-    //          @Override
-    //          public void onBlur(final BlurEvent event) {
-    //            delegate.editorLostFocus();
-    //          }
-    //        });
-    //    editorWidget.addFocusHandler(
-    //        new FocusHandler() {
-    //          @Override
-    //          public void onFocus(final FocusEvent event) {
-    //            delegate.editorGotFocus();
-    //          }
-    //        });
   }
 
   @Override

@@ -46,14 +46,14 @@
     </ui:style>
 
     <!-- used in the widget -->
-    <ui:style field="editorElementStyle" type="org.eclipse.che.ide.editor.orion.client.OrionEditorWidget.EditorElementStyle">
-        .editor-parent {
-            display: -webkit-flex;
-            display: flex;
-        }
-    </ui:style>
+    <!--<ui:style field="editorElementStyle" type="org.eclipse.che.ide.editor.orion.client.OrionEditorWidget.EditorElementStyle">-->
+        <!--.editor-parent {-->
+            <!--display: -webkit-flex;-->
+            <!--display: flex;-->
+        <!--}-->
+    <!--</ui:style>-->
 
-    <g:SimplePanel addStyleNames="{style.editor-container}">
-        <g:SimplePanel ui:field="panel" addStyleNames="{style.editor}"/>
+    <g:SimplePanel height="100%" addStyleNames="{style.editor-container}">
+        <g:SimplePanel height="100%" ui:field="panel" addStyleNames="{style.editor}"/>
     </g:SimplePanel>
 </ui:UiBinder>
