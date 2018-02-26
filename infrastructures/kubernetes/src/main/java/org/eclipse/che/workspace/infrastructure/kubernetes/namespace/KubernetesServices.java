@@ -19,6 +19,7 @@ import io.fabric8.kubernetes.client.KubernetesClientException;
 import java.util.List;
 import org.eclipse.che.api.workspace.server.spi.InfrastructureException;
 import org.eclipse.che.workspace.infrastructure.kubernetes.KubernetesClientFactory;
+import org.eclipse.che.workspace.infrastructure.kubernetes.KubernetesInfrastructureException;
 
 /**
  * Defines an internal API for managing {@link Service} instances in {@link
@@ -48,9 +49,9 @@ public class KubernetesServices {
     putLabel(service, CHE_WORKSPACE_ID_LABEL, workspaceId);
     putSelector(service, CHE_WORKSPACE_ID_LABEL, workspaceId);
     try {
-      return clientFactory.create().services().inNamespace(namespace).create(service);
+      return clientFactory.create(workspaceId).services().inNamespace(namespace).create(service);
     } catch (KubernetesClientException e) {
-      throw new InfrastructureException(e.getMessage(), e);
+      throw new KubernetesInfrastructureException(e);
     }
   }
 
@@ -62,14 +63,14 @@ public class KubernetesServices {
   public List<Service> get() throws InfrastructureException {
     try {
       return clientFactory
-          .create()
+          .create(workspaceId)
           .services()
           .inNamespace(namespace)
           .withLabel(CHE_WORKSPACE_ID_LABEL, workspaceId)
           .list()
           .getItems();
     } catch (KubernetesClientException e) {
-      throw new InfrastructureException(e.getMessage(), e);
+      throw new KubernetesInfrastructureException(e);
     }
   }
 
@@ -81,13 +82,13 @@ public class KubernetesServices {
   public void delete() throws InfrastructureException {
     try {
       clientFactory
-          .create()
+          .create(workspaceId)
           .services()
           .inNamespace(namespace)
           .withLabel(CHE_WORKSPACE_ID_LABEL, workspaceId)
           .delete();
     } catch (KubernetesClientException e) {
-      throw new InfrastructureException(e.getMessage(), e);
+      throw new KubernetesInfrastructureException(e);
     }
   }
 }

@@ -32,6 +32,7 @@ import java.util.function.Predicate;
 import org.eclipse.che.api.workspace.server.spi.InfrastructureException;
 import org.eclipse.che.api.workspace.server.spi.InternalInfrastructureException;
 import org.eclipse.che.workspace.infrastructure.kubernetes.KubernetesClientFactory;
+import org.eclipse.che.workspace.infrastructure.kubernetes.KubernetesInfrastructureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,10 +86,10 @@ public class KubernetesNamespace {
     this.workspaceId = workspaceId;
     this.pods = new KubernetesPods(name, workspaceId, clientFactory);
     this.services = new KubernetesServices(name, workspaceId, clientFactory);
-    this.pvcs = new KubernetesPersistentVolumeClaims(name, clientFactory);
+    this.pvcs = new KubernetesPersistentVolumeClaims(name, workspaceId, clientFactory);
     this.ingresses = new KubernetesIngresses(name, workspaceId, clientFactory);
     if (doPrepare) {
-      doPrepare(name, clientFactory.create());
+      doPrepare(name, clientFactory.create(workspaceId));
     }
   }
 
@@ -161,7 +162,7 @@ public class KubernetesNamespace {
           .done();
       waitDefaultServiceAccount(namespaceName, client);
     } catch (KubernetesClientException e) {
-      throw new InfrastructureException(e.getMessage(), e);
+      throw new KubernetesInfrastructureException(e);
     }
   }
 
@@ -215,7 +216,7 @@ public class KubernetesNamespace {
             "Waiting for service account '" + DEFAULT_SERVICE_ACCOUNT_NAME + "' was interrupted");
       }
     } catch (KubernetesClientException ex) {
-      throw new InfrastructureException(ex.getMessage());
+      throw new KubernetesInfrastructureException(ex);
     } finally {
       if (watch != null) {
         watch.close();
@@ -232,7 +233,7 @@ public class KubernetesNamespace {
         // namespace is foreign or doesn't exist
         return null;
       } else {
-        throw new InfrastructureException(e.getMessage(), e);
+        throw new KubernetesInfrastructureException(e);
       }
     }
   }

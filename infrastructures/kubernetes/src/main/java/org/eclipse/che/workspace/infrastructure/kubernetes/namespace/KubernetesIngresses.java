@@ -26,6 +26,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
 import org.eclipse.che.api.workspace.server.spi.InfrastructureException;
 import org.eclipse.che.workspace.infrastructure.kubernetes.KubernetesClientFactory;
+import org.eclipse.che.workspace.infrastructure.kubernetes.KubernetesInfrastructureException;
 
 /**
  * Defines an internal API for managing {@link Ingress} instances in {@link
@@ -50,14 +51,14 @@ public class KubernetesIngresses {
     putLabel(ingress, CHE_WORKSPACE_ID_LABEL, workspaceId);
     try {
       return clientFactory
-          .create()
+          .create(workspaceId)
           .extensions()
           .ingresses()
           .inNamespace(namespace)
           .withName(ingress.getMetadata().getName())
           .create(ingress);
     } catch (KubernetesClientException e) {
-      throw new InfrastructureException(e.getMessage(), e);
+      throw new KubernetesInfrastructureException(e);
     }
   }
 
@@ -67,7 +68,12 @@ public class KubernetesIngresses {
     Watch watch = null;
     try {
       Resource<Ingress, DoneableIngress> ingressResource =
-          clientFactory.create().extensions().ingresses().inNamespace(namespace).withName(name);
+          clientFactory
+              .create(workspaceId)
+              .extensions()
+              .ingresses()
+              .inNamespace(namespace)
+              .withName(name);
 
       watch =
           ingressResource.watch(
@@ -105,7 +111,7 @@ public class KubernetesIngresses {
         throw new InfrastructureException("Waiting for ingress '" + name + "' was interrupted");
       }
     } catch (KubernetesClientException e) {
-      throw new InfrastructureException(e.getMessage(), e);
+      throw new KubernetesInfrastructureException(e);
     } finally {
       if (watch != null) {
         watch.close();
@@ -116,14 +122,14 @@ public class KubernetesIngresses {
   public void delete() throws InfrastructureException {
     try {
       clientFactory
-          .create()
+          .create(workspaceId)
           .extensions()
           .ingresses()
           .inNamespace(namespace)
           .withLabel(CHE_WORKSPACE_ID_LABEL, workspaceId)
           .delete();
     } catch (KubernetesClientException e) {
-      throw new InfrastructureException(e.getMessage(), e);
+      throw new KubernetesInfrastructureException(e);
     }
   }
 }

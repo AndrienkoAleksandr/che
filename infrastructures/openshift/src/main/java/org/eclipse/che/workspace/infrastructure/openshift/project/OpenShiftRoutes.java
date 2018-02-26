@@ -17,6 +17,7 @@ import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.openshift.api.model.Route;
 import java.util.List;
 import org.eclipse.che.api.workspace.server.spi.InfrastructureException;
+import org.eclipse.che.workspace.infrastructure.kubernetes.KubernetesInfrastructureException;
 import org.eclipse.che.workspace.infrastructure.openshift.OpenShiftClientFactory;
 
 /**
@@ -46,9 +47,9 @@ public class OpenShiftRoutes {
   public Route create(Route route) throws InfrastructureException {
     putLabel(route, CHE_WORKSPACE_ID_LABEL, workspaceId);
     try {
-      return clientFactory.create().routes().inNamespace(namespace).create(route);
+      return clientFactory.createOC(workspaceId).routes().inNamespace(namespace).create(route);
     } catch (KubernetesClientException e) {
-      throw new InfrastructureException(e.getMessage(), e);
+      throw new KubernetesInfrastructureException(e);
     }
   }
 
@@ -60,14 +61,14 @@ public class OpenShiftRoutes {
   public List<Route> get() throws InfrastructureException {
     try {
       return clientFactory
-          .create()
+          .createOC(workspaceId)
           .routes()
           .inNamespace(namespace)
           .withLabel(CHE_WORKSPACE_ID_LABEL, workspaceId)
           .list()
           .getItems();
     } catch (KubernetesClientException e) {
-      throw new InfrastructureException(e.getMessage(), e);
+      throw new KubernetesInfrastructureException(e);
     }
   }
 
@@ -79,13 +80,13 @@ public class OpenShiftRoutes {
   public void delete() throws InfrastructureException {
     try {
       clientFactory
-          .create()
+          .createOC(workspaceId)
           .routes()
           .inNamespace(namespace)
           .withLabel(CHE_WORKSPACE_ID_LABEL, workspaceId)
           .delete();
     } catch (KubernetesClientException e) {
-      throw new InfrastructureException(e.getMessage(), e);
+      throw new KubernetesInfrastructureException(e);
     }
   }
 }

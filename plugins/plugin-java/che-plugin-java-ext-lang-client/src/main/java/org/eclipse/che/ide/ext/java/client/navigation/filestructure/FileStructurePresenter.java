@@ -92,9 +92,9 @@ public class FileStructurePresenter implements FileStructure.ActionDelegate {
           .getCompilationUnit(project.get().getLocation(), fqn, showInheritedMembers)
           .then(
               unit -> {
-                view.setTitle(editorPartPresenter.getEditorInput().getFile().getName());
+                view.setTitleCaption(editorPartPresenter.getEditorInput().getFile().getName());
                 view.setStructure(unit, showInheritedMembers);
-                view.show();
+                view.showDialog();
                 showInheritedMembers = !showInheritedMembers;
               })
           .catchError(
@@ -107,6 +107,8 @@ public class FileStructurePresenter implements FileStructure.ActionDelegate {
   /** {@inheritDoc} */
   @Override
   public void actionPerformed(final Member member) {
+    view.close();
+    showInheritedMembers = false;
     if (member.isBinary()) {
 
       final Resource resource = context.getResource();

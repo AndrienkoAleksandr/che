@@ -22,6 +22,7 @@ import org.eclipse.che.api.workspace.server.hc.probe.HttpProbeConfig;
 import org.eclipse.che.api.workspace.server.spi.InternalInfrastructureException;
 import org.eclipse.che.api.workspace.server.token.MachineTokenException;
 import org.eclipse.che.api.workspace.server.token.MachineTokenProvider;
+import org.eclipse.che.commons.env.EnvironmentContext;
 
 /**
  * Produces {@link HttpProbeConfig} for ws-agent liveness probes.
@@ -42,10 +43,16 @@ public class WsAgentServerLivenessProbeConfigFactory implements HttpProbeConfigF
   @Override
   public HttpProbeConfig get(String workspaceId, Server server)
       throws InternalInfrastructureException {
+    return get(EnvironmentContext.getCurrent().getSubject().getUserId(), workspaceId, server);
+  }
+
+  @Override
+  public HttpProbeConfig get(String userId, String workspaceId, Server server)
+      throws InternalInfrastructureException {
 
     try {
-      // add trailing slash
-      URI uri = UriBuilder.fromUri(server.getUrl()).path("/").build();
+      // add check path
+      URI uri = UriBuilder.fromUri(server.getUrl()).path("/liveness").build();
 
       int port;
       if (uri.getPort() == -1) {
@@ -63,7 +70,8 @@ public class WsAgentServerLivenessProbeConfigFactory implements HttpProbeConfigF
           uri.getHost(),
           uri.getScheme(),
           uri.getPath(),
-          singletonMap(HttpHeaders.AUTHORIZATION, machineTokenProvider.getToken(workspaceId)),
+          singletonMap(
+              HttpHeaders.AUTHORIZATION, machineTokenProvider.getToken(userId, workspaceId)),
           successThreshold,
           3,
           120,
