@@ -14,16 +14,21 @@ const cp = require("child_process");
 const theiaRoot = '/home/theia';
 const theiaPath = theiaRoot + '/package.json';
 
-const defaultConfig = require('/home/default/theia/package.json');
+const defaultTheia = `/home/default/theia`;
+const defaultConfig = require(`${defaultTheia}/package.json`);
 
 process.chdir(theiaRoot);
 
 let theiaConfig;
-if (fs.existsSync(theiaPath)) {
-    handlePromise(callRun());
-}
-else {
+
+//prepareNodeDependenciesSymbolicLink();
+
+//if (fs.existsSync(theiaPath)) {
+//    handlePromise(callRun());
+//}
+//else {
     let pluginString = process.env.THEIA_PLUGINS;
+    console.log("list plugins: " + pluginString);
     let pluginList = [];
     if (pluginString && pluginString.length !== 0) {
         let arr = pluginString.split(',');
@@ -31,19 +36,18 @@ else {
         theiaConfig = defaultConfig;
         let dep = theiaConfig.dependencies;
         for (let d of pluginList) {
-            if (!dep.hasOwnProperty(d)) {
+            if (!dep.hasOwnProperty(d) && d.indexOf("#") == -1) {
                 dep[d] = "latest";
             }
         }
+        console.log(JSON.stringify(theiaConfig));
         fs.writeFileSync(theiaPath, JSON.stringify(theiaConfig));
         handlePromise(callYarn().then(callBuild).then(callRun));
     } else {
-        const defaultTheia = `/home/default/theia`;
-        cp.execSync(`cp -r ${defaultTheia}/* ${theiaRoot}`);
+        cp.execSync(`rsync -rv ${defaultTheia}/ ${theiaRoot} --exclude 'node_modules' --exclude 'yarn.lock'`);
         handlePromise(callRun());
     }
-
-}
+//}
 
 function promisify(command, p) {
     return new Promise((resolve, reject) => {
@@ -60,6 +64,18 @@ function promisify(command, p) {
         });
     });
 }
+
+//function prepareNodeDependenciesSymbolicLink() {
+//    const nodeModulesDep = ${theiaRoot}/node_modules;
+//    if (fs.execSync(nodeModulesDep)) {
+//        cp.execSync(`ln -s ${defaultTheia}/node_modules ${theiaRoot}/node_modules`);
+//    }
+//    const yarnLock = ${theiaRoot}/yarn.lock
+//    if () {
+//        cp.execSync(`ln -s ${defaultTheia}/yarn.lock ${theiaRoot}/yarn.lock`);
+//    }
+//}
+
 function callYarn() {
     return promisify('yarn', cp.spawn('yarn'));
 }
