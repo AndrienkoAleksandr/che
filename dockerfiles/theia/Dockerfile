@@ -21,9 +21,12 @@ RUN yarn && \
     rm -rf * && \
     cd /home/default/theia && \
     yarn && \
-    yarn theia build && \
-    ln -s /home/default/theia/node_modules /home/theia/node_modules && \
-    ln -s /home/default/theia/yarn.lock /home/theia/yarn.lock
+    yarn theia build
+ENV NODE_MODULES=/home/theia/node_modules
+ENV YARN_LOCK = /home/theia/yarn.lock
+RUN ln -sf /home/default/theia/node_modules ${NODE_MODULES}
+RUN ln -sf /home/default/theia/yarn.lock ${YARN_LOCK}
+
 EXPOSE 3000
 ARG GITHUB_TOKEN
 ENV USE_LOCAL_GIT=true \

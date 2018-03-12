@@ -36,7 +36,14 @@ let theiaConfig;
         theiaConfig = defaultConfig;
         let dep = theiaConfig.dependencies;
         for (let d of pluginList) {
-            if (!dep.hasOwnProperty(d) && d.indexOf("#") == -1) {
+            if (d.indexOf(":") > -1) {
+                let newDep = d.split(":");
+                let depName = newDep[0].trim();
+                let depVersion = newDep[1].trim();
+                dep[depName] = depVersion;
+                continue;
+            }
+            if (!dep.hasOwnProperty(d)) {
                 dep[d] = "latest";
             }
         }
