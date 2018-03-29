@@ -61,19 +61,21 @@ function isPluginsEqual(pls1, pls2) {
 }
 
 function copyDefaultTheiaBuild() {
-    cp.execSync(`cp -r ${defaultTheiaRoot}/node_modules ${theiaRoot} && cp -r ${defaultTheiaRoot}/src-gen ${theiaRoot} && cp -r ${defaultTheiaRoot}/lib ${theiaRoot} && cp ${defaultTheiaRoot}/yarn.lock ${defaultTheiaRoot}/package.json ${theiaRoot}`);
+    cp.execSync(`cp -r ${defaultTheiaRoot}/node_modules ${theiaRoot} && cp -r ${defaultTheiaRoot}/src-gen ${theiaRoot} && cp -r ${defaultTheiaRoot}/lib ${theiaRoot}`, {stdio:[0,1,2]});
+    fs.writeFileSync(`${theiaRoot}/package.json`, fs.readFileSync(`${defaultTheiaRoot}/package.json`));
+    fs.writeFileSync(`${theiaRoot}/yarn.lock`, fs.readFileSync(`${defaultTheiaRoot}/yarn.lock`));
 }
 
 function rebuildTheiaWithNewPluginsAndRun(newPlugins) {
     let theiaPackageJson = require(`${theiaRoot}/package.json`);
     theiaPackageJson['dependencies'] = newPlugins;
     fs.writeFileSync(`${theiaRoot}/package.json`, JSON.stringify(theiaPackageJson), 'utf8');
-    cp.execSync(`rm -rf ${theiaRoot}/src-gen`);
+    cp.execSync(`rm -rf ${theiaRoot}/src-gen`, {stdio:[0,1,2]});
 
     handleError(callYarn()
         .then(callBuild).catch(error => {
             // invalidate broken build and force rebuild next time
-            cp.execSync(`rm -rf ${theiaRoot}/package.json`);
+            cp.execSync(`rm -rf ${theiaRoot}/package.json`, {stdio:[0,1,2]});
             throw error;
         })
         .then(callRun));
@@ -128,11 +130,11 @@ function getExtraTheiaPlugins() {
 function addPluginFromGitRepository(plugins, pluginName, gitRepository) {
     const pluginPath = gitPluginsRoot + '/' + pluginName + '/';
     try {
-        cp.execSync(`git clone --depth=1 --quiet ${gitRepository} ${pluginPath}`);
+        cp.execSync(`git clone --depth=1 --quiet ${gitRepository} ${pluginPath}`, {stdio:[0,1,2]});
     } catch (error) {
         // failed to clone repository
         try {
-            cp.execSync(`git clone --depth=1 --quiet ${gitRepository} ${pluginPath}`);
+            cp.execSync(`git clone --depth=1 --quiet ${gitRepository} ${pluginPath}`, {stdio:[0,1,2]});
         } catch (error) {
             // failed again, skip plugin
             console.error('Failed to get plugin: ' + pluginName + '. Skipping... Is the url specified properly?');
@@ -154,7 +156,7 @@ function addPluginFromGitRepository(plugins, pluginName, gitRepository) {
                     if (!fs.existsSync(pluginTargetDir + '/node_mudules') || !fs.existsSync(pluginTargetDir + '/lib')) {
                         try {
                             console.log('Building plugin: ' + pluginName);
-                            cp.execSync(`cd ${pluginTargetDir} && yarn`);
+                            cp.execSync(`cd ${pluginTargetDir} && yarn`, {stdio:[0,1,2]});
                         } catch (error) {
                             console.error('Skipping ' + pluginName + ' plugin because of following error: ' + error);
                             return;

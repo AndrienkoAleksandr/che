@@ -28,7 +28,9 @@ RUN cd /home/theia && \
     yarn theia build
 ADD src/main.js /theia_launcher/theia_launcher.js
 EXPOSE 3000
+RUN apk add --no-cache nano mc
 ARG GITHUB_TOKEN
 ENV USE_LOCAL_GIT=true \
-    GITHUB_TOKEN=${GITHUB_TOKEN}
-ENTRYPOINT ["node", "/theia_launcher/theia_launcher.js"]
+    GITHUB_TOKEN="todo"
+#ENTRYPOINT ["node", "/theia_launcher/theia_launcher.js"]
+ENTRYPOINT tail -f /dev/null

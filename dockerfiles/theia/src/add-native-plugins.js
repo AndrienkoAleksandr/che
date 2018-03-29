@@ -59,7 +59,7 @@ function addPlugins(plugins) {
 function cloneRepository(path, url) {
     try {
         console.log('Cloning repository: ', url);
-        cp.execSync(`git clone --depth=1 --quiet ${url} ${path}`);
+        cp.execSync(`git clone --depth=1 --quiet ${url} ${path}`, {stdio:[0,1,2]});
     } catch (error) {
         console.error('Failed to clone repository: ', url);
         process.exit(3);
@@ -69,7 +69,7 @@ function cloneRepository(path, url) {
 function buildPlugin(path) {
     try {
         console.log('Building plugin: ', path);
-        cp.execSync(`cd ${path} && yarn`);
+        cp.execSync(`cd ${path} && yarn`, {stdio:[0,1,2]});
     } catch (error) {
         console.error('Failed to build plugin located in: ', path);
         process.exit(4);
